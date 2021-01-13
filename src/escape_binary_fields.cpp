@@ -64,7 +64,7 @@ bc::bvalue escape_binary_metafile_fields(const bencode::bvalue& value)
 }
 
 
-inline auto make_piece_list(bc::bvalue& pieces_field)
+inline auto make_v1_piece_list(bc::bvalue& pieces_field)
 {
     auto byte_view = get_as<std::span<const std::byte>>(pieces_field);
     // round up to handle single piece torrents
@@ -80,6 +80,22 @@ inline auto make_piece_list(bc::bvalue& pieces_field)
     }
 }
 
+inline auto make_v2_piece_list(bc::bvalue& pieces_field)
+{
+    auto byte_view = get_as<std::span<const std::byte>>(pieces_field);
+    // round up to handle single piece torrents
+    auto num_pieces = (byte_view.size() + dt::sha256_hash::size_bytes-1) / dt::sha256_hash::size_bytes;
+    auto hex_data = dt::to_hexadecimal_string(byte_view);
+
+    constexpr auto hex_piece_length = 2 * dt::sha1_hash::size_bytes;
+    pieces_field.emplace_list();
+
+    for (std::size_t i = 0; i < num_pieces; ++i) {
+        auto piece = std::string_view(hex_data).substr(hex_piece_length*i, hex_piece_length);
+        pieces_field.push_back(fmt::format("<piece: {}, SHA256: {}>", i, piece));
+    }
+}
+
 
 bc::bvalue escape_binary_metafile_fields_hex(const bencode::bvalue& value)
 {
@@ -91,7 +107,7 @@ bc::bvalue escape_binary_metafile_fields_hex(const bencode::bvalue& value)
 
     if (has_v1_pieces) {
         auto& ref = bv.at("/info/pieces"_bpointer);
-        make_piece_list(ref);
+        make_v1_piece_list(ref);
     }
 
     if (has_v2_piece_layers) {
@@ -100,9 +116,8 @@ bc::bvalue escape_binary_metafile_fields_hex(const bencode::bvalue& value)
         for (auto& [k, v] : get_dict(layers_bv)) {
             auto key = fmt::format("<merkle root {}>", dt::sha256_hash(k).hex_string());
             auto num_pieces = get_string(v).size() / dt::sha256_hash::size();
-            auto hex_data = dt::to_hexadecimal_string(get_as<std::span<const std::byte>>(v));
-            v.clear();
-            fmt::format_to(std::back_inserter(get_string(v)), "<{} piece hashes: {}>", num_pieces, hex_data);
+            make_v2_piece_list(v);
+            cleaned_dict[key] = std::move(v);
         }
         layers_bv = std::move(cleaned_dict);
 
