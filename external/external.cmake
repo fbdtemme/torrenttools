@@ -87,7 +87,7 @@ if (TORRENTTOOLS_BUILD_TESTS)
 endif()
 
 find_package(ctre QUIET)
-if (ctre_FOUND)
+if (ctre_FOUND OR TARGET ctre::ctre)
     log_found(ctre)
 else()
     log_not_found(ctre)
@@ -101,7 +101,7 @@ endif()
 
 
 find_package(re2 QUIET)
-if (re2_FOUND)
+if (re2_FOUND OR TARGET re2::re2)
     log_found(re2)
 else()
     log_not_found(re2)
@@ -114,6 +114,9 @@ else()
     )
     set(RE2_BUILD_TESTING OFF)
     FetchContent_MakeAvailable(re2)
+    target_include_directories(re2 PUBLIC
+            $<INSTALL_INTERFACE:>
+            $<BUILD_INTERFACE:${re2_SOURCE_DIR}>)
 endif()
 
 find_package(nlohmann_json QUIET)
