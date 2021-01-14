@@ -12,7 +12,7 @@ project(torrenttools
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-option(TORRENTTOOLS_BUILD_TESTS "Build tests" ON)
+option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 
 include(CTest)
 include(GNUInstallDirs)
@@ -62,7 +62,7 @@ target_link_libraries(torrenttools PUBLIC
         yaml-cpp
 )
 
-if ((BUILD_TESTING AND TORRENTTOOLS_BUILD_TESTS) OR TORRENTTOOLS_BUILD_TESTS)
+if (TORRENTTOOLS_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
