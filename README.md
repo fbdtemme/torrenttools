@@ -69,7 +69,6 @@ Files:
 torrenttools create -h
 ```
 ```
-$ torrenttools create -h
 Create bittorrent metafiles.
 Usage: torrenttools create [OPTIONS] target
 
@@ -111,7 +110,7 @@ Options:
 ````
 
 
-## Building
+## Building and installation
 
 This library depends on following projects:
 
@@ -125,8 +124,24 @@ This library depends on following projects:
 *  [nlohmann/json](https://github.com/nlohmann/json)
 *  [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 *  [bencode](https://github/com/fbdtemme/bencode)
+*  [oneTBB](https://github.com/oneapi-src/oneTBB)
+*  [OpenSSL](https://github.com/openssl/openssl) or [libgcrypt](https://github.com/gpg/libgcrypt)
 
-All dependencies can be fetched from github during configure time or can be installed manually.
+Almost all dependencies can be fetched from github during configure time or can be installed manually.
+oneTBB and OpenSSL (or libgcrypt if so configured) have to be installed on the system in advance.
+
+### Installing build dependencies
+
+Ubuntu 20.04
+```shell
+sudo apt install build-esssential cmake libbb2 libbtbb-dev libssl-dev 
+```
+
+Fedora 33
+```shell
+sudo dnf install cmake make openssl-devel libtbb-devel
+```
+
 
 
 This project requires C++20.
@@ -141,7 +156,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 make 
 ```
 
-## Installation
+### Installation
 
 ```{bash}
 sudo make install
@@ -152,6 +167,11 @@ sudo make install
 `torrenttools` will first try to load user-specific configuration files and fall back
 to system global configuration files if no user specific config is found.
 
+There are two configuration files (located under resources in the source tree):
+* Tracker database: `trackers.json`
+* User settings: `config.yaml`
+
+`torrenttools` will look for these files in the following locations:
 * System location: `$INSTALL_PREFIX/share/torrenttools`
 * User location:   `$HOME/.local/share/torrentoools`
 
