@@ -171,6 +171,8 @@ else()
             GIT_REPOSITORY   https://github.com/fbdtemme/cliprogress.git
             GIT_TAG          main
     )
+    set(CLI11_BUILD_DOCS OFF)
+    set(CLI11_BUILD_TESTS OFF)
     FetchContent_MakeAvailable(cliprogress)
 endif()
 
