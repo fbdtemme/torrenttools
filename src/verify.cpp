@@ -147,7 +147,7 @@ void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent:
 
     tc::format_to(std::cout, tc::ecma48::character_position_absolute);
     tc::format_to(std::cout, tc::ecma48::erase_in_line);
-    tc::format_to(std::cout, tc::ecma48::cursor_up, 3);
+    tc::format_to(std::cout, tc::ecma48::cursor_up, 2);
 
     print_verify_statistics(m, total_duration);
     std::cout << "\nFiles:\n";
