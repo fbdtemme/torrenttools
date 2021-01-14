@@ -134,7 +134,7 @@ oneTBB and OpenSSL (or libgcrypt if so configured) have to be installed on the s
 
 Ubuntu 20.04
 ```shell
-sudo apt install build-esssential cmake libbb2 libbtbb-dev libssl-dev 
+sudo apt install build-essential cmake g++-10 libtbb2 libtbb-dev libssl-dev 
 ```
 
 Fedora 33
@@ -153,7 +153,7 @@ This project can be build as every other project which makes use of the CMake bu
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
-make 
+make -j4 torrenttools
 ```
 
 ### Installation
