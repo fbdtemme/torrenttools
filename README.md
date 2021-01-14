@@ -1,5 +1,12 @@
 ![](docs/images/torrenttools.svg)
 
+![build](https://github.com/fbdtemme/torrenttools/workflows/build/badge.svg)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/fbdtemme/torrenttools)](https://github.com/fbdtemme/bencode/releases)
+[![C++ standard](https://img.shields.io/badge/C%2B%2B-20-blue)](https://isocpp.org/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5cc3eec94d8a486dab62afeab5130def)](https://app.codacy.com/manual/floriandetemmerman/torrenttools?utm_source=github.com&utm_medium=referral&utm_content=fbdtemme/bencode&utm_campaign=Badge_Grade_Dashboard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
@@ -11,16 +18,15 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 * Creating bittorrent metafiles. 
 * Inspecting bittorrent metafiles.
-* Experimental support for the new [v2 and hybrid protocols](https://blog.libtorrent.org/2020/09/bittorrent-v2/) .
-
-## Roadmap
-
-* Editing torrent metadata.
-* Verifying torrents against local files.
+* Verifying bittorrent metafiles against local data.
+* Support for the new [v2 and hybrid protocols](https://blog.libtorrent.org/2020/09/bittorrent-v2/) .
+* Support for tracker abbreviations.
+* Support for announce parameters. 
 
 ## Status
 
-This project is under development.
+This project is under development. 
+The commandline interface can change at any release prior to 1.0.0.
 
 ## Examples
 
@@ -57,6 +63,53 @@ Files:
 
   854.06 MiB in 1 directories, 17 files
 ```
+
+### Create command
+```shell
+torrenttools create -h
+```
+```
+$ torrenttools create -h
+Create bittorrent metafiles.
+Usage: torrenttools create [OPTIONS] target
+
+Positionals:
+  target <path>               Target filename or directory
+
+Options:
+  -h,--help                   Print this help message and exit
+  -v,--protocol <protocol>    Set the bittorrent protocol to use. Options are 1, 2 or hybrid. [default: 1]
+  -o,--output <path>          Set the filename and/or output directory of the created file. [default: <name>.torrent]
+                              Use a path with trailing slash to only set the output directory.
+  -a,--announce <url> ...     Add one or multiple announces urls.
+                              Multiple trackers will be added in seperate tiers by default. 
+                              Use square brackets to groups urls in a single tier:
+                               eg. "--announce url1 [url1 url2]"
+  -w,--web-seed <url> ...     Add one or multiple HTTP/FTP urls as seeds.
+  -d,--dht-node <host:port> ...
+                              Add one or multiple DHT nodes.
+  -c,--comment <comment>      Add a comment.
+  -p,--private                Set the private flag to disable DHT and PEX.
+  -l,--piece-length <size[K|M]>
+                              Set the piece size.
+                              When no unit is specified block size will be 2^<n> bytes.
+                              Piece size must be a power of two in range [16K, 64M].
+                              Leave empty to determine by total file size. [default: auto]
+  -s,--source <source>        Add a source tag to facilitate cross-seeding.
+  -n,--name <name>            Set the name of the torrent. This changes the filename for single file torrents 
+                              or the root directory name for multi-file torrents.
+                              [default: <basename of target>]
+  -t,--threads <n>            Set the number of threads to use for hashing pieces. [default: 2]
+  --checksum <algorithm> ...  Include a per file checksum of given algorithm.
+  --no-creation-date          Do not include the creation date.
+  --no-created-by             Do not include the name and version of this program.
+  --include <regex> ...       Only add files matching given regex to the metafile.
+  --exclude <regex> ...       Do not add files matching given regex to the metafile.
+  --include-hidden            Do not skip hidden files.
+
+
+````
+
 
 ## Building
 
