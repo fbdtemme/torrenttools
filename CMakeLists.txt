@@ -6,7 +6,8 @@ cmake_policy(SET CMP0048 NEW)
 project(torrenttools
         DESCRIPTION "A toolbox for bittorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.1.0)
+        VERSION 0.2.0)
+
 
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})

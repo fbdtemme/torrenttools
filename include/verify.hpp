@@ -27,4 +27,6 @@ void run_verify_app(verify_app_options& options);
 
 void print_verify_statistics(const dottorrent::metafile& m, std::chrono::system_clock::duration duration);
 
+void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent::metafile& m);
+
 void configure_verify_app(CLI::App* app, verify_app_options& options);

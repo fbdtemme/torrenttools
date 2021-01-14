@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
     auto info_app    = app.add_subcommand("info",   "General infomation about bittorrent metafiles.");
     auto create_app  = app.add_subcommand("create", "Create bittorrent metafiles.");
-//    auto verify_app  = app.add_subcommand("verify", "Verify local data against bittorrent metafiles.");
+    auto verify_app  = app.add_subcommand("verify", "Verify local data against bittorrent metafiles.");
 //    auto edit_app    = app.add_subcommand("edit",   "Edit a bittorrent metafile.");
 
     /// List available checkusm
@@ -56,8 +56,7 @@ int main(int argc, char** argv) {
 
     configure_info_app(info_app, info_options);
     configure_create_app(create_app, create_options);
-
-//    configure_verify_app(verify_app, verify_options);
+    configure_verify_app(verify_app, verify_options);
 //    configure_verify_app(edit_app, edit_options);
 
     try {
@@ -69,9 +68,9 @@ int main(int argc, char** argv) {
         else if (app.got_subcommand(info_app)) {
             run_info_app(info_options);
         }
-//        else if (app.got_subcommand(verify_app)) {
-//            run_verify_app(verify_options);
-//        }
+        else if (app.got_subcommand(verify_app)) {
+            run_verify_app(verify_options);
+        }
     }
     catch (const CLI::CallForHelp &e) {
         std::cout << app.help() << std::endl;

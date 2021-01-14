@@ -303,6 +303,11 @@ inline auto format_duration(std::chrono::duration<Rep, Period> duration) -> std:
 }
 
 
+inline std::string format_percentage(double value)
+{
+    return fmt::format("{:>3.0f}%", value);
+}
+
 // TODO: switch to termcontrol::text_style
 inline auto load_ls_style_map() -> std::map<std::string_view, termcontrol::text_style>
 {

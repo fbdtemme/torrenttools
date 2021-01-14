@@ -187,9 +187,23 @@ void run_with_progress(dottorrent::storage_hasher& hasher, const dottorrent::met
     std::size_t current_file_index = 0;
     auto& storage = m.storage();
 
+    std::cout << "Hashing files..." << std::endl;
     cliprogress::application app;
 
-    auto indicator = make_indicator(storage, storage.at(current_file_index));
+
+    // v1 torrents count padding files as regular files in their progress counters
+    // v2 and hybrid torrents do not take padding files into account in their progress counters.
+    std::size_t total_file_size;
+    std::unique_ptr<cliprogress::progress_indicator> indicator;
+
+    if (hasher.protocol() == dt::protocol::v1) {
+        total_file_size = storage.total_file_size();
+        indicator = make_indicator(storage, storage.at(current_file_index));
+    } else {
+        total_file_size = storage.total_regular_file_size();
+        indicator = make_indicator_v2(storage, storage.at(current_file_index));
+    }
+
     indicator->start();
     app.start();
 
@@ -198,15 +212,6 @@ void run_with_progress(dottorrent::storage_hasher& hasher, const dottorrent::met
 
     std::size_t index = 0;
 
-    // v1 torrents count padding files as regular files in their progress counters
-    // v2 and hybrid do not take padding files into account in their progress counters !
-    std::size_t total_file_size;
-    if (hasher.protocol() == dt::protocol::v1) {
-        total_file_size = storage.total_file_size();
-    } else {
-        total_file_size = storage.total_regular_file_size();
-    }
-
     while (hasher.bytes_done() < total_file_size) {
         auto [index, file_bytes_hashed] = hasher.current_file_progress();
 
@@ -214,29 +219,40 @@ void run_with_progress(dottorrent::storage_hasher& hasher, const dottorrent::met
         if (index != current_file_index && index < storage.file_count()) {
             for ( ; current_file_index < index; ) {
                 // set to 100%
-                auto complete_size = storage.at(current_file_index).file_size();
-                indicator->set_value(complete_size);
-                on_indicator_completion(indicator);
-                indicator->stop();
-                app.writer().write('\n');
+                if (indicator) {
+                    auto complete_size = storage.at(current_file_index).file_size();
+                    indicator->set_value(complete_size);
+                    on_indicator_completion(indicator);
+                    indicator->stop();
+                }
 
                 ++current_file_index;
-                indicator = make_indicator(storage, storage.at(current_file_index));
-                indicator->start();
+
+                if (hasher.protocol() == dt::protocol::v1) {
+                    indicator = make_indicator(storage, storage.at(current_file_index));
+                } else {
+                    indicator = make_indicator_v2(storage, storage.at(current_file_index));
+                }
+                if (indicator) { indicator->start(); }
             }
         }
-        indicator->set_value(file_bytes_hashed);
+        if (indicator) { indicator->set_value(file_bytes_hashed); }
         std::this_thread::sleep_for(80ms);
     }
 
-    auto complete_progress = storage.at(current_file_index).file_size();
-    indicator->set_value(complete_progress);
-    on_indicator_completion(indicator);
-    indicator->stop();
+    if (indicator) {
+        auto complete_progress = storage.at(current_file_index).file_size();
+        indicator->set_value(complete_progress);
+        on_indicator_completion(indicator);
+        indicator->stop();
+    }
     app.request_stop();
     app.wait();
-
     hasher.wait();
+
+    tc::format_to(std::cout, tc::ecma48::character_position_absolute);
+    tc::format_to(std::cout, tc::ecma48::erase_in_line);
+    tc::format_to(std::cout, tc::ecma48::cursor_up, 2);
 
     auto stop_time = std::chrono::system_clock::now();
     auto total_duration = stop_time - start_time;
@@ -258,7 +274,6 @@ void print_creation_statistics(const dottorrent::metafile& m, std::chrono::syste
         average_hash_rate_str = "∞ B/s";
     }
 
-    std::cout << '\n' << std::endl;
     std::cout << fmt::format("Hashing completed in: {}\n", format_duration(duration));
     std::cout << fmt::format("Average hash rate:    {}\n",    average_hash_rate_str);
 
@@ -403,7 +418,6 @@ fs::path get_destination_path(dottorrent::metafile& m, const create_app_options&
 void run_create_app(const create_app_options& options)
 {
     namespace dt = dottorrent;
-
 
     // create a new metafile
     dt::metafile m {};
