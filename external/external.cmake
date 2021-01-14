@@ -69,18 +69,20 @@ else()
 endif()
 
 
-find_package(Catch2 QUIET)
-if (Catch2_FOUND)
-    log_found(Catch2)
-else()
-    log_not_found(Catch2)
-    FetchContent_Declare(
-            Catch2
-            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-            GIT_TAG        master
-    )
-    FetchContent_MakeAvailable(Catch2)
-    set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
+if (TORRENTTOOLS_BUILD_TESTS)
+    find_package(Catch2 QUIET)
+    if (Catch2_FOUND)
+        log_found(Catch2)
+    else()
+        log_not_found(Catch2)
+        FetchContent_Declare(
+                Catch2
+                GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+                GIT_TAG        v2.x
+        )
+        FetchContent_MakeAvailable(Catch2)
+        set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
+    endif()
 endif()
 
 find_package(ctre QUIET)
