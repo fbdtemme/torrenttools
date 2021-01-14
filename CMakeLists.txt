@@ -16,11 +16,11 @@ option(TORRENTTOOLS_BUILD_TESTS "Build tests" ON)
 
 include(CTest)
 include(GNUInstallDirs)
-
-add_subdirectory(../cliprogress cliprogress)
-add_subdirectory(../termcontrol termcontrol)
-add_subdirectory(../bencode bencode)
-add_subdirectory(../dottorrent dottorrent)
+#
+#add_subdirectory(../cliprogress cliprogress)
+#add_subdirectory(../termcontrol termcontrol)
+#add_subdirectory(../bencode bencode)
+#add_subdirectory(../dottorrent dottorrent)
 
 include(external/external.cmake)
 

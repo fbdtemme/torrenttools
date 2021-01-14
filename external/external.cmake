@@ -144,9 +144,36 @@ else()
     FetchContent_MakeAvailable(yaml-cpp)
 endif()
 
+find_package(termcontrol QUIET)
+if (termcontrol_FOUND OR TARGET termcontrol::termcontrol)
+    log_found(termcontrol)
+else()
+    log_not_found(termcontrol)
+    FetchContent_Declare(
+            termcontrol
+            GIT_REPOSITORY   https://github.com/fbdtemme/termcontrol.git
+            GIT_TAG          main
+    )
+    FetchContent_MakeAvailable(termcontrol)
+endif()
+
+
+find_package(cliprogress QUIET)
+if (cliprogress_FOUND OR TARGET cliprogress::cliprogress)
+    log_found(cliprogress)
+else()
+    log_not_found(cliprogress)
+    FetchContent_Declare(
+            cliprogress
+            GIT_REPOSITORY   https://github.com/fbdtemme/cliprogress.git
+            GIT_TAG          main
+    )
+    FetchContent_MakeAvailable(cliprogress)
+endif()
+
 
 find_package(dottorrent QUIET)
-if (dottorrent_FOUND OR TARGET dottorrent)
+if (dottorrent_FOUND OR TARGET dottorrent::dottorrent)
     log_found(dottorrent)
 else()
     log_not_found(dottorrent)
