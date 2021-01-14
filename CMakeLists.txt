@@ -47,19 +47,18 @@ elseif (WIN32)
 endif ()
 
 
-configure_file(${CMAKE_SOURCE_DIR}/include/config.hpp.in ${CMAKE_SOURCE_DIR}/include/config.hpp)
-
-
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
 target_link_libraries(torrenttools PUBLIC
         dottorrent::dottorrent
         termcontrol::termcontrol
         cliprogress::cliprogress
+        fmt::fmt
+        gsl::gsl-lite-v1
         CLI11::CLI11
         re2::re2
-        gsl::gsl-lite-v1
-        fmt::fmt
         yaml-cpp
+        nlohmann_json::nlohmann_json
 )
 
 if (TORRENTTOOLS_BUILD_TESTS)

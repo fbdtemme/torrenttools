@@ -2,6 +2,10 @@
 #include <ranges>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+#include <fmt/format.h>
+#include <fmt/args.h>
+
 #include "tracker_database.hpp"
 
 namespace torrenttools {
@@ -20,7 +24,7 @@ std::string tracker::substitute_parameters(const config& config) const
     auto last = rng::end(announce_url);
     auto open = rng::find(announce_url, '{');
 
-    fmt::dynamic_format_arg_store<fmt::format_context> arg_store{};
+    fmt::dynamic_format_arg_store<fmt::format_context> arg_store {};
 
     while (open != last) {
         auto close = rng::find(open, last, '}');

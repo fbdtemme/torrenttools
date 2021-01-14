@@ -10,7 +10,7 @@ function(log_not_found library)
     message(STATUS "Fetching dependency ${library}...")
 endfunction()
 
-find_package(CLI11  QUIET)
+find_package(CLI11 QUIET)
 if (CLI11_FOUND)
     log_found(CLI11)
 else()
@@ -37,7 +37,8 @@ else()
             GIT_REPOSITORY https://github.com/fmtlib/fmt.git
             GIT_TAG        master
     )
-    SET(FORMAT_BUILD_TESTING OFF)
+    set(FORMAT_BUILD_TESTING OFF)
+    set(FMT_INSTALL ON)
     FetchContent_MakeAvailable(fmt)
 endif()
 

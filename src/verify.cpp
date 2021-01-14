@@ -31,13 +31,13 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
         return true;
     };
 
-    app->add_option("torrent", metafile_transformer,
-               "Torrent file path.")
+    app->add_option("metafile", metafile_transformer,
+               "Metafile path.")
        ->required()
        ->type_name("<path>");
 
-    app->add_option("files", files_transformer,
-               "Path of files to verify hashes for.")
+    app->add_option("target", files_transformer,
+               "Target filename or directory to verify pieces for.")
        ->required()
        ->type_name("<path>");
 
