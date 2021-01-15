@@ -1,0 +1,35 @@
+
+Name:           @CPACK_RPM_PACKAGE_NAME@
+Version:        @CPACK_RPM_PACKAGE_VERSION@
+Release:        @CPACK_RPM_PACKAGE_RELEASE@
+
+License:        @CPACK_RPM_PACKAGE_LICENSE@
+Vendor:         @CPACK_RPM_PACKAGE_VENDOR@
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Summary:        @CPACK_RPM_PACKAGE_SUMMARY@
+
+Source0:        @CPACK_RPM_PACKAGE_URL@/releases/tag/%{version}
+BuildRequires:  @RPM_PACKAGE_BUILD_REQUIRES@
+Requires:       @RPM_PACKAGE_REQUIRES@
+
+%description
+@CMAKE_PROJECT_DESCRIPTION@
+
+%prep
+%setup -q
+
+%build
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
+%cmake_build --target torrenttools
+
+%install
+%cmake_install --component torrenttools
+
+%clean
+%cmake_clean
+
+%files
+%defattr(-,root,root,-)
+%doc
+
+%changelog
