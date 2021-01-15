@@ -38,8 +38,11 @@ else()
             GIT_TAG        master
     )
     set(FORMAT_BUILD_TESTING OFF)
-    set(FMT_INSTALL ON)
+    set(FMT_INSTALL OFF)
     FetchContent_MakeAvailable(fmt)
+    if(IS_DIRECTORY "${fmt_SOURCE_DIR}")
+        set_property(DIRECTORY ${fmt_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 find_package(gsl-lite QUIET)
@@ -53,6 +56,9 @@ else()
             GIT_TAG        master
     )
     FetchContent_MakeAvailable(gsl-lite)
+    if(IS_DIRECTORY "${gsl-lite_SOURCE_DIR}")
+        set_property(DIRECTORY ${gsl-lite_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 
@@ -67,6 +73,9 @@ else()
             GIT_TAG        master
     )
     FetchContent_MakeAvailable(expected-lite)
+    if(IS_DIRECTORY "${expected-lite_SOURCE_DIR}")
+        set_property(DIRECTORY ${expected-lite_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 
@@ -83,25 +92,15 @@ if (TORRENTTOOLS_BUILD_TESTS)
         )
         FetchContent_MakeAvailable(Catch2)
         set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
+
+        if(IS_DIRECTORY "${Catch2_SOURCE_DIR}")
+            set_property(DIRECTORY ${Catch2_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+        endif()
     endif()
 endif()
 
-find_package(ctre QUIET)
-if (ctre_FOUND OR TARGET ctre::ctre)
-    log_found(ctre)
-else()
-    log_not_found(ctre)
-    FetchContent_Declare(
-            ctre
-            GIT_REPOSITORY https://github.com/hanickadot/compile-time-regular-expressions.git
-            GIT_TAG        master
-    )
-    FetchContent_MakeAvailable(ctre)
-endif()
-
-
 find_package(re2 QUIET)
-if (re2_FOUND OR TARGET re2::re2)
+if (re2_FOUND)
     log_found(re2)
 else()
     log_not_found(re2)
@@ -122,7 +121,7 @@ else()
 endif()
 
 find_package(nlohmann_json QUIET)
-if (nlohmann_json_FOUND OR TARGET nlohmann_json::nlohmann_json)
+if (nlohmann_json_FOUND)
     log_found(nlohmann_json)
 else()
     log_not_found(nlohmann_json)
@@ -135,11 +134,14 @@ else()
     )
     set(JSON_BuildTests OFF)
     FetchContent_MakeAvailable(nlohmann_json)
+    if(IS_DIRECTORY "${nlohmann_json_SOURCE_DIR}")
+        set_property(DIRECTORY ${nlohmann_json_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 
 find_package(yaml-cpp QUIET)
-if (yaml-cpp_FOUND OR TARGET yaml-cpp)
+if (yaml-cpp_FOUND)
     log_found(yaml-cpp)
 else()
     log_not_found(yaml-cpp)
@@ -151,11 +153,15 @@ else()
             GIT_TAG        master
     )
     set(YAML_CPP_BUILD_TESTS OFF)
+    set(YAML_CPP_INSTALL OFF)
     FetchContent_MakeAvailable(yaml-cpp)
+    if(IS_DIRECTORY "${yaml-cpp_SOURCE_DIR}")
+        set_property(DIRECTORY ${yaml-cpp_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 find_package(termcontrol QUIET)
-if (termcontrol_FOUND OR TARGET termcontrol::termcontrol)
+if (termcontrol_FOUND)
     log_found(termcontrol)
 else()
     log_not_found(termcontrol)
@@ -165,12 +171,16 @@ else()
             GIT_TAG          main
     )
     set(TERMCONTROL_BUILD_TESTS OFF)
+    set(TERMCONTROL_INSTALL OFF)
     FetchContent_MakeAvailable(termcontrol)
+    if(IS_DIRECTORY "${termcontrol_SOURCE_DIR}")
+        set_property(DIRECTORY ${termcontrol_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 
 find_package(cliprogress QUIET)
-if (cliprogress_FOUND OR TARGET cliprogress::cliprogress)
+if (cliprogress_FOUND)
     log_found(cliprogress)
 else()
     log_not_found(cliprogress)
@@ -179,14 +189,34 @@ else()
             GIT_REPOSITORY   https://github.com/fbdtemme/cliprogress.git
             GIT_TAG          main
     )
-    set(CLI11_BUILD_DOCS OFF)
-    set(CLI11_BUILD_TESTS OFF)
+    set(cliprogress_BUILD_TESTS OFF)
     FetchContent_MakeAvailable(cliprogress)
+    if(IS_DIRECTORY "${cliprogress_SOURCE_DIR}")
+        set_property(DIRECTORY ${cliprogress_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
 
 
+find_package(bencode QUIET)
+if (bencode_FOUND)
+    log_found(bencode)
+else()
+    log_not_found(bencode)
+    FetchContent_Declare(
+            bencode
+            GIT_REPOSITORY   https://github.com/fbdtemme/bencode.git
+            GIT_TAG          master
+    )
+    set(BENCODE_BUILD_TESTS OFF)
+    set(BENCODE_ENABLE_INSTALL OFF)
+    FetchContent_MakeAvailable(bencode)
+    if(IS_DIRECTORY "${bencode_SOURCE_DIR}")
+        set_property(DIRECTORY ${bencode_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
+endif()
+
 find_package(dottorrent QUIET)
-if (dottorrent_FOUND OR TARGET dottorrent::dottorrent)
+if (dottorrent_FOUND)
     log_found(dottorrent)
 else()
     log_not_found(dottorrent)
@@ -196,5 +226,9 @@ else()
             GIT_TAG          master
     )
     set(DOTTORRENT_BUILD_TESTS OFF)
+    set(DOTTORRENT_INSTALL OFF)
     FetchContent_MakeAvailable(dottorrent)
+    if(IS_DIRECTORY "${dottorrent_SOURCE_DIR}")
+        set_property(DIRECTORY ${dottorrent_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    endif()
 endif()
