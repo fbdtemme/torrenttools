@@ -112,6 +112,8 @@ else()
             GIT_REPOSITORY https://github.com/google/re2.git
             GIT_TAG        master
     )
+    # Silence re2 CMP0077 warnings
+    set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
     set(RE2_BUILD_TESTING OFF)
     FetchContent_MakeAvailable(re2)
     target_include_directories(re2 PUBLIC
@@ -120,7 +122,7 @@ else()
 endif()
 
 find_package(nlohmann_json QUIET)
-if (nlohmann_json_FOUND)
+if (nlohmann_json_FOUND OR TARGET nlohmann_json::nlohmann_json)
     log_found(nlohmann_json)
 else()
     log_not_found(nlohmann_json)
@@ -128,15 +130,16 @@ else()
     include(FetchContent)
     FetchContent_Declare(
             nlohmann_json
-            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
             GIT_TAG        master
     )
+    set(JSON_BuildTests OFF)
     FetchContent_MakeAvailable(nlohmann_json)
 endif()
 
 
 find_package(yaml-cpp QUIET)
-if (yaml-cpp_FOUND)
+if (yaml-cpp_FOUND OR TARGET yaml-cpp)
     log_found(yaml-cpp)
 else()
     log_not_found(yaml-cpp)
@@ -147,6 +150,7 @@ else()
             GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
             GIT_TAG        master
     )
+    set(YAML_CPP_BUILD_TESTS OFF)
     FetchContent_MakeAvailable(yaml-cpp)
 endif()
 
@@ -160,6 +164,7 @@ else()
             GIT_REPOSITORY   https://github.com/fbdtemme/termcontrol.git
             GIT_TAG          main
     )
+    set(TERMCONTROL_BUILD_TESTS OFF)
     FetchContent_MakeAvailable(termcontrol)
 endif()
 
@@ -190,5 +195,6 @@ else()
             GIT_REPOSITORY   https://github.com/fbdtemme/dottorrent.git
             GIT_TAG          master
     )
+    set(DOTTORRENT_BUILD_TESTS OFF)
     FetchContent_MakeAvailable(dottorrent)
 endif()

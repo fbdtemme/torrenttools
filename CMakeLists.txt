@@ -8,9 +8,6 @@ project(torrenttools
         LANGUAGES CXX
         VERSION 0.2.0)
 
-# silence warning about overriding cached variables with normal cmake variables
-cmake_policy(SET CMP0077 NEW)
-
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 

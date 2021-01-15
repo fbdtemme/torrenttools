@@ -1,7 +1,7 @@
 ![](docs/images/torrenttools.svg)
 
 ![build](https://github.com/fbdtemme/torrenttools/workflows/build/badge.svg)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/fbdtemme/torrenttools)](https://github.com/fbdtemme/bencode/releases)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/fbdtemme/torrenttools)](https://github.com/fbdtemme/torrenttools/releases)
 [![C++ standard](https://img.shields.io/badge/C%2B%2B-20-blue)](https://isocpp.org/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5cc3eec94d8a486dab62afeab5130def)](https://app.codacy.com/manual/floriandetemmerman/torrenttools?utm_source=github.com&utm_medium=referral&utm_content=fbdtemme/bencode&utm_campaign=Badge_Grade_Dashboard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,8 +10,8 @@
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
-[**Status**](#Status) |
 [**Examples**](#Examples) |
+[**Building**](#Building) |
 [**License**](#License)
 
 ## Features
@@ -110,7 +110,7 @@ Options:
 ````
 
 
-## Building and installation
+## Building
 
 This library depends on following projects:
 
