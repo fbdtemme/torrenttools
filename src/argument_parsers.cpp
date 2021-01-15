@@ -67,7 +67,9 @@ std::optional<std::size_t> piece_size_transformer(const std::vector<std::string>
     }
 
     if (suffix.empty()) {
-        value = pow(2, value);
+        if (value < 16384) {
+            value = pow(2, value);
+        }
     }
     if (!std::has_single_bit(value))
         throw CLI::ConversionError(
