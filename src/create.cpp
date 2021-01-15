@@ -112,7 +112,8 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("-l, --piece-length", size_parser,
                     "Set the piece size.\n"
-                    "When no unit is specified block size will be 2^<n> bytes.\n"
+                    "When no unit is specified block size will be either 2^<n> bytes,\n"
+                    "or <n> bytes if n is larger or equal to 16384.\n"
                     "Piece size must be a power of two in range [16K, 64M].\n"
                     "Leave empty to determine by total file size. [default: auto]")
             ->type_name("<size[K|M]>")
