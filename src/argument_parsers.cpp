@@ -39,46 +39,23 @@ std::unordered_set<dottorrent::hash_function> checksum_transformer(const std::ve
 }
 
 
-
 std::optional<std::size_t> piece_size_transformer(const std::vector<std::string>& v)
 {
-
     if (v.size() > 1)
-        throw std::invalid_argument("Multiple value not supported.");
+        throw std::invalid_argument("Multiple values not supported.");
 
-    const auto& s = v.at(0);
+    auto res = parse_commandline_size("piece size", v.at(0));
+    return res;
+}
 
-    if (s == "auto")
-        return std::nullopt;
 
-    std::size_t value;
-    auto [ptr, ec] = std::from_chars(s.data(), s.data()+s.size(), value);
+std::optional<std::size_t> io_block_size_transformer(const std::vector<std::string>& v)
+{
+    if (v.size() > 1)
+        throw std::invalid_argument("Multiple values not supported.");
 
-    if (ec != std::errc{}) {
-        throw CLI::ConversionError(fmt::format(err_msg, value, "piece size", "expected integer"));
-    }
-    auto suffix = std::string_view(ptr, std::distance(ptr, s.data()+s.size()));
-
-    if (suffix == "K" | suffix == "KiB") {
-        value *= 1024;
-    }
-    else if (suffix == "M" | suffix == "MiB") {
-        value *= 1024 * 1024;
-    }
-
-    if (suffix.empty()) {
-        if (value < 16384) {
-            value = pow(2, value);
-        }
-    }
-    if (!std::has_single_bit(value))
-        throw CLI::ConversionError(
-                fmt::format(err_msg, value, "piece size", "not a power of 2"));
-    if (value < 16_KiB) {
-        throw std::invalid_argument(
-            fmt::format(err_msg, value, "piece size", "piece size must be larger or equal to 16 KiB"));
-    }
-    return value;
+    auto res = parse_commandline_size("io block size", v.at(0));
+    return res;
 }
 
 std::vector<std::vector<std::string>> announce_transformer(const std::vector<std::string>& args)
@@ -175,3 +152,43 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v)
     return std::filesystem::canonical(f);
 }
 
+
+std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v)
+{
+    std::string s {};
+    rng::transform(v, std::back_inserter(s), [](const char c) { return std::tolower(c); });
+
+    if (s == "auto")
+        return std::nullopt;
+
+    std::size_t value;
+    auto [ptr, ec] = std::from_chars(s.data(), s.data()+s.size(), value);
+
+    if (ec != std::errc{}) {
+        throw CLI::ConversionError(fmt::format(err_msg, value, option, "expected integer"));
+    }
+    auto suffix = std::string_view(ptr, (s.data()+s.size()-ptr));
+
+    if (suffix == "k" || suffix == "ki" || suffix == "kib") {
+        value *= 1024;
+    }
+    else if (suffix == "m" || suffix == "mi" || suffix == "mib") {
+        value *= 1024 * 1024;
+    }
+
+    if (suffix.empty()) {
+        // allow the specify the size as the exponent of a power of two
+        if (value < 16384) {
+            value = pow(2, value);
+        }
+    }
+    if (!std::has_single_bit(value))
+        throw CLI::ConversionError(
+                fmt::format(err_msg, value, option, "not a power of 2"));
+    if (value < 16_KiB) {
+        throw std::invalid_argument(
+                fmt::format(err_msg, value, option, "must be larger or equal to 16 KiB"));
+    }
+    return value;
+
+}
