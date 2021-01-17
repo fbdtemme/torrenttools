@@ -182,8 +182,8 @@ There are two configuration files (located under resources in the source tree):
 * User settings: `config.yaml`
 
 `torrenttools` will look for these files in the following locations:
-* System location: `$INSTALL_PREFIX/share/torrenttools`
-* User location:   `$HOME/.local/share/torrentoools`
+* System location: `/etc/torrenttools`
+* User location:   `$HOME/.config/torrentoools`
 
 
 ## License
