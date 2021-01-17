@@ -19,16 +19,21 @@ else()
     include(packages/rpm/generate-spec.cmake)
 endif()
 
+include(CTest)
+include(GNUInstallDirs)
+
 # Load the sysconf install dir as set by the RPM .spec file
 if(NOT DEFINED SYSCONF_INSTALL_DIR)
     set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_FULL_SYSCONFDIR})
+    message(DEBUG Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR})
+else()
+    message(DEBUG SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR})
 endif(NOT DEFINED SYSCONF_INSTALL_DIR)
+
 
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
 
-include(CTest)
-include(GNUInstallDirs)
 #
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../termcontrol termcontrol)
@@ -52,11 +57,11 @@ target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/incl
 target_compile_features(torrenttools PUBLIC cxx_std_20)
 
 if (UNIX)
-    set(torrenttools_sysconf_dir ${SYSCONF_INSTALL_DIR}/torrenttools)
-    set(user_data_dir   $ENV{HOME}/.config/torrenttools)
+    set(torrenttools_sysconf_dir        ${SYSCONF_INSTALL_DIR}/torrenttools)
+    set(torrenttools_local_config_dir   $ENV{HOME}/.config/torrenttools)
 elseif (WIN32)
-    set(torrenttools_sysconf_dir $ENV{HOMEDRIVE}/ProgramData/torrenttools)
-    set(user_data_dir   $ENV{USERPROFILE}/AppData/torrenttools)
+    set(torrenttools_sysconf_dir        $ENV{HOMEDRIVE}/ProgramData/torrenttools)
+    set(torrenttools_local_config_dir   $ENV{USERPROFILE}/AppData/torrenttools)
 endif ()
 
 
