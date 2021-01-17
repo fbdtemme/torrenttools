@@ -12,6 +12,18 @@ project(torrenttools
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+if (TORRENTTOOLS_GENERATE_SPEC_ONLY)
+    include(packages/rpm/generate-spec.cmake)
+    return()
+else()
+    include(packages/rpm/generate-spec.cmake)
+endif()
+
+# Load the sysconf install dir as set by the RPM .spec file
+if(NOT DEFINED SYSCONF_INSTALL_DIR)
+    set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_FULL_SYSCONFDIR})
+endif(NOT DEFINED SYSCONF_INSTALL_DIR)
+
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
 
@@ -40,10 +52,10 @@ target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/incl
 target_compile_features(torrenttools PUBLIC cxx_std_20)
 
 if (UNIX)
-    set(global_data_dir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/torrenttools)
-    set(user_data_dir   $ENV{HOME}/.local/${CMAKE_INSTALL_DATADIR}/torrenttools)
+    set(torrenttools_sysconf_dir ${SYSCONF_INSTALL_DIR}/torrenttools)
+    set(user_data_dir   $ENV{HOME}/.config/torrenttools)
 elseif (WIN32)
-    set(global_data_dir $ENV{HOMEDRIVE}/ProgramData/torrenttools)
+    set(torrenttools_sysconf_dir $ENV{HOMEDRIVE}/ProgramData/torrenttools)
     set(user_data_dir   $ENV{USERPROFILE}/AppData/torrenttools)
 endif ()
 
@@ -71,7 +83,7 @@ if (TORRENTTOOLS_INSTALL)
     install(FILES resources/config.yaml
                   resources/trackers.json
             COMPONENT torrenttools
-            DESTINATION ${global_data_dir})
+            DESTINATION ${torrenttools_sysconf_dir})
 
     # install executable
     install(TARGETS torrenttools
@@ -80,12 +92,13 @@ if (TORRENTTOOLS_INSTALL)
 endif()
 
 
-set(CPACK_SOURCE_GENERATOR "TGZ")
-#set(CPACK_GENERATOR "RPM")
-
+set(CPACK_SOURCE_GENERATOR                   TGZ DEB RPM)
+set(CPACK_GENERATOR                          DEB)
+set(CPACK_ARCHIVE_COMPONENT_INSTALL          ON)
+set(CPACK_COMPONENTS_ALL                     torrenttools)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY        "${CMAKE_PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME           "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}.src")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME           "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
 set(CPACK_PACKAGE_NAME                       "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VENDOR                     "fbdtemme")
 set(CPACK_PACKAGE_VERSION_MAJOR              "${CMAKE_PROJECT_VERSION_MAJOR}")
@@ -93,6 +106,7 @@ set(CPACK_PACKAGE_VERSION_MINOR              "${CMAKE_PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH              "${CMAKE_PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_VERSION                    "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_BUILD_SOURCE_DIRS                  "${CMAKE_CURRENT_SOURCE_DIR}")
+
 
 # Get the list of ignored files from .gitignore.
 set(gitignore ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore)
@@ -109,41 +123,15 @@ list(APPEND ignored_files ".git.*")
 list(APPEND CPACK_SOURCE_IGNORE_FILES        ${ignored_files})
 
 
-set(CPACK_COMPONENTS_ALL                     "torrenttools")
+# DEBIAN Specific packagin
+set(CPACK_DEBIAN_PACKAGE_COMPONENT                    ON)
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE                     "${CMAKE_PROJECT_HOMEPAGE_URL}")
+set(CPACK_DEBIAN_PACKAGE_VERSION                      1)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER                   "fbdtemme")
+set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_NAME            ${PACKAGE_NAME})
+set(CPACK_DEBIAN_TORRENTTOOLS_FILE_NAME               "DEB-DEFAULT")
+set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS              ON)
 
-# RPM
-set(CPACK_RPM_COMPONENT_INSTALL               ON)
-set(CPACK_RPM_DEBUGINFO_PACKAGE               ON)
-set(CPACK_RPM_PACKAGE_RELEASE                 1)
-set(CPACK_RPM_PACKAGE_LICENSE                 MIT)
-set(CPACK_RPM_PACKAGE_NAME                    ${CPACK_PACKAGE_NAME})
-set(CPACK_RPM_PACKAGE_VERSION                 ${CPACK_PACKAGE_VERSION})
-set(CPACK_RPM_PACKAGE_VENDOR                  ${CPACK_PACKAGE_VENDOR})
-set(CPACK_RPM_PACKAGE_SUMMARY                 "${CMAKE_PROJECT_DESCRIPTION}")
-set(CPACK_RPM_PACKAGE_URL                     "${CMAKE_PROJECT_HOMEPAGE_URL}")
-
-set(CPACK_RPM_torrenttools_FILE_NAME          "${CPACK_RPM_FILE_NAME}.rpm")
-set(CPACK_RPM_torrenttools_PACKAGE_URL        "${CMAKE_PROJECT_HOMEPAGE_URL}")
-set(CPACK_RPM_torrenttools_BINARY_SPECFILE    "${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec.in")
-
-
-set(RPM_PACKAGE_BUILD_REQUIRES_LIST           "openssl-devel"
-                                              "tbb-devel"
-                                              "libstdc++-devel >= 10.0.0"
-                                              "cmake"
-                                              "re2-devel")
-set(RPM_PACKAGE_REQUIRES_LIST                 "openssl >= 1.0.0"
-                                              "tbb"
-                                              "re2"
-                                              "libstdc++ >= 10.0.0")
-
-string(REPLACE ";" ", " RPM_PACKAGE_BUILD_REQUIRES  "${RPM_PACKAGE_BUILD_REQUIRES_LIST}")
-string(REPLACE ";" ", " RPM_PACKAGE_REQUIRES        "${RPM_PACKAGE_REQUIRES_LIST}")
-
-set(CPACK_RPM_SOURCE_PKG_BUILD_PARAMS   "-DBUILD_SHARED_LIBS=OFF")
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec
-               @ONLY)
-
+# RPM SOURCE PACKAGE
+set(CPACK_RPM_USER_BINARY_SPECFILE                    ${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec)
 include(CPack)

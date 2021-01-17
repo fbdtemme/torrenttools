@@ -1,22 +1,35 @@
+%global forgeurl https://www.github.com/fbdtemme/torrenttools
+%global tag      0.1.1
+Version:         %{tag}
 
-Name:           torrenttools
-Version:        0.1.0
-Release:        1
+# Verbose processing. Remove -i -v before commit
+%forgemeta -i -v
 
-License:        MIT
-Vendor:         fbdtemme
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Summary:        A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+Name:            %{repo}
+URL:             %{forgeurl}
+Source:          %{forgesource}
+License:         MIT
+Release:         1%{dist}
+Summary:         A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
-Source0:        https://www.github.com/fbdtemme/torrenttools/releases/tag/%{version}
-BuildRequires:  openssl-devel, tbb-devel, libstdc++-devel >= 10.0.0, cmake, re2-devel
-Requires:       openssl >= 1.0.0, tbb, re2, libstdc++ >= 10.0.0
+BuildRequires:   openssl-devel
+BuildRequires:   tbb-devel
+BuildRequires:   gcc-c++ >= 10.0.0
+BuildRequires:   libstdc++-devel >= 10.0.0
+BuildRequires:   cmake
+BuildRequires:   make
+BuildRequires:   git
+
+Requires:        openssl >= 1.0.0
+Requires:        tbb
+Requires:        libstdc++ >= 10.0.0
 
 %description
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 %prep
-%setup -q
+# Verbose processing. Remove -v before commit
+%forgesetup -v
 
 %build
 %cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -25,11 +38,11 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 %install
 %cmake_install --component torrenttools
 
-%clean
-%cmake_clean
-
 %files
 %defattr(-,root,root,-)
-%doc
+%dir %{_sysconfdir}/torrenttools
+%{_sysconfdir}/torrenttools/config.yaml
+%{_sysconfdir}/torrenttools/trackers.json
+%{_bindir}/torrenttools
 
 %changelog
