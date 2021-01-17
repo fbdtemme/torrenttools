@@ -23,10 +23,9 @@ BuildRequires:   git
 %{?el8:BuildRequires:      gcc-toolset-10}
 %{?el8:BuildRequires:      epel-rpm-macros}
 
-Requires:        openssl >= 1.0.0
-Requires:        tbb
-
-%{?fedora:Requires:        libstdc++ >= 10.0.0}
+Requires:            openssl >= 1.0.0
+Requires:            tbb
+%{?fedora:Requires:  libstdc++ >= 10.0.0}
 
 %description
 @PACKAGE_DESCRIPTION@
