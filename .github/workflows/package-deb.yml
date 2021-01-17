@@ -1,8 +1,8 @@
-name: Package
+name: Package DEB
 
 on:
-  push:
-    branches: [ develop ]
+  release:
+    types: [created]
 
 jobs:
   package:
@@ -13,16 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
-        run:  sudo apt-get remove -y libstdc++-10-dev g++-10 gcc-10 cmake libtbb2 libtbb-dev libssl-dev
+        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libtbb2 libtbb-dev libssl1.1 libssl-dev
       - name: Configure
         run: mkdir build && cd build &&
-          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
+          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
       - name: Build
         run: cmake --build build --target torrenttools
       - name: Generate DEB
+        working-directory: build
         run: cpack -G DEB
       - name: Archive DEB package
         uses: actions/upload-artifact@v2
         with:
-          name: Linux - {{ matrix.os }}
-          path: "*.deb"
+          name: torrenttools-${{ github.event.release.tag_name }}-${{ matrix.os }}
+          path: "build/*.deb"
