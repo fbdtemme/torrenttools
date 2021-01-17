@@ -116,7 +116,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     app->add_flag_callback("-p, --private", [&](){ options.is_private = true; },
             "Set the private flag to disable DHT and PEX.");
 
-    app->add_option("-l, --piece-length", size_parser,
+    app->add_option("-l, --piece-size", size_parser,
                     "Set the piece size.\n"
                     "When no unit is specified block size will be either 2^<n> bytes,\n"
                     "or <n> bytes if n is larger or equal to 16384.\n"
