@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.1.1
+%global tag      0.1.2
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
@@ -23,10 +23,9 @@ BuildRequires:   git
 %{?el8:BuildRequires:      gcc-toolset-10}
 %{?el8:BuildRequires:      epel-rpm-macros}
 
-Requires:        openssl >= 1.0.0
-Requires:        tbb
-
-%{?fedora:Requires:        libstdc++ >= 10.0.0}
+Requires:            openssl >= 1.0.0
+Requires:            tbb
+%{?fedora:Requires:  libstdc++ >= 10.0.0}
 
 %description
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
