@@ -167,12 +167,12 @@ sudo cmake --install . --component torrentttools
 
 There are binary packages for Fedora 32, Fedora 33, and Fedora rawhide available in the COPR repo.
 
-### Fedora
-
 ```shell
 sudo dnf copr enable fbdtemme/torrenttools
 sudo dnf install torrenttools
 ```
+
+Binary packages for ubuntu 18.04 and ubuntu 20.04 are available on the release page.
 
 ## Configuration files
 
