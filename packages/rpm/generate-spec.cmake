@@ -11,10 +11,9 @@ set(PACKAGE_VERSION                                        "${CMAKE_PROJECT_VERS
 set(PACKAGE_SUMMARY                                    "${CMAKE_PROJECT_DESCRIPTION}")
 set(PACKAGE_DESCRIPTION                                          "${PACKAGE_SUMMARY}")
 
-set(PACKAGE_SOURCE_PACKAGE_FILE_NAME     {PACKAGE_NAME}-${PACKAGE_VERSION}.src.tar.gz)
-
 # RPM variables
 set(RPM_PACKAGE_RELEASE                                                             1)
+set(CPACK_RPM_PACKAGE_RELEASE_DIST                                                OFF)
 
 message(STATUS "Configuring package recepices")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec.in

@@ -139,4 +139,6 @@ set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS              ON)
 
 # RPM SOURCE PACKAGE
 set(CPACK_RPM_USER_BINARY_SPECFILE                    ${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec)
+set(CPACK_RPM_PACKAGE_RELEASE_DIST                    "OFF")
+set(CPACK_RPM_FILE_NAME                               "${PACKAGE_SOURCE_PACKAGE_FILE_NAME}")
 include(CPack)
