@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
-        run: sudo apt install build-essential cmake libtbb2 libtbb-dev libssl-dev
+        run:  sudo apt-get remove -y libstdc++-10-dev g++-10 gcc-10 cmake libtbb2 libtbb-dev libssl-dev
       - name: Configure
         run: mkdir build && cd build &&
           cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .

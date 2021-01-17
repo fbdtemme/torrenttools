@@ -6,7 +6,7 @@ cmake_policy(SET CMP0048 NEW)
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying bittorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.1.1
+        VERSION 0.1.2
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
@@ -97,7 +97,7 @@ if (TORRENTTOOLS_INSTALL)
 endif()
 
 
-set(CPACK_SOURCE_GENERATOR                   TGZ DEB RPM)
+set(CPACK_SOURCE_GENERATOR                   TGZ RPM)
 set(CPACK_GENERATOR                          DEB)
 set(CPACK_ARCHIVE_COMPONENT_INSTALL          ON)
 set(CPACK_COMPONENTS_ALL                     torrenttools)
@@ -106,6 +106,7 @@ set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VE
 set(CPACK_SOURCE_PACKAGE_FILE_NAME           "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
 set(CPACK_PACKAGE_NAME                       "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VENDOR                     "fbdtemme")
+set(CPACK_PACKAGE_CONTACT                    "fbdtemme")
 set(CPACK_PACKAGE_VERSION_MAJOR              "${CMAKE_PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR              "${CMAKE_PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH              "${CMAKE_PROJECT_VERSION_PATCH}")
@@ -129,13 +130,17 @@ list(APPEND CPACK_SOURCE_IGNORE_FILES        ${ignored_files})
 
 
 # DEBIAN Specific packagin
-set(CPACK_DEBIAN_PACKAGE_COMPONENT                    ON)
+set(CPACK_DEB_COMPONENT_INSTALL                       ON)
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE                     "${CMAKE_PROJECT_HOMEPAGE_URL}")
-set(CPACK_DEBIAN_PACKAGE_VERSION                      1)
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER                   "fbdtemme")
+set(CPACK_DEBIAN_PACKAGE_VERSION                      ${CPACK_PACKAGE_VERSION})
+set(CPACK_DEBIAN_PACKAGE_RELEASE                      1)
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION                  ${PACKAGE_DESCRIPTION})
+set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS              ON)
+set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY       ">=")
 set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_NAME            ${PACKAGE_NAME})
 set(CPACK_DEBIAN_TORRENTTOOLS_FILE_NAME               "DEB-DEFAULT")
-set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS              ON)
+set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_DEPENDS         "libtbb2, libssl1.1, libstdc++-10-pic, libc6")
+set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_SHLIBDEPS       ON)
 
 # RPM SOURCE PACKAGE
 set(CPACK_RPM_USER_BINARY_SPECFILE                    ${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec)
