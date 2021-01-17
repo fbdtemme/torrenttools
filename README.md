@@ -6,7 +6,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5cc3eec94d8a486dab62afeab5130def)](https://app.codacy.com/manual/floriandetemmerman/torrenttools?utm_source=github.com&utm_medium=referral&utm_content=fbdtemme/bencode&utm_campaign=Badge_Grade_Dashboard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
@@ -153,13 +152,24 @@ This project can be build as every other project which makes use of the CMake bu
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j4 torrenttools
+cmake --build . --target torrenttools
 ```
 
 ### Installation
 
 ```{bash}
-sudo make install
+sudo cmake --install . --component torrentttools
+```
+
+## Installing from binary packages
+
+For now only fedora32 and fedora33 are supported.
+
+### Fedora
+
+```shell
+sudo dnf copr enable fbdtemme/torrenttools
+sudo dnf install torrenttools
 ```
 
 ## Configuration files

@@ -1,22 +1,35 @@
+%global forgeurl @PACKAGE_HOMEPAGE_URL@
+%global tag      @PACKAGE_VERSION@
+Version:         %{tag}
 
-Name:           @CPACK_RPM_PACKAGE_NAME@
-Version:        @CPACK_RPM_PACKAGE_VERSION@
-Release:        @CPACK_RPM_PACKAGE_RELEASE@
+# Verbose processing. Remove -i -v before commit
+%forgemeta -i -v
 
-License:        @CPACK_RPM_PACKAGE_LICENSE@
-Vendor:         @CPACK_RPM_PACKAGE_VENDOR@
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Summary:        @CPACK_RPM_PACKAGE_SUMMARY@
+Name:            %{repo}
+URL:             %{forgeurl}
+Source:          %{forgesource}
+License:         @PACKAGE_LICENSE@
+Release:         @RPM_PACKAGE_RELEASE@%{dist}
+Summary:         @PACKAGE_SUMMARY@
 
-Source0:        @CPACK_RPM_PACKAGE_URL@/releases/tag/%{version}
-BuildRequires:  @RPM_PACKAGE_BUILD_REQUIRES@
-Requires:       @RPM_PACKAGE_REQUIRES@
+BuildRequires:   openssl-devel
+BuildRequires:   tbb-devel
+BuildRequires:   gcc-c++ >= 10.0.0
+BuildRequires:   libstdc++-devel >= 10.0.0
+BuildRequires:   cmake
+BuildRequires:   make
+BuildRequires:   git
+
+Requires:        openssl >= 1.0.0
+Requires:        tbb
+Requires:        libstdc++ >= 10.0.0
 
 %description
-@CMAKE_PROJECT_DESCRIPTION@
+@PACKAGE_DESCRIPTION@
 
 %prep
-%setup -q
+# Verbose processing. Remove -v before commit
+%forgesetup -v
 
 %build
 %cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -25,11 +38,11 @@ Requires:       @RPM_PACKAGE_REQUIRES@
 %install
 %cmake_install --component torrenttools
 
-%clean
-%cmake_clean
-
 %files
 %defattr(-,root,root,-)
-%doc
+%dir %{_sysconfdir}/torrenttools
+%{_sysconfdir}/torrenttools/config.yaml
+%{_sysconfdir}/torrenttools/trackers.json
+%{_bindir}/torrenttools
 
 %changelog
