@@ -37,6 +37,7 @@ struct create_app_options
     std::vector<dottorrent::dht_node> dht_nodes;
     std::optional<std::size_t> piece_size;
     std::uint8_t threads = 4;
+    std::optional<std::size_t> io_block_size;
     // determine private flag based on tracker or override with --private
     std::optional<bool> is_private = std::nullopt;
     bool set_created_by = true;
@@ -44,6 +45,7 @@ struct create_app_options
     bool include_hidden_files = false;
     std::unordered_set<dottorrent::hash_function> checksums = {};
     dottorrent::protocol protocol_version = dottorrent::protocol::v1;
+
 };
 
 void configure_create_app(CLI::App* app, create_app_options& options);

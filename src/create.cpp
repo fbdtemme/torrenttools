@@ -9,6 +9,8 @@
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
 
+#include "dottorrent/literals.hpp"
+
 #include "create.hpp"
 #include "file_matcher.hpp"
 #include "utils.hpp"
@@ -65,6 +67,10 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             throw std::invalid_argument("path does not exist");
         }
         options.target = fs::canonical(f);
+        return true;
+    };
+    CLI::callback_t io_block_size_parser = [&](const CLI::results_t& v) -> bool {
+        options.io_block_size = io_block_size_transformer(v);
         return true;
     };
 
@@ -164,7 +170,18 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     app->add_flag_callback("--include-hidden",
             [&]() { options.include_hidden_files = true; },
             "Do not skip hidden files.");
+
+    // Advanced options
+    // TODO: Add grouping commandlin help
+
+    app->add_option("--io-block-size", io_block_size_parser,
+               "The size of blocks read from storage.\n"
+               "[default: max(1 MiB, <piece-size>)].\n"
+               "Must be larger or equal to the piece size.")
+       ->type_name("<size[K|M]>")
+       ->expected(-1);
 }
+
 
 
 
@@ -419,6 +436,7 @@ fs::path get_destination_path(dottorrent::metafile& m, const create_app_options&
 void run_create_app(const create_app_options& options)
 {
     namespace dt = dottorrent;
+    using namespace dottorrent::literals;
 
     // create a new metafile
     dt::metafile m {};
@@ -470,11 +488,17 @@ void run_create_app(const create_app_options& options)
     create_general_info(std::cout, m, destination_file, options.protocol_version, {});
     std::cout << '\n';
 
+    std::size_t io_block_size = std::min(1_MiB, file_storage.piece_size());
+    if (options.io_block_size) {
+        io_block_size = *options.io_block_size;
+    }
+
     // hash checking
     dt::storage_hasher_options hasher_options {
             .protocol_version = options.protocol_version,
             .checksums = {options.checksums},
-            .threads = options.threads,
+            .min_chunk_size = io_block_size,
+            .threads = options.threads
     };
 
     auto hasher = dt::storage_hasher(file_storage, hasher_options);
