@@ -1,6 +1,7 @@
 ![](docs/images/torrenttools.svg)
 
 ![build](https://github.com/fbdtemme/torrenttools/workflows/build/badge.svg)
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/fbdtemme/torrenttools)](https://github.com/fbdtemme/torrenttools/releases)
 [![C++ standard](https://img.shields.io/badge/C%2B%2B-20-blue)](https://isocpp.org/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5cc3eec94d8a486dab62afeab5130def)](https://app.codacy.com/manual/floriandetemmerman/torrenttools?utm_source=github.com&utm_medium=referral&utm_content=fbdtemme/bencode&utm_campaign=Badge_Grade_Dashboard)
@@ -132,13 +133,14 @@ oneTBB and OpenSSL (or libgcrypt if so configured) have to be installed on the s
 ### Installing build dependencies
 
 Ubuntu 20.04
+
 ```shell
-sudo apt install build-essential cmake g++-10 libtbb2 libtbb-dev libssl-dev 
+sudo apt install build-essential git cmake g++-10 libtbb2 libtbb-dev libssl-dev 
 ```
 
 Fedora 33
 ```shell
-sudo dnf install cmake make openssl-devel libtbb-devel
+sudo dnf install cmake make g++ git openssl-devel libtbb-devel 
 ```
 
 
@@ -163,7 +165,7 @@ sudo cmake --install . --component torrentttools
 
 ## Installing from binary packages
 
-For now only fedora32 and fedora33 are supported.
+There are binary packages for Fedora 32, Fedora 33, and Fedora rawhide available in the COPR repo.
 
 ### Fedora
 
