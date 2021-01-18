@@ -12,11 +12,11 @@ project(torrenttools
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-if (TORRENTTOOLS_GENERATE_SPEC_ONLY)
-    include(packages/rpm/generate-spec.cmake)
+if (TORRENTTOOLS_PACKAGES_ONLY)
+    include(packages/packages.cmake)
     return()
 else()
-    include(packages/rpm/generate-spec.cmake)
+    include(packages/packages.cmake)
 endif()
 
 include(CTest)
@@ -141,7 +141,12 @@ set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_DEPENDS         "libtbb2, libssl1.1, libst
 set(CPACK_DEBIAN_TORRENTTOOLS_PACKAGE_SHLIBDEPS       ON)
 
 # RPM SOURCE PACKAGE
+set(CPACK_RPM_PACKAGE_RELEASE_DIST                                                OFF)
+
 set(CPACK_RPM_USER_BINARY_SPECFILE                    ${CMAKE_CURRENT_SOURCE_DIR}/packages/rpm/torrenttools.spec)
 set(CPACK_RPM_PACKAGE_RELEASE_DIST                    "OFF")
 set(CPACK_RPM_FILE_NAME                               "${PACKAGE_SOURCE_PACKAGE_FILE_NAME}")
+
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/packages/packages.cmake)
 include(CPack)

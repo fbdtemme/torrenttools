@@ -10,7 +10,7 @@ URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         @PACKAGE_LICENSE@
 Release:         @RPM_PACKAGE_RELEASE@%{?dist}
-Summary:         @PACKAGE_SUMMARY@
+Summary:         @PACKAGE_DESCRIPTION_SUMMARY@
 
 BuildRequires:   openssl-devel
 BuildRequires:   tbb-devel
@@ -21,6 +21,7 @@ BuildRequires:   git
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
 %{?el8:BuildRequires:      gcc-toolset-10}
+%{?el8:BuildRequires:      epel-release}
 %{?el8:BuildRequires:      epel-rpm-macros}
 
 Requires:            openssl >= 1.0.0
@@ -50,7 +51,12 @@ source /opt/rh/gcc-toolset-10/enable
 
 %install
 
+%install
+%if 0%{?el8}
+DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
+%else
 %cmake_install --component torrenttools
+%endif
 
 %files
 %defattr(-,root,root,-)
