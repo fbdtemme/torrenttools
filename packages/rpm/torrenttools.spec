@@ -21,6 +21,7 @@ BuildRequires:   git
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
 %{?el8:BuildRequires:      gcc-toolset-10}
+%{?el8:BuildRequires:      epel-release}
 %{?el8:BuildRequires:      epel-rpm-macros}
 
 Requires:            openssl >= 1.0.0
@@ -28,7 +29,7 @@ Requires:            tbb
 %{?fedora:Requires:  libstdc++ >= 10.0.0}
 
 %description
-A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+
 
 %prep
 # Verbose processing. Remove -v before commit
@@ -50,7 +51,12 @@ source /opt/rh/gcc-toolset-10/enable
 
 %install
 
+%install
+%if 0%{?el8}
+DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
+%else
 %cmake_install --component torrenttools
+%endif
 
 %files
 %defattr(-,root,root,-)
