@@ -16,11 +16,11 @@ else()
                 GIT_TAG        v2.x
         )
         FetchContent_MakeAvailable(Catch2)
-        set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
     endif()
 endif()
 
 if(IS_DIRECTORY "${Catch2_SOURCE_DIR}")
     set_property(DIRECTORY ${Catch2_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+    set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
 endif()
 
