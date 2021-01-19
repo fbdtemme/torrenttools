@@ -33,7 +33,7 @@ endif(NOT DEFINED SYSCONF_INSTALL_DIR)
 
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
-
+option(TORRENTTOOLS_BUILD_DOCS "Generate documentation" OFF)
 #
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../termcontrol termcontrol)
@@ -81,6 +81,10 @@ target_link_libraries(torrenttools PUBLIC
 
 if (TORRENTTOOLS_BUILD_TESTS)
     add_subdirectory(tests)
+endif()
+
+if(TORRENTTOOLS_BUILD_DOCS)
+    add_subdirectory(docs)
 endif()
 
 if (TORRENTTOOLS_INSTALL)
