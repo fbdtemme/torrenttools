@@ -11,6 +11,7 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
 [**Examples**](#Examples) |
+[**Installation**](#Installation) |
 [**Building**](#Building) |
 [**License**](#License)
 
@@ -110,6 +111,24 @@ Options:
 ````
 
 
+## Installation
+
+Binary packages for Fedora 32, Fedora 33, and Fedora Rawhide are available in a COPR repo.
+
+```shell
+sudo dnf copr enable fbdtemme/torrenttools
+sudo dnf install torrenttools
+```
+
+Binary packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available in a launchpad repo.
+
+```shell
+sudo add-apt-repository ppa:fbdtemme/torrenttools
+sudo apt-get update
+sudo apt install torrenttools
+```
+
+
 ## Building
 
 This library depends on following projects:
@@ -157,22 +176,11 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --target torrenttools
 ```
 
-### Installation
+Installing the project:
 
 ```{bash}
 sudo cmake --install . --component torrentttools
 ```
-
-## Installing from binary packages
-
-There are binary packages for Fedora 32, Fedora 33, and Fedora rawhide available in the COPR repo.
-
-```shell
-sudo dnf copr enable fbdtemme/torrenttools
-sudo dnf install torrenttools
-```
-
-Binary packages for ubuntu 18.04 and ubuntu 20.04 are available on the release page.
 
 ## Configuration files
 
