@@ -27,7 +27,7 @@ BuildRequires:   git
 Requires:            openssl >= 1.0.0
 
 %description
-
+A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 %prep
 # Verbose processing. Remove -v before commit
@@ -49,7 +49,6 @@ source /opt/rh/gcc-toolset-10/enable
 
 %install
 
-%install
 %if 0%{?el8}
 DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %else
