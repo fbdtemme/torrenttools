@@ -3,7 +3,7 @@ find_package(cliprogress QUIET)
 if (cliprogress_FOUND)
     log_found(cliprogress)
 else()
-    set(cliprogress_BUILD_TESTS OFF)
+    set(CLIPROGRESS_BUILD_TESTING OFF)
 
     if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/cliprogress)
         message(STATUS "cliprogress source directory found")
