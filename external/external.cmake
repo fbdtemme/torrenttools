@@ -14,7 +14,7 @@ function(log_fetch library)
     message(STATUS "Fetching dependency ${library}...")
 endfunction()
 
-if (TORRENTOOLS_BUILD_TESTS)
+if (TORRENTTOOLS_BUILD_TESTS)
     include(${CMAKE_CURRENT_LIST_DIR}/Catch2.cmake)
 endif()
 
