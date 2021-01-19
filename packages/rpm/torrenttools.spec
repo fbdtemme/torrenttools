@@ -39,10 +39,14 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 source /opt/rh/gcc-toolset-10/enable
 %endif
 
+%if 0%{?el8}
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo . .
+%else
 %cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
+%endif
 
 %if 0%{?el8}
-%cmake_build . torrenttools
+%__cmake --build . --target torrenttools
 %else
 %cmake_build --target torrenttools
 %endif
