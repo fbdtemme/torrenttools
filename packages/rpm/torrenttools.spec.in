@@ -13,19 +13,18 @@ Release:         @RPM_PACKAGE_RELEASE@%{?dist}
 Summary:         @PACKAGE_DESCRIPTION_SUMMARY@
 
 BuildRequires:   openssl-devel
-BuildRequires:   tbb-devel
 BuildRequires:   cmake
 BuildRequires:   make
 BuildRequires:   git
 
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
+%{?fedora:Requires:        libstdc++ >= 10.0.0}
+
 %{?el8:BuildRequires:      gcc-toolset-10}
 %{?el8:BuildRequires:      epel-release}
 
 Requires:            openssl >= 1.0.0
-Requires:            tbb
-%{?fedora:Requires:  libstdc++ >= 10.0.0}
 
 %description
 @PACKAGE_DESCRIPTION@
