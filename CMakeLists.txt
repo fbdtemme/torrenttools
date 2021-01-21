@@ -60,8 +60,8 @@ if (UNIX)
     set(torrenttools_sysconf_dir        ${SYSCONF_INSTALL_DIR}/torrenttools)
     set(torrenttools_local_config_dir   $ENV{HOME}/.config/torrenttools)
 elseif (WIN32)
-    set(torrenttools_sysconf_dir        $ENV{HOMEDRIVE}/ProgramData/torrenttools)
-    set(torrenttools_local_config_dir   $ENV{USERPROFILE}/AppData/torrenttools)
+    set(torrenttools_sysconf_dir        $ENV{HOMEDRIVE}\\ProgramData\\torrenttools)
+    set(torrenttools_local_config_dir   $ENV{USERPROFILE}\\AppData\\torrenttools)
 endif ()
 
 
