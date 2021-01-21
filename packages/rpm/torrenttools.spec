@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.1.3
+%global tag      0.1.2
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
