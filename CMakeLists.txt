@@ -59,9 +59,11 @@ target_compile_features(torrenttools PUBLIC cxx_std_20)
 if (UNIX)
     set(torrenttools_sysconf_dir        ${SYSCONF_INSTALL_DIR}/torrenttools)
     set(torrenttools_local_config_dir   $ENV{HOME}/.config/torrenttools)
+    set(torrenttools_bin_install_dir    ${CMAKE_INSTALL_BINDIR})
 elseif (WIN32)
-    set(torrenttools_sysconf_dir        $ENV{HOMEDRIVE}\\ProgramData\\torrenttools)
-    set(torrenttools_local_config_dir   $ENV{USERPROFILE}\\AppData\\torrenttools)
+    set(torrenttools_sysconf_dir        "$ENV{HOMEDRIVE}\\ProgramData\\torrenttools")
+    set(torrenttools_local_config_dir   "$ENV{USERPROFILE}\\AppData\\torrenttools")
+    set(torrenttools_bin_install_dir    "$ENV{HOMEDRIVE}\\Program Files\\torrenttools")
 endif ()
 
 
@@ -88,7 +90,7 @@ if(TORRENTTOOLS_BUILD_DOCS)
 endif()
 
 if (TORRENTTOOLS_INSTALL)
-    # install config files to global data dir
+    # install trackers and example config files to global data dir
     install(FILES resources/config.yaml
                   resources/trackers.json
             COMPONENT torrenttools
@@ -97,7 +99,8 @@ if (TORRENTTOOLS_INSTALL)
     # install executable
     install(TARGETS torrenttools
             COMPONENT torrenttools
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+            RUNTIME DESTINATION ${torrenttools_bin_install_dir})
+
 endif()
 
 
