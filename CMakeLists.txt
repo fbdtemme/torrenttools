@@ -34,6 +34,7 @@ endif(NOT DEFINED SYSCONF_INSTALL_DIR)
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
 
+
 #
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../termcontrol termcontrol)
