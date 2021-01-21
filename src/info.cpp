@@ -39,11 +39,11 @@ void run_info_app(info_app_options& options)
 {
     if (!fs::exists(options.metafile))
         throw std::invalid_argument(
-                fmt::format("Metafile not found: {}", options.metafile.c_str()));
+                fmt::format("Metafile not found: {}", options.metafile.string()));
 
     if (fs::is_directory(options.metafile))
         throw std::invalid_argument(
-                fmt::format("Target is a directory: {}", options.metafile.c_str()));
+                fmt::format("Target is a directory: {}", options.metafile.string()));
 
     if (options.raw) {
         create_raw_info(std::cout, options.metafile, options.show_pieces);

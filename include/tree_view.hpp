@@ -379,7 +379,7 @@ inline auto format_verify_file_tree(
 {
     using entry_type = std::pair<std::string, const dt::file_entry*>;
     using table_line_type = std::tuple<std::string, std::string, std::string, std::string>;
-    const std::size_t max_file_line_size = std::max(50ul, max_line_length) - 24;
+    const std::size_t max_file_line_size = std::max(std::size_t(50), max_line_length) - 24;
     std::vector<table_line_type> table {};
 
     const auto& storage = m.storage();
