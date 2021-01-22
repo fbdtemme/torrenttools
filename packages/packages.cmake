@@ -1,3 +1,49 @@
+
+# Copy the license file to a txt file as required by WIX
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
+
+set(CPACK_SOURCE_GENERATOR                   TGZ RPM)
+set(CPACK_GENERATOR                          WIX)
+set(CPACK_PACKAGE_DESCRIPTION_FILE           "${CMAKE_CURRENT_LIST_DIR}/package_summary.txt")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY        "${CMAKE_PROJECT_DESCRIPTION}")
+set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME           "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
+set(CPACK_RESOURCE_FILE_LICENSE              "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
+set(CPACK_PACKAGE_NAME                       "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VENDOR                     "Florian De Temmerman")
+set(CPACK_PACKAGE_CONTACT                    "Florian De Temmerman")
+set(CPACK_PACKAGE_VERSION_MAJOR              "${CMAKE_PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR              "${CMAKE_PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH              "${CMAKE_PROJECT_VERSION_PATCH}")
+set(CPACK_BUILD_SOURCE_DIRS                  "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CPACK_CREATE_DESKTOP_LINKS               OFF)
+
+
+set(CPACK_ARCHIVE_COMPONENT_INSTALL          ON)
+set(CPACK_COMPONENTS_ALL                     torrenttools)
+set(CPACK_COMPONENTS_TORRENTTOOLS_REQUIRED   ON)
+
+cpack_add_component(torrenttools
+        DISPLAY_NAME core
+        DESCRIPTION "The core application."
+        REQUIRED)
+
+cpack_add_component(undefined HIDDEN)
+
+# Get the list of ignored files from .gitignore.
+set(gitignore ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore)
+if (EXISTS ${gitignore})
+    file (STRINGS ${gitignore} lines)
+    list(REMOVE_ITEM lines /doc/html)
+    foreach (line ${lines})
+        string(REPLACE "." "[.]" line "${line}")
+        string(REPLACE "*" ".*" line "${line}")
+        set(ignored_files ${ignored_files} "${line}$" "${line}/")
+    endforeach ()
+endif()
+
+list(APPEND ignored_files ".git.*")
+list(APPEND CPACK_SOURCE_IGNORE_FILES        ${ignored_files})
 ## some variables to generate packaging files, seperate from CPACK variables
 
 
@@ -29,3 +75,7 @@ string(REGEX REPLACE "[ \t]*\n" "\n" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENS
 string(REGEX REPLACE "\n+$" "" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 
 include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/windows-wix.cmake)
+
+include(CPack)
+
