@@ -1,0 +1,4 @@
+Torrenttools
+
+Torrenttools is a commandline application to create, inspect and edit BitTorrent Metafiles.
+It supports the latest v2 and hybrid protocols.
