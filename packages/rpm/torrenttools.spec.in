@@ -9,7 +9,7 @@ Name:            @PACKAGE_NAME@
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         @PACKAGE_LICENSE@
-Release:         @RPM_PACKAGE_RELEASE@%{?dist}
+Release:         @CPACK_RPM_PACKAGE_RELEASE@%{?dist}
 Summary:         @PACKAGE_DESCRIPTION_SUMMARY@
 
 BuildRequires:   openssl-devel

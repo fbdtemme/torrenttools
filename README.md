@@ -1,4 +1,4 @@
-![](docs/images/torrenttools.svg)
+![](resources/images/torrenttools.svg)
 
 ![build](https://github.com/fbdtemme/torrenttools/workflows/build/badge.svg)
 [![Copr build status](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/)

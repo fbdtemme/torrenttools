@@ -9,8 +9,8 @@ Name:            torrenttools
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         MIT
-Release:         2%{?dist}
-Summary:         A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+Release:         1%{?dist}
+Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
 BuildRequires:   cmake
@@ -27,7 +27,7 @@ BuildRequires:   git
 Requires:            openssl >= 1.0.0
 
 %description
-A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 %prep
 # Verbose processing. Remove -v before commit
