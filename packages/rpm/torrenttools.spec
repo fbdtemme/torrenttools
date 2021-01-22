@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.1.3
+%global tag      0.1.2
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
@@ -10,7 +10,7 @@ URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         MIT
 Release:         1%{?dist}
-Summary:         A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
 BuildRequires:   cmake
@@ -27,7 +27,7 @@ BuildRequires:   git
 Requires:            openssl >= 1.0.0
 
 %description
-A commandline tool for creating, inspecting and modifying bittorrent metafiles.
+A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 %prep
 # Verbose processing. Remove -v before commit
