@@ -1,10 +1,12 @@
 #include <iostream>
 #include <locale>
 #include <charconv>
+
 #include <fmt/format.h>
 #include <fmt/color.h>
-
 #include <CLI/CLI.hpp>
+
+#include <termcontrol/termcontrol.hpp>
 
 #include "info.hpp"
 #include "create.hpp"
@@ -36,6 +38,12 @@ void list_available_checksums()
 int main(int argc, char** argv) {
     std::setlocale(LC_ALL, "");
     std::ios_base::sync_with_stdio(false);
+
+#ifdef WIN32
+    if (!termcontrol::enable_virtual_terminal_processing()) {
+        std::cout << "Warning: Could not enable ANSI escape code processing!" << std::endl;
+    }
+#endif
 
     info_app_options info_options {};
     create_app_options create_options {};
