@@ -208,6 +208,8 @@ class tree_printer
 {
     static constexpr auto node = "├── "sv;
     static constexpr auto end_node = "└── "sv;
+    static constexpr auto sub = "│── "sv;
+    static constexpr auto sub_last = "    "sv;
 
     static constexpr auto directory_color = fg(tc::terminal_color::blue) /*| fmt::emphasis::bold*/;
     static constexpr auto file_color = tc::text_style{};
@@ -249,9 +251,6 @@ public:
 
     void walk(const fs::path& root = "", std::size_t recursion_depth = 0)
     {
-        static const std::string_view sub = "│   "sv;
-        static const std::string_view sub_last = "    "sv;
-
         auto elements = index_.list_directory_content(root);
 
         std::vector<stack_frame> stack{};
