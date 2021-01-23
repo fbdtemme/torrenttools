@@ -138,11 +138,6 @@ public:
 
         std::size_t count = 0;
         for (auto it = fs::recursive_directory_iterator(root); it != fs::end(it); ++it) {
-
-            if (!include_hidden_files_ && is_hidden_file(*it)) {
-                continue;
-            }
-
             if (it->is_directory()) {
                 if (directory_exclude_list_.contains(it->path().lexically_relative(root))) {
                     it.disable_recursion_pending();
@@ -150,7 +145,15 @@ public:
             }
             else if (it->is_regular_file()) {
                 auto s = it->path().string();
-                if (file_include_list_empty_ || file_include_list_.Match(s, nullptr)) {
+                if (file_include_list_empty_) {
+                    if (!include_hidden_files_ && is_hidden_file(*it)) {
+                        continue;
+                    }
+                    if (file_exclude_list_empty_ || !file_exclude_list_.Match(s, nullptr)) {
+                        *out++ = it->path();
+                        ++count;
+                    }
+                } else if (file_include_list_.Match(s, nullptr)) {
                     if (file_exclude_list_empty_ || !file_exclude_list_.Match(s, nullptr)) {
                         *out++ = it->path();
                         ++count;
