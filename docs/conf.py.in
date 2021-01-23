@@ -6,18 +6,14 @@ source_encoding = 'utf-8'
 
 # General information about
 extensions = [
-    "breathe",
-    "sphinx_rtd_theme",
+    "furo",
 ]
 master_doc = "index"
-html_theme = "sphinx_rtd_theme"
-html_logo  = "@CMAKE_CURRENT_SOURCE_DIR@/images/bencode.svg"
+html_theme = "furo"
+html_logo  = "@CMAKE_SOURCE_DIR@/resources/images/torrenttools-icon.svg"
+html_title = "torrenttools - @CMAKE_PROJECT_VERSION@"
 
 project = "@PROJECT_NAME@"
 author =  "@PROJECT_AUTHOR@"
 version = "@CMAKE_PROJECT_VERSION@"
 release = "@CMAKE_PROJECT_VERSION@"
-
-# Breathe Configuration
-breathe_default_project = "bencode"
-# breathe_projects = { "bencode": "." }

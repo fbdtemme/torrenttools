@@ -1,9 +1,6 @@
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindSphinx.cmake)
 find_package(Sphinx REQUIRED)
 
-set(BENCODE_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../include)
-file(GLOB_RECURSE BENCODE_PUBLIC_HEADERS ${BENCODE_INCLUDE_DIRECTORY}/*.hpp)
-
 #This will be the main output of our command
 set(SPHINX_CONF_IN       ${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in)
 set(SPHINX_CONF_OUT      ${CMAKE_CURRENT_BINARY_DIR}/conf.py)
@@ -20,7 +17,7 @@ set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 # - Our doc files have been updated
 # - The Sphinx config has been updated
 
-file(GLOB_RECURSE SPHINX_DOC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.rst)
+file(GLOB_RECURSE SPHINX_DOC_FILES ${CMAKE_CURRENT_LIST_DIR}/**.rst)
 
 add_custom_command(
         OUTPUT  ${SPHINX_INDEX_FILE}
@@ -40,7 +37,10 @@ add_custom_command(
 add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
 
 # Add an install target to install the docs
-include(GNUInstallDirs)
-install(DIRECTORY ${SPHINX_BUILD}
-        DESTINATION ${CMAKE_INSTALL_DOCDIR})
+if (TORRENTTOOLS_INSTALL)
+    install(DIRECTORY ${SPHINX_BUILD}
+            DESTINATION ${CMAKE_INSTALL_DOCDIR}
+            COMPONENT documentation)
+
+endif()
 
