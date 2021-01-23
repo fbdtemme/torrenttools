@@ -1,3 +1,0 @@
-<CPackWiXPatch>
-    <CPackWiXFragment Id="CM_C_torrenttools" AllowAdvertise="no"/>
-</CPackWiXPatch>

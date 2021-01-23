@@ -1,6 +1,0 @@
-<CPackWiXPatch>
-    <CPackWiXFragment Id="#PRODUCT">
-        <CustomActionRef Id="WixBroadcastSettingChange" />
-        <CustomActionRef Id="WixBroadcastEnvironmentChange" />
-    </CPackWiXFragment>
-</CPackWiXPatch>
