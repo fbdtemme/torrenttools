@@ -11,6 +11,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Fix behavior of options accepting multiple values: "--announce", "--web-seeds", "--dht-nodes".
 * Fix loading config files from user-local directory.
-* Allow to include hidden files when they match an include regex without specifing the --include-hidden flag.
+* Allow to include hidden files when they match an include regex without specifying the --include-hidden flag.
 
 [comment]: <> (### Removed)
