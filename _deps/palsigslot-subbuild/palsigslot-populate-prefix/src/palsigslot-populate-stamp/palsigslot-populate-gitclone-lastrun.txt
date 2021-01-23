@@ -1,0 +1,3 @@
+repository='https://github.com/palacaze/sigslot.git'
+module=''
+tag='origin'

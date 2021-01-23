@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/layout_example.dir/layout_example.cpp.o CMakeFiles/layout_example.dir/__/src/application.cpp.o CMakeFiles/layout_example.dir/__/src/widget.cpp.o -o layout_example  ../libcliprogress.a -lpthread 

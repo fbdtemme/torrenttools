@@ -1,0 +1,3 @@
+repository='https://github.com/gsl-lite/gsl-lite.git'
+module=''
+tag='origin'

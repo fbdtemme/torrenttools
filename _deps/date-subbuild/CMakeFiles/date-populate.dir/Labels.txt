@@ -1,0 +1,14 @@
+# Target labels
+ date-populate
+# Source files and their labels
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/CMakeFiles/date-populate
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/CMakeFiles/date-populate.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/CMakeFiles/date-populate-complete.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-install.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-mkdir.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-download.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-update.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-patch.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-configure.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-build.rule
+/home/runner/work/torrenttools/torrenttools/build/_deps/date-subbuild/date-populate-prefix/src/date-populate-stamp/date-populate-test.rule

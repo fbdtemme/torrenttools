@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/signal_notifier.dir/signal_notifier.cpp.o CMakeFiles/signal_notifier.dir/__/src/application.cpp.o CMakeFiles/signal_notifier.dir/__/src/widget.cpp.o -o signal_notifier  ../libcliprogress.a -lpthread 

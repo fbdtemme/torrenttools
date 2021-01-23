@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/CMakeFiles/expected-lite-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/CMakeFiles/expected-lite-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/CMakeFiles/expected-lite-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/expected-lite-subbuild/expected-lite-populate-prefix/src/expected-lite-populate-stamp/expected-lite-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"expected-lite-populate"
+		],
+		"name" : "expected-lite-populate"
+	}
+}

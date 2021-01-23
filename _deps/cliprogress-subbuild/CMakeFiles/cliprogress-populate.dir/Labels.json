@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/CMakeFiles/cliprogress-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/CMakeFiles/cliprogress-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/CMakeFiles/cliprogress-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cliprogress-subbuild/cliprogress-populate-prefix/src/cliprogress-populate-stamp/cliprogress-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"cliprogress-populate"
+		],
+		"name" : "cliprogress-populate"
+	}
+}

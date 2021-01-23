@@ -1,0 +1,21 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/Modules/")
+
+find_dependency(bencode)
+find_dependency(Threads)
+find_dependency(expected-lite)
+find_dependency(gsl-lite)
+find_dependency(fmt)
+
+if (@DOTTORRENT_CRYPTO_LIB@ STREQUAL "openssl")
+    find_dependency(OpenSSL)
+elseif (@DOTTORRENT_CRYPTO_LIB@ STREQUAL "gcrypt")
+    find_dependency(GCrypt)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/@dottorrent_targets_export_name@.cmake")
+
+check_required_components(dottorrent)

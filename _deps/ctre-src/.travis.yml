@@ -1,0 +1,47 @@
+sudo: true
+language: cpp
+dist: trusty
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-8
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-8']
+
+  - os: linux
+    compiler: clang
+    env:
+      - COMPILER=clang++-6.0
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+        packages: ['g++-8', 'clang-6.0']
+
+  - os: linux
+    language: python
+    python: "3.6"
+    services:
+      - docker
+    env:
+      - COMPILER=g++-8
+      - CONAN_GCC_VERSIONS=8
+      - CONAN_DOCKER_IMAGE=lasote/conangcc8
+    install:
+       - pip install -U conan conan-package-tools
+    script:
+      - python .conan/build.py
+
+  - os: osx
+    osx_image: xcode10
+
+install:
+  - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
+  - uname -a
+  - $CXX --version
+script:
+  - make

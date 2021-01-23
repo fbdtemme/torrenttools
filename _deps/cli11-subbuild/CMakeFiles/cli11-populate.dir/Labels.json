@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/cli11-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/cli11-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/cli11-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/cli11-populate-prefix/src/cli11-populate-stamp/cli11-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"cli11-populate"
+		],
+		"name" : "cli11-populate"
+	}
+}

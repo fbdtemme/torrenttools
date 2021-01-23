@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/CMakeFiles/palsigslot-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/CMakeFiles/palsigslot-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/CMakeFiles/palsigslot-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/palsigslot-subbuild/palsigslot-populate-prefix/src/palsigslot-populate-stamp/palsigslot-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"palsigslot-populate"
+		],
+		"name" : "palsigslot-populate"
+	}
+}

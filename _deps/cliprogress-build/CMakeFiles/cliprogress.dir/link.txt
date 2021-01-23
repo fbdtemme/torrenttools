@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcliprogress.a CMakeFiles/cliprogress.dir/src/application.cpp.o CMakeFiles/cliprogress.dir/src/widget.cpp.o
+/usr/bin/ranlib libcliprogress.a

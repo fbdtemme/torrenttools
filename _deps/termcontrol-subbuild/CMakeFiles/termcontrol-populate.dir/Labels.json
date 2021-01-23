@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/termcontrol-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/termcontrol-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/termcontrol-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/termcontrol-populate-prefix/src/termcontrol-populate-stamp/termcontrol-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"termcontrol-populate"
+		],
+		"name" : "termcontrol-populate"
+	}
+}

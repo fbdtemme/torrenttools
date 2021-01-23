@@ -1,0 +1,464 @@
+Changes in gsl-lite
+===================
+
+version 0.37.0 2020-05-13
+
+Additions:
+- Add configuration option `gsl_CONFIG_NARROW_THROWS_ON_TRUNCATION`
+- Add configuration option `gsl_CONFIG_ALLOWS_SPAN_COMPARISON`
+- Add `narrow_failfast<>()`, a fast-fail variant of `narrow<>()` (#52)
+- Add `front()` and `back()` to `span<>` and `basic_string_span<>` (#241, thanks to @ned14)
+
+Changes:
+- Rename `as_writeable_bytes()` -> `as_writable_bytes()` to follow C++20 in spelling; the old name is still provided for compatibility
+- Rename `gsl_DEPRECATED()` -> `gsl_DEPRECATED_MSG()`, add `gsl_DEPRECATED`
+- Add more `gsl_DEPRECATED()` annotations
+- Deprecate `span<>::at()`, `basic_string_span<>::at()`, and call indexing
+- Minor documentation improvements
+- Unify internal SFINAE macros to `gsl_ENABLE_IF_()` (#238; thanks to @martinmoene)
+- Add more comprehensive tests for `narrow<>()` and `narrow_failfast<>()`
+
+Fixes:
+- Fix spurious static assertion for pre-/postcondition check arguments explicitly convertible to bool if `gsl_CONFIG_CONTRACT_CHECKING_OFF` is defined
+- Fix hard failure in `span<>` constrained constructor (#242, thanks to @orangeturtle739)
+- Make `gsl::detail::is_compatible_container<>` a proper type trait
+
+
+version 0.36.0 2020-01-24
+
+The repository now moved to a dedicated GitHub organization: https://github.com/gsl-lite/gsl-lite
+
+gsl-lite is now mostly maintained by @mbeutel (#175).
+
+Additions:
+- Describe versioning semantics in Readme
+- Add audit-level contract checks `gsl_ExpectsAudit()` and `gsl_EnsuresAudit()` (#172)
+- Add `basic_zstring_span<>` and `zstring_span` (#136, #154, thanks to @chan-lee)
+- Add support for user-defined contract violation handler `fail_fast_assert_handler()`
+- Add macros `gsl_NORETURN`, `gsl_NODISCARD`, `gsl_DEPRECATED()`, `gsl_constexpr17`, `gsl_constexpr20`
+- Add C++11 polyfills in `gsl::std11`: `remove_reference<>`
+- Add C++17 polyfills in `gsl::std17`: `conjunction<>`, `disjunction<>`, `negation<>`, `void_t<>`
+- Add C++20 polyfills in `gsl::std20`: `identity`, `type_identity<>`, `ssize()` (#144, #180), `remove_cvref<>`
+- Add configuration macro `gsl_CONFIG_TRANSPARENT_NOT_NULL` (#185)
+- Add configuration macro `gsl_CONFIG_INDEX_TYPE` which controls the type of `gsl::index` independently of `gsl::span<>::index_type` (#169)
+- Add language feature macro `gsl_HAVE_EXCEPTIONS`
+- Add macros `gsl_DEFINE_ENUM_BITMASK_OPERATORS()` and `gsl_DEFINE_ENUM_RELATIONAL_OPERATORS()`
+- Add header <gsl-lite/gsl-lite.hpp> and namespace `gsl_lite` to pave the way for future coexistence with M-GSL (#221, #222)
+- Add Continuous Integration for more versions of GCC (4.7 through 9), Clang (3.5 through 9), AppleClang (7.3 through 11), and MSVC (2010 through 2019)
+- Run tests with AddressSanitizer and UndefinedBehaviorSanitizer in CI (GCC 9, Clang 9)
+- Add Continuous Integration for NVCC 10.2 (with GCC 7, 8 on Linux, MSVC 2019 on Windows) to test CUDA support
+
+Changes:
+- `not_null<>` now properly supports smart pointers (#184, #197, huge thanks to @petamas)
+- Restructure contract checking configuration macros such that checking policy (off, on, audit), violation handling (throws, terminates, calls handler) and unenforced contract handling (assume, elide) can be configured independently (cf. https://github.com/martinmoene/gsl-lite/#contract-violation-response-macros)
+- `gsl_noexcept` no longer depends on contract violation settings (cf. https://github.com/martinmoene/gsl-lite/commit/0c296a9c986ac070997610fc7cf86e9c517558bf)
+- `gsl_FEATURE_IMPLICIT_MACRO` now defaults to 0 (#156, thanks to @tadeu)
+- AppleClang is now considered a separate compiler (use `gsl_COMPILER_APPLECLANG_VERSION` for checking)
+- CMake installs arch-independent by default
+- CMake doesn't install M-GSL compatibility headers by default
+- gsl-lite now compiles warning-free with MSVC at warning level 4
+- Many small improvements (thanks to @AraHaan, @codecircuit, @elnull, @ilyalesokhin-starkware, @ngrodzitski, @petamas, @stohrendorf, @theodelrieu)
+
+
+version 0.34.0 2019-03-21
+
+Additions:
+- Add macro gsl_REQUIRES_T() (nonstd lite issue 18)
+
+Changes
+- Change the CMake package folder name to gsl-lite (it was gsl)
+- Add a usage description for the Conda package manager to the Readme.
+- Update lest test framework to v1.35.1.
+
+
+version 0.33.0 2019-03-08
+
+Additions:
+- Add script/create-cov-rpt.py to create OpenCppCoverage report (nonstd-lite project issue 29)
+- Add script/create-vcpkg.py (nonstd-lite-project issue 28)
+- Add script/upload-conan.py (nonstd-lite-project issue 26)
+- Add conanfile.py, edit it from script/update-version.py (nonstd-lite-project issue 26)
+- Add CMake installation and config-file packaging; Let tests and example use gsl-lite interface library
+- Add "LANGUAGES CXX" to CMake project
+- Add GNUC -Wsign-conversion warning to CMake configuration
+- Add AppleClang to CMake configuration
+- Add OSX to Travis configuration
+- Add TOC entry for Standard selection macro (#128, thanks to @egarrulo)
+- Add span::ssize(), ssize(span), size(span) (#144)
+- Add test/tc-cl.bat
+
+Changes:
+- Rename "Guideline support library" to "Guidelines -" (#134)
+- Align Appveyor configuration (plan 9, nonstd-lite-project issue 14)
+- Align CMakefiles.txt (plan 8, nonstd-lite-project issue 13)
+- Align test scripts (nonstd-lite-project issue 12)
+- Align badges in readme (nonstd-lite-project issue 3)
+- Obviate need for -DNOMINMAX with MSVC (nonstd-lite issue 16)
+- Prevent and suppress warnings from clang
+- Let ctest produce output on failure
+- Update lest test framework to v1.35.0.
+
+Fixes:
+- Fix CMake install command (expected-lite issue 25, thanks to @rmorozov)
+- Fix clashing CMake cached variable, use 'gsl' for namespace and package folder (thanks to @rmorozov)
+- Fix template argument in not_null<> comparison operators (#143, thanks @stohrendorf)
+- Fix macro gsl_IN_STD (#142, thanks to @Flamefire)
+- Fix possible int overflow in nonstd::span::subspan() range (issue #138, thanks to @fefe17)
+- Fix link to P0122 (#130, thanks to @alexeyr)
+- Fix for misleading __cplusplus of GCC 4.7.0 and earlier (#127, thanks to @egarrulo)
+- Fix final_action_return() and final_action_error() during stack unwinding (#126, thanks to @patstew)
+- Fix unused parameter if Expects elided via new macro gsl_EXPECTS_UNUSED_PARAM (#123, #124, thanks to @kugelrund)
+
+version 0.32.0 2018-05-12
+
+- Review not_null (issue #122).
+- Add not_null_ic with implicit constructor, allowing copy-initialization.
+- Enable making not_null constructor explicit via gsl_CONFIG_NOT_NULL_EXPLICIT_CTOR, default 0 (breaking, issue #46).
+- Enable not_null get() return by const & via gsl_CONFIG_NOT_NULL_GET_BY_CONST_REF (via M-GSL PR 651 @xaxxon, PR 675 @ericLemanissier).
+- Change constraint on not_null construction from is_convertible to is_constructible (via M-GSL PR 650, @xaxxon).
+- Change to take not_null constructor argument by const & when rvalue references are not available.
+- Add not_null non-is-default rvalue reference copy-constructor, copy-assignment.
+- Remove not_null converting assignment operator.
+- Rename to gsl_HAVE_EXPLICIT.
+- Adapt several compile-time tests for not_null with explicit constructor.
+- Fix GNUC C++98 compilation by making RefCounted conversion function const in not_null.t.cpp.
+
+version 0.31.0 2018-05-10
+
+- Change span towards proposal p0122r7 (issue #118).
+- Add gsl_lite_MAJOR, gsl_lite_MINOR, gsl_lite_PATCH, script/update-version.py.
+- Add configuration selector gsl_CONFIG_DEPRECATE_TO_LEVEL.
+- Add feature selector gsl_FEATURE_WITH_CONTAINER_TO_STD.
+- Add feature selector gsl_FEATURE_MAKE_SPAN_TO_STD.
+- Add feature selector gsl_FEATURE_BYTE_SPAN_TO_STD.
+- Add macros gsl_FEATURE(), gsl_CONFIG(), gsl_HAVE().
+- Add macro gsl_ADDRESSOF(x).
+- Add span::value_type.
+- Add details::can_construct_span_from<>.
+- Add convertible constraint to span C-array constructor.
+- Add class template argument deduction guides for span.
+- Add make_span( with_container_t, ...) creator functions.
+- Add byte_span() creator functions.
+- Use C++11 constexpr where possible.
+- Parenthesize macro arguments.
+- Omit macros min(), max() via -DNOMINMAX.
+- Update t-all.bat for various configuration and feature selections.
+
+version 0.30.0 2018-05-06
+
+- Add support for DJGPP cross compiler is introduced (PR #107, thanks to Tom� Zeman, @zemasoft).
+- Add Readme.md to example/cmake-pkg.
+- Update lest test framework to v1.33.1.
+- Allow strict aliasing with Clang and GNUC for gsl::byte (issue #114).
+- Enable differentiating between MSVC 14.0 (VS 2015) and 14.1 (VS 2017), also report clang version.
+- Remove the space after ':' in FILE: LINE in reported locations (issue #112).
+- Avoid MSVC level 4 warning C4127: conditional expression is constant (issue #115, thanks to @kpeace)
+- Add a constructor to allow rvalue to const lvalue conversion (issue #113, PR #117, thanks to @theodelrieu )
+- Enable owner alias template for VC12 (Issue #111, thanks to @sg-james)
+- Fix omission of #include <algorithm>
+- Fix clang compilation by specifying C++ standard
+- Fix gsl-lite version in section "As CMake package"
+- Fix type in a test of span has been correced (PR #105, thanks to Tom� Zeman, @zemasoft)
+
+version 0.29.0 2018-03-03
+
+- Added CMake package, thanks to @FlorianWolters (PR #100, #103).
+- Added CMake option GSL_LITE_OPT_BUILD_TESTS to ./CMakeLists.txt (default off).
+- Added CMake option GSL_LITE_OPT_BUILD_EXAMPLESto ./CMakeLists.txt (default off).
+- Added scipt/install-gsl-pkg.py
+- Added script use-gsl-pkg.py as part of an example that uses the package.
+- Added script/update-version.py to updated gsl-lite's version number in relevant files.
+- Added type `gsl::index` for container indices, subscripts and sizes.
+- Fixed padding of the output stream operator of class `string_span` to pad to the right side.
+- Deprecated span::length() and span::length_bytes() (issue #99).
+- Deprecated constructors span(shared_ptr<element_type> const & ptr) and span(unique_ptr<element_type> const & ptr)` (issue #98).
+- Added documentation section 'Deprecation'.
+- Expanded documentation section 'Installation and use'.
+- Updated documentation section 'Reported to work with'.
+
+version 0.28.0 2018-01-01
+
+- Expand Travis and Appveyor CI compiler matrices and use CMake configuration.
+- Fix to use CMAKE_CXX_COMPILER_VERSION in CMake configuration.
+- Add targets for various -std flags for MSVC to CMake configuration.
+- Add Core Guidelines checking, limited to GSL Lite.
+- Add test to compare empty to non-empty string span.
+- Suppress test to compare empty string spans.
+- Update Wandbox link for release 0.28.0.
+- Update Wandbox link for release 0.27.0.
+
+version 0.27.0 2017-12-30
+
+- Change extension of GSL Lite header file to .hpp with backwards compatibility via headers gsl.h and gsl/gsl-lite.h. See issue #94 (thanks to @AraHaan).
+- Suppress several warnings from Microsoft's CppCoreCheck. See pull request #95 (thanks to @AraHaan).
+
+version 0.26.0 2017-12-09
+
+- Rename final_act to final_action per issue #89.
+- Make clang-tidy cppcoreguidelines checks pass per PR #91 (thanks to @poconbhui).
+- Fix nullptr to gsl_nullptr in not_nul::get() per PR #90 (thanks to @poconbhui).
+- Fix -Wshadow warning per PR #84 (thanks to @MikeLankamp).
+- Add conan installation instructions and badge (thanks to @agauniyal).
+- Add CMake install target per issue #85.
+
+version 0.25.0 2017-10-22
+
+- Restrict owner<T> to pointers if possible, per issue #80.
+- Introduce gsl_is_delete, per issue #81.
+- Add deleted operators for not_null<>, per issue #82.
+- Add more comparison operators for not_null<>, per issue #83.
+- Use = default for not_null copy assignment/construction if available.
+- Take parameter in not_null assignment by value as in ctor.
+
+version 0.24.0 2017-07-10
+
+- Add try it online badge.
+- Implement to_byte(), to_integer() for C++17 per issue #75 (thanks to David Mugnai, @cinghiale).
+
+version 0.23.0 2017-06-29
+
+- Enable use of option -Wundef per issue #74.
+- Update lest to version 1.30.1.
+- Check macro via #ifdef if possibly undefined (support -Wundef).
+- Fix check for make_unique().
+- Fix CMake compiler selection.
+- Make struct definition nonlocal for C++98, C++03.
+- Add not_null<> tests for member access and dereferencing.
+- Add dereference operator to not_null<> per issue #73.
+- Add compiler version information.
+- Add constexpr to not_null<>.
+- Report gsl_CPP11_OR_GREATER etc.
+
+version 0.22.0 2017-04-27
+
+- Add operator<< for string_span (thanks to Magnus Bergsten, @Sillamacka).
+- Fix conversion and sign-conversion warnings (thanks to Magnus Bergsten, @Sillamacka).
+- Fix memory leak, which prevents tests to pass with address sanitizing (thanks to @Vladimir Rapatskiy).
+- Fix order of add_compile_options() and its targets in CMakeLists.txt.
+- Replace fail_fast's base with std::logic_error as per issue #69.
+- Update lest_cpp03.hpp to version 1.29.1 (Fix above conversion and sign-conversion warnings).
+
+version 0.21.0 2016-11-28
+
+- Add as_bytes() for basic_string_span<> (thanks to Magnus Bergsten, @Sillamacka).
+- Fix: remove call to hash<std::size_t>(), undefined with Xcode on Mac OS X (issue #63, thanks to Dave Tallman).
+- Fix: remove static from enum in integral_constant (thanks to Dave Tallman).
+- Change t[g]-all.bat to test variations of C++ std/span index type/contract violation response.
+
+version 0.20.0 2016-11-18
+
+- Remove used_length(), same as length()
+- Rename bytes(), used_bytes() to size_bytes(), length_bytes()
+- Make final_act<T> and final_act_return<T> useable with VC11/VS2012 (PR #61, thanks to @lm1458777)
+- Fix fail_fast_assert() for gcc < 6 for no-throw/std::terminate() case (comment, thanks to @xsacha)
+- Fix =default with gsl_noexcept for gcc < 6 for basic_string_span (PR #58, thanks to @xsacha)
+
+version 0.19.0 2016-11-17
+
+- Rename as_span() creator functions to make_span() (issue #49).
+- Add make_span() for gsl::shared_ptr, gsl::unique_ptr.
+- Add section Algorithms to feature table.
+- Remove maybe_null from feature table (M-GSL PR 123, 124, 126).
+
+version 0.18.0 2016-11-11
+
+- Remove span::size_type, deprecated since 0.12.0.
+- Add gsl_CONFIG_SPAN_INDEX_TYPE configuration macro; default size_t.
+- Add span constructor for std::array<> const &.
+- Add span constructor for std::unique_ptr, std::shared_ptr.
+- Make span's unconstrained constructor disabled at default.
+  This enables construction from unique_ptr and shared_ptr.
+- Prevent conversion warning [-Wconversion]
+- Prevent old-style casts warning [-Wold-style-cast]
+- Replace arr with &arr[0], not automatic decay (several).
+- Update lest_cpp03.hpp to version 1.27.2
+- Fix noexcept with default ctors for GNUC < 4.9.0 (adapted PR #58, thanks to Dmitry Banschikov, @ubique).
+
+version 0.17.2 2016-11-10
+
+- Use &arr[0], not automatic decay
+- Workaround GNUC 5 throw constexpr bug
+- Workaround for GNUC 5.2.0 failing two tests
+- Use order: gsl_api inline gsl_constexpr type f() gsl_noexcept
+
+version 0.17.1 2016-11-09
+
+- Fixes thanks to Magnus Bergsten, @Sillamacka:
+- Marked several functions as constexpr.
+- Fix: make gsl::fail_fast_assert() constexpr allowing Expects() from constexpr functions.
+- Fix: prevent pointer decay to let remove_z() invoke wrong overload.
+- Fix: remove span used in string_length(), it has two bound problems.
+
+version 0.17.0 2016-11-09
+
+- Add free-standing as_bytes() and as_writable_bytes() as in M-GSL (PR #55, thanks to Dmitry Banschikov, @ubique).
+- Member methods as_bytes() and as_writable_bytes() have been deprecated.
+
+version 0.16.1 2016-11-09
+
+- Fix macro used with string_span comparison.
+
+version 0.16.0 2016-11-09
+
+- Allow comparison with types that are convertible to string_span (issue #53, thanks to Magnus Bergsten, @Sillamacka).
+
+version 0.15.0 2016-11-09
+
+- Add basic_string_span (issue #53, thanks to Magnus Bergsten, @Sillamacka).
+
+version 0.14.0 2016-11-03
+
+- narrow() now uses std::terminate(), unless gsl_CONFIG_CONTRACT_VIOLATION_THROWS (issue #50, thanks to @Sp3EdeR)
+- narrow_cast<>() now forwards its argument if possible (issue #44).
+
+version 0.13.0 2016-10-09
+
+- Add on_return() and on_error() as experimental feature (gsl_FEATURE_EXPERIMENTAL_RETURN_GUARD).
+
+version 0.12.0 2016-10-08
+
+- Fix test compilation with GCC 4.8.4.
+- Remove span::value_type deprecated since version 0.9.0 (use element_type).
+- Deprecate span::size_type (issue #42).
+- Make span's stream output for tests more container-like.
+- Make operations on byte C++11 constexpr except for op=() variants.
+- Rename �Guidelines support library" to "Guideline -" (issue #39).
+- Add tests for C++11 constexpr-ness.
+- Add copy algorithm for span (issue #36).
+- Add GSL version by Vicente J. Botet Escriba to Readme.
+
+version 0.11.0 2016-09-04
+
+- Add missing byte comparisons (non-enum class case).
+- Add missing gsl_noexcept to byte equality operator.
+
+version 0.10.1 2016-09-02
+
+- Use struct with unsigned char for byte with pre-C++17 (issue #34).
+
+version 0.10.0 2016-08-31
+
+- Remove operator bool() per issue #33.
+- Remove deprecated gsl_CONFIG_THROWS_FOR_TESTING.
+- Remove parentheses and allow lest to decompose span comparison expressions.
+- Allow comparison of spans with a different element type or const-volatile-ness.
+- Add gsl_CONFIG_ALLOWS_NONSTRICT_SPAN_COMPARISON for span comparison configuration.
+
+version 0.9.1 2016-08-25
+
+- Move conditional inclusion of cstdint out of namespace gsl.
+
+version 0.9.0 2016-08-23
+
+- Provide gsl/gsl header for compatibility with M-GSL.
+- Add index_type to span while keeping size_type.
+- Add gsl_noexcept to iterator creators begin() etc.
+- Add at(std::initializer_list<T>, index).
+- Add at(span<T>, index).
+- Add call operator to span for element access as per p0122r3.
+- Add test: empty spans compare equal as per p0122r3.
+- Use span's size_type.
+- Move at() to section utilities.
+- Move comparison functions outside span.
+- Deprecate span::value_type, use span::element_type per M-GSL, p0122r3.
+- Remove non-const index operator, at().
+
+version 0.8.0 2016-08-20
+
+- Add operations for byte type.
+
+version 0.7.5 2016-08-08
+
+- Fix to create empty subspan, enabling slicing off data until span is empty (PR #26, thanks to Janusz Chorko).
+
+version 0.7.4 2016-07-09
+
+- Revert "Remove boundary check from operator[]()" of v0.7.3.
+
+version 0.7.3 2016-07-08
+
+- Removed boundary check from operator[]()
+- Changed indexing to return non-const reference and make it STL compliant (issue #23, thanks to @marton78)
+- Made converting constructors public (issue #22, thanks to @marton78).
+
+version 0.7.2 2016-07-06
+
+- Fixed as_span() for const arguments (thanks to Dave Tallman).
+
+version 0.7.1 2016-07-01
+
+- Fixed with_container_t to be literal type (thanks to Dave Tallman).
+
+version 0.7.0 2016-06-30
+
+- Added tagged construction from a container to span.
+- Replaced gsl_CONFIG_ALLOWS_SPAN_CONTAINER_CTOR with gsl_CONFIG_ALLOWS_UNCONSTRAINED_SPAN_CONTAINER_CTOR
+
+version 0.6.1 2016-06-29
+
+- Fixed library for the removal of _HAS_CPP0X in VS2015 Update 3 (Issue #21, thanks to @exjam)
+- Added tests tagged [.stdlangauge], [.stdlibrary] to inspect various gsl_HAVE_... macros.
+- Added tag [.stdc++] to test to inspect __cplusplus.
+- Updated lest test framework to version 1.27.0.
+
+version 0.6.0 2016-06-25
+
+- Renamed Final_act to final_act to follow standard library conventions.
+- Fixed final_act to also work without copy-elision optimization, issue #19 (thanks to Marco Arena).
+
+version 0.5.0 2016-06-24
+
+- Added compatibility with MS GSL symbolic names for contract violation response control.
+- Added contract violation response control as suggested in N4415, Simple Contracts for C++.
+
+version 0.4.1 2016-06-23
+
+- Added gsl_CONFIG_ALLOWS_SPAN_CONTAINER_CTOR for pre-C++11 (default: 1).
+- Avoided std::distance() to support CUDA.
+- Avoided shadowing according to the too-strict option -Wshadow of gcc before 4.8 (thanks to Dave Tallman).
+- Removed comparisons of unsigned with zero.
+- Fixed ensure_z() without length (thanks to Dave Tallman).
+
+version 0.4.0 2016-05-28
+
+- Added support for CUDA compilation.
+
+version 0.3.2 2016-05-27
+
+- Fixed compilation error in narrow() for VC11 (VS2012).
+
+version 0.3.1 2016-05-25
+
+- Added test for construction of a span from another span of a compatible type.
+- Changed view to span in specification.
+
+version 0.3.0 2016-05-24
+
+- Added first(), last() and subspan().
+- Improved example 02-span.cpp (thanks to Dave Tallman).
+
+version 0.2.2 2016-05-23
+
+- Fixed missing return in not_null copy-assignment (thanks to PVS-Studio).
+
+version 0.2.1 2016-05-23
+
+- Added several tests.
+- Added definition of gsl_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG.
+- Prevented using default function template argument in span for pre-VS2013 (VC12).
+- Fixed compile error with clang targeting MSVC, PR #17 (Thanks to @ned14).
+- Fixed data access of empty container, PR #16 (Thanks to @realzhtw).
+
+version 0.2.0 2016-02-02
+
+- Removed constructor span( U (&arr)[N], size_type size ), not part of M-GSL and in favour of:
+- Changed constructor to span( pointer data, size_type size ), removing & from pointer & data (Thanks to @realzhtw).
+- Added construction from an l-value for C++11 onwards.
+
+version 0.1.0 2016-02-02
+
+- Added move-construction and move-assignment to span<>.
+
+version 0.0 2015-09-25
+
+- Initial release.

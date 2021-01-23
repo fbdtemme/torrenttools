@@ -1,0 +1,401 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="torrenttools" href="../index.html" />
+
+    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
+        <title>Create - torrenttools - 0.1.2</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=26485485040e7aaf717c13fd0188a5ad2c2deb60">
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script defer="defer" src="../_static/jquery.js"></script>
+    <script defer="defer" src="../_static/underscore.js"></script>
+    <script defer="defer" src="../_static/doctools.js"></script>
+    <script defer src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">torrenttools - 0.1.2</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">torrenttools - 0.1.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Commands</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Create</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="create">
+<h1>Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h1>
+<p>The create command is used to create new BitTorrent metafiles.</p>
+<p>The basic invocation requires only a target directory or file to create a .torrent from.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create <span class="o">[</span>OPTIONS<span class="o">]</span> &lt;target&gt;
+</pre></div>
+</div>
+<p>Either specify all options first or give the target first followed by all options.</p>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v-protocol">
+<h3><code class="docutils literal notranslate"><span class="pre">-v,--protocol</span></code><a class="headerlink" href="#v-protocol" title="Permalink to this headline">¶</a></h3>
+<p>Set the bittorrent protocol to generate a metafile for. Available options are: 1, 2 or hybrid.
+The default options is to create v1-only metafiles. 1 and 2 can be prefixed with a v.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create --protocol v1 test-dir
+torrenttools create -v1 test-dir
+torrenttools create -vhybrid test-dir
+</pre></div>
+</div>
+</div>
+<div class="section" id="o-output">
+<h3><code class="docutils literal notranslate"><span class="pre">-o,--output</span></code><a class="headerlink" href="#o-output" title="Permalink to this headline">¶</a></h3>
+<p>Set the filename and/or output directory of the created file.
+If no options are given the torrent will be written to &lt;name&gt;.torrent in the current directory,
+with name the name of target directory or file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --output <span class="s2">"my-name.torrent"</span>
+</pre></div>
+</div>
+<p>Use a path with trailing slash to only set the output directory and keep the name to the default</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --output ~/torrents/
+</pre></div>
+</div>
+<p>Will create a torrent with full path ~/torrents/test-dir.torrent</p>
+</div>
+<div class="section" id="a-announce">
+<h3><code class="docutils literal notranslate"><span class="pre">-a,--announce</span></code><a class="headerlink" href="#a-announce" title="Permalink to this headline">¶</a></h3>
+<p>Add one or multiple announces urls.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"url1"</span> <span class="s2">"url2"</span>
+</pre></div>
+</div>
+<p>Multiple trackers will be added in seperate tiers by default. Use square brackets to groups urls in a single tier.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"[url1 url2]"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stdout">
+<h3><code class="docutils literal notranslate"><span class="pre">--stdout</span></code><a class="headerlink" href="#stdout" title="Permalink to this headline">¶</a></h3>
+<p>Write the torrent to the standard output. Normal output will be redirected to stderr.</p>
+</div>
+<div class="section" id="w-web-seed">
+<h3><code class="docutils literal notranslate"><span class="pre">-w,--web-seed</span></code><a class="headerlink" href="#w-web-seed" title="Permalink to this headline">¶</a></h3>
+<p>Add one or multiple HTTP/FTP urls as seeds.</p>
+</div>
+<div class="section" id="d-dht-node">
+<h3><code class="docutils literal notranslate"><span class="pre">-d,--dht-node</span></code><a class="headerlink" href="#d-dht-node" title="Permalink to this headline">¶</a></h3>
+<p>Add one or multiple DHT nodes. The expected format is &lt;host&gt;:&lt;port&gt;.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">---</span><span class="n">dht</span><span class="o">-</span><span class="n">node</span> <span class="s2">"127.0.0.1:8686"</span> <span class="s2">"192.168.0.0:9999:</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-comment">
+<h3><code class="docutils literal notranslate"><span class="pre">-c,--comment</span></code><a class="headerlink" href="#c-comment" title="Permalink to this headline">¶</a></h3>
+<p>Add a comment.</p>
+</div>
+<div class="section" id="p-private">
+<h3><code class="docutils literal notranslate"><span class="pre">-p,--private</span></code><a class="headerlink" href="#p-private" title="Permalink to this headline">¶</a></h3>
+<p>Set the private flag to disable DHT and PEX.
+When no options are given this will enable the private flag.
+Pass “on” or “off” to override the defaults when using supported trackers     .</p>
+</div>
+<div class="section" id="l-piece-size">
+<h3><code class="docutils literal notranslate"><span class="pre">-l,--piece-size</span></code><a class="headerlink" href="#l-piece-size" title="Permalink to this headline">¶</a></h3>
+<p>Set the piece size.
+When no unit is specified block size will be either 2^&lt;n&gt; bytes or &lt;n&gt; bytes if n is larger or equal to 16384.
+Piece size must be a power of two in range 16K to 64M.
+Leave empty or pass “auto” to determine by total file size.</p>
+<p>Piece size as a power of two. (2**20 = 1MiB)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">piece</span><span class="o">-</span><span class="n">size</span> <span class="mi">20</span>
+</pre></div>
+</div>
+<p>Piece size as a size in bytes. (65536 = 64 KiB)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">piece</span><span class="o">-</span><span class="n">size</span> <span class="mi">65536</span>
+</pre></div>
+</div>
+<p>Piece size with unit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">piece</span><span class="o">-</span><span class="n">size</span> <span class="mi">2</span><span class="n">M</span>
+<span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">piece</span><span class="o">-</span><span class="n">size</span> <span class="mi">2</span><span class="n">MiB</span>
+<span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">piece</span><span class="o">-</span><span class="n">size</span> <span class="s2">"2 MiB"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-source">
+<h3><code class="docutils literal notranslate"><span class="pre">-s,--source</span></code><a class="headerlink" href="#s-source" title="Permalink to this headline">¶</a></h3>
+<p>Add a source tag to facilitate cross-seeding.</p>
+</div>
+<div class="section" id="n-name">
+<h3><code class="docutils literal notranslate"><span class="pre">-n,--name</span></code><a class="headerlink" href="#n-name" title="Permalink to this headline">¶</a></h3>
+<p>Set the name of the torrent. The default option to use the basename of the target.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This options changes the filename inside the torrent for single file torrents
+or the root directory name for multi-file torrents. Use with caution.</p>
+</div>
+</div>
+<div class="section" id="t-threads">
+<h3><code class="docutils literal notranslate"><span class="pre">-t,--threads</span></code><a class="headerlink" href="#t-threads" title="Permalink to this headline">¶</a></h3>
+<p>Set the number of threads to use for hashing pieces. Default is 2.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The hashing bottleneck is usually the maximum sequential read speed of you storage device
+so only increasing this as long as you notice a difference.
+Increasing this usually makes sense only for very fast SSD or Optane storage.</p>
+</div>
+</div>
+<div class="section" id="checksum">
+<h3><code class="docutils literal notranslate"><span class="pre">--checksum</span></code><a class="headerlink" href="#checksum" title="Permalink to this headline">¶</a></h3>
+<p>Include a per file checksum for given algorithm.
+The possible options depend on the cryptographic library used.
+All possible options can be listed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="o">--</span><span class="n">checksum</span><span class="o">-</span><span class="n">algorithms</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is only useful for v1 metafiles.
+v2 and hybrid metafiles have per-file merkle roots which makes this options redundant.</p>
+</div>
+</div>
+<div class="section" id="no-creation-date">
+<h3><code class="docutils literal notranslate"><span class="pre">--no-creation-date</span></code><a class="headerlink" href="#no-creation-date" title="Permalink to this headline">¶</a></h3>
+<p>Do not include the current date in the  creation date field.</p>
+</div>
+<div class="section" id="creation-date">
+<h3><code class="docutils literal notranslate"><span class="pre">--creation-date</span></code><a class="headerlink" href="#creation-date" title="Permalink to this headline">¶</a></h3>
+<p>Override the value of the creation date field as an ISO-8601 time or POSIX time string.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrentools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="s2">"2021-01-22T18:21:46Z+0100"</span>
+<span class="n">torrentools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="mi">1611339706</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="no-created-by">
+<h3><code class="docutils literal notranslate"><span class="pre">--no-created-by</span></code><a class="headerlink" href="#no-created-by" title="Permalink to this headline">¶</a></h3>
+<p>Do not include the name and version of this program.</p>
+</div>
+<div class="section" id="include-hidden">
+<h3><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code><a class="headerlink" href="#include-hidden" title="Permalink to this headline">¶</a></h3>
+<p>Do not skip hidden files when scanning the target directory for files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">include</span><span class="o">-</span><span class="n">hidden</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="created-by">
+<h3><code class="docutils literal notranslate"><span class="pre">--created-by</span></code><a class="headerlink" href="#created-by" title="Permalink to this headline">¶</a></h3>
+<p>Override the value of the created by field.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">created</span><span class="o">-</span><span class="n">by</span> <span class="s2">"Me"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="include">
+<h3><code class="docutils literal notranslate"><span class="pre">--include</span></code><a class="headerlink" href="#include" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">include</span> <span class="s2">"</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the include pattern matches hidden files these will be included in the torrent
+even if –include-hidden was not specified.</p>
+</div>
+</div>
+<div class="section" id="exclude">
+<h3><code class="docutils literal notranslate"><span class="pre">--exclude</span></code><a class="headerlink" href="#exclude" title="Permalink to this headline">¶</a></h3>
+<p>Do not add files matching given regex to the metafile. Multiple patterns can be specified.
+When used together with –include, the include patterns will be evaluated first and further filtered by the exclude patterns.</p>
+</div>
+<div class="section" id="io-block-size">
+<h3><code class="docutils literal notranslate"><span class="pre">--io-block-size</span></code><a class="headerlink" href="#io-block-size" title="Permalink to this headline">¶</a></h3>
+<p>The size of blocks read from storage.
+Set to a large value for disks used heavy load to reduce the number of IO operations per second.
+This value must be larger or equal to the piece-size.</p>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="../index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/commands/create.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Create</a><ul>
+<li><a class="reference internal" href="#options">Options</a><ul>
+<li><a class="reference internal" href="#v-protocol"><code class="docutils literal notranslate"><span class="pre">-v,--protocol</span></code></a></li>
+<li><a class="reference internal" href="#o-output"><code class="docutils literal notranslate"><span class="pre">-o,--output</span></code></a></li>
+<li><a class="reference internal" href="#a-announce"><code class="docutils literal notranslate"><span class="pre">-a,--announce</span></code></a></li>
+<li><a class="reference internal" href="#stdout"><code class="docutils literal notranslate"><span class="pre">--stdout</span></code></a></li>
+<li><a class="reference internal" href="#w-web-seed"><code class="docutils literal notranslate"><span class="pre">-w,--web-seed</span></code></a></li>
+<li><a class="reference internal" href="#d-dht-node"><code class="docutils literal notranslate"><span class="pre">-d,--dht-node</span></code></a></li>
+<li><a class="reference internal" href="#c-comment"><code class="docutils literal notranslate"><span class="pre">-c,--comment</span></code></a></li>
+<li><a class="reference internal" href="#p-private"><code class="docutils literal notranslate"><span class="pre">-p,--private</span></code></a></li>
+<li><a class="reference internal" href="#l-piece-size"><code class="docutils literal notranslate"><span class="pre">-l,--piece-size</span></code></a></li>
+<li><a class="reference internal" href="#s-source"><code class="docutils literal notranslate"><span class="pre">-s,--source</span></code></a></li>
+<li><a class="reference internal" href="#n-name"><code class="docutils literal notranslate"><span class="pre">-n,--name</span></code></a></li>
+<li><a class="reference internal" href="#t-threads"><code class="docutils literal notranslate"><span class="pre">-t,--threads</span></code></a></li>
+<li><a class="reference internal" href="#checksum"><code class="docutils literal notranslate"><span class="pre">--checksum</span></code></a></li>
+<li><a class="reference internal" href="#no-creation-date"><code class="docutils literal notranslate"><span class="pre">--no-creation-date</span></code></a></li>
+<li><a class="reference internal" href="#creation-date"><code class="docutils literal notranslate"><span class="pre">--creation-date</span></code></a></li>
+<li><a class="reference internal" href="#no-created-by"><code class="docutils literal notranslate"><span class="pre">--no-created-by</span></code></a></li>
+<li><a class="reference internal" href="#include-hidden"><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code></a></li>
+<li><a class="reference internal" href="#created-by"><code class="docutils literal notranslate"><span class="pre">--created-by</span></code></a></li>
+<li><a class="reference internal" href="#include"><code class="docutils literal notranslate"><span class="pre">--include</span></code></a></li>
+<li><a class="reference internal" href="#exclude"><code class="docutils literal notranslate"><span class="pre">--exclude</span></code></a></li>
+<li><a class="reference internal" href="#io-block-size"><code class="docutils literal notranslate"><span class="pre">--io-block-size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+  </body>
+</html>

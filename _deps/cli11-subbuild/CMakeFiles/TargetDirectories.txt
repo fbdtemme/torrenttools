@@ -1,0 +1,3 @@
+/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/rebuild_cache.dir
+/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/edit_cache.dir
+/home/runner/work/torrenttools/torrenttools/build/_deps/cli11-subbuild/CMakeFiles/cli11-populate.dir

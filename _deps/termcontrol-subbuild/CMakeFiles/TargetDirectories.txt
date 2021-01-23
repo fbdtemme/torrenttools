@@ -1,0 +1,3 @@
+/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/rebuild_cache.dir
+/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/edit_cache.dir
+/home/runner/work/torrenttools/torrenttools/build/_deps/termcontrol-subbuild/CMakeFiles/termcontrol-populate.dir

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/CMakeFiles/gsl-lite-populate"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/CMakeFiles/gsl-lite-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/CMakeFiles/gsl-lite-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-update.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/torrenttools/torrenttools/build/_deps/gsl-lite-subbuild/gsl-lite-populate-prefix/src/gsl-lite-populate-stamp/gsl-lite-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gsl-lite-populate"
+		],
+		"name" : "gsl-lite-populate"
+	}
+}

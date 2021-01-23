@@ -1,0 +1,3 @@
+repository='https://github.com/fbdtemme/bencode.git'
+module=''
+tag='origin'
