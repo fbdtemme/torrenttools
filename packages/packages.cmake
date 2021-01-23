@@ -23,13 +23,6 @@ set(CPACK_ARCHIVE_COMPONENT_INSTALL          ON)
 set(CPACK_COMPONENTS_ALL                     torrenttools)
 set(CPACK_COMPONENTS_TORRENTTOOLS_REQUIRED   ON)
 
-cpack_add_component(torrenttools
-        DISPLAY_NAME core
-        DESCRIPTION "The core application."
-        REQUIRED)
-
-cpack_add_component(undefined HIDDEN)
-
 # Get the list of ignored files from .gitignore.
 set(gitignore ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore)
 if (EXISTS ${gitignore})
@@ -78,4 +71,11 @@ include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/windows-wix.cmake)
 
 include(CPack)
+
+cpack_add_component(torrenttools
+        DISPLAY_NAME core
+        DESCRIPTION "The core application."
+        REQUIRED)
+
+cpack_add_component(undefined HIDDEN)
 
