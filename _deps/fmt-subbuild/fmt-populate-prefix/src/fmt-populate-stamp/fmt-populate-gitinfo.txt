@@ -1,3 +1,0 @@
-repository='https://github.com/fmtlib/fmt.git'
-module=''
-tag='origin'

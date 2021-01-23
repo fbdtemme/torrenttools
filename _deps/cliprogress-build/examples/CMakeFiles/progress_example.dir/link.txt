@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/progress_example.dir/progress_example.cpp.o CMakeFiles/progress_example.dir/__/src/application.cpp.o CMakeFiles/progress_example.dir/__/src/widget.cpp.o -o progress_example  ../libcliprogress.a -lpthread 

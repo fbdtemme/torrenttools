@@ -1,4 +1,0 @@
-venv/*
-**/.idea/*
-**/.vscode/*
-**/cmake-build-*/*

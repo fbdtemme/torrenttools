@@ -1,3 +1,0 @@
-repository='https://github.com/google/re2.git'
-module=''
-tag='origin'

@@ -1,3 +1,0 @@
-/home/runner/work/torrenttools/torrenttools/build/_deps/bencode-subbuild/CMakeFiles/rebuild_cache.dir
-/home/runner/work/torrenttools/torrenttools/build/_deps/bencode-subbuild/CMakeFiles/edit_cache.dir
-/home/runner/work/torrenttools/torrenttools/build/_deps/bencode-subbuild/CMakeFiles/bencode-populate.dir

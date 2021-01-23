@@ -1,3 +1,0 @@
-repository='https://github.com/martinmoene/expected-lite.git'
-module=''
-tag='origin'

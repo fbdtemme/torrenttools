@@ -1,3 +1,0 @@
-repository='https://github.com/fbdtemme/termcontrol.git'
-module=''
-tag='origin'

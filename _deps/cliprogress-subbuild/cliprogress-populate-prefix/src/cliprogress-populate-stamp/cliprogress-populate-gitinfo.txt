@@ -1,3 +1,0 @@
-repository='https://github.com/fbdtemme/cliprogress.git'
-module=''
-tag='origin'
