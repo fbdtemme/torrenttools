@@ -29,7 +29,7 @@ Tools for inspecting, creating and modifying bittorrent metafiles.
 
 void list_available_checksums()
 {
-    for (auto h : dottorrent::supported_hash_functions) {
+    for (auto h : dottorrent::hasher_supported_algorithms()) {
         std::cout << to_string(h) << '\n';
     }
 }
@@ -52,14 +52,14 @@ int main(int argc, char** argv) {
     CLI::App app(main_description, PROJECT_NAME);
     app.formatter(std::make_shared<help_formatter>());
 
-    auto info_app    = app.add_subcommand("info",   "General infomation about bittorrent metafiles.");
+    auto info_app    = app.add_subcommand("info",   "General information about bittorrent metafiles.");
     auto create_app  = app.add_subcommand("create", "Create bittorrent metafiles.");
     auto verify_app  = app.add_subcommand("verify", "Verify local data against bittorrent metafiles.");
 //    auto edit_app    = app.add_subcommand("edit",   "Edit a bittorrent metafile.");
 
     /// List available checkusm
     app.add_flag_callback(
-            "--checksum-functions", std::function(&list_available_checksums),
+            "--checksum-algorithms", std::function(&list_available_checksums),
             "List the supported hash functions for per file checksums.");
 
     configure_info_app(info_app, info_options);
