@@ -32,8 +32,8 @@ TEST_CASE("test tree_index") {
         }
         SECTION("directory list for root dir") {
             auto c = index.list_directory_content("");
-            CHECK(c[0].first == "Fedora-Workstation-30-1.2-x86_64-CHECKSUM");
-            CHECK(c[1].first == "Fedora-Workstation-Live-x86_64-30-1.2.iso");
+            CHECK(c[0].path == "Fedora-Workstation-30-1.2-x86_64-CHECKSUM");
+            CHECK(c[1].path == "Fedora-Workstation-Live-x86_64-30-1.2.iso");
         }
     }
 
@@ -55,16 +55,16 @@ TEST_CASE("test tree_index") {
         SECTION("file list") {
             auto l = index.list_directory_content("dir1");
             CHECK(l.size() == 3);
-            CHECK(l[0].first == "dir3");
-            CHECK(l[1].first == "f1");
-            CHECK(l[2].first == "f2");
+            CHECK(l[0].path == "dir3");
+            CHECK(l[1].path == "f1");
+            CHECK(l[2].path == "f2");
 
             l = index.list_directory_content("dir2");
             CHECK(l.size() == 4);
-            CHECK(l[0].first == "f1");
-            CHECK(l[1].first == "f2");
-            CHECK(l[2].first == "f3");
-            CHECK(l[3].first == "f4");
+            CHECK(l[0].path == "f1");
+            CHECK(l[1].path == "f2");
+            CHECK(l[2].path == "f3");
+            CHECK(l[3].path == "f4");
         }
     }
 }
