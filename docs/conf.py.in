@@ -5,9 +5,7 @@ source_suffix = '.rst'
 source_encoding = 'utf-8'
 
 # General information about
-extensions = [
-    "furo",
-]
+extensions = ["furo"]
 master_doc = "index"
 html_theme = "furo"
 html_logo  = "@CMAKE_SOURCE_DIR@/resources/images/torrenttools-icon.svg"

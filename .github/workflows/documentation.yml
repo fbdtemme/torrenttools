@@ -1,0 +1,34 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+            sudo python3 -m pip install sphinx
+            sudo python3 -m pip install furo
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -B build -S . \
+              -DTORRENTTOOLS_BUILD_CORE=OFF \
+              -DTORRENTTOOLS_BUILD_TESTS=OFF \
+              -DTORRENTTOOLS_INSTALL=OFF \
+              -DTORRENTTOOLS_BUILD_DOCS=ON \
+      - name: build
+        run: cmake --build build --target Sphinx
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
+          CLEAN: true

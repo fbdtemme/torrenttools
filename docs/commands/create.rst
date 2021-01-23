@@ -48,7 +48,7 @@ Will create a torrent with full path ~/torrents/test-dir.torrent
 
 
 ``-a,--announce``
-++++++++++++++++
+++++++++++++++++++
 Add one or multiple announces urls.
 
 .. code-block:: bash
@@ -78,7 +78,7 @@ Add one or multiple DHT nodes. The expected format is <host>:<port>.
     torrenttools create test-dir ---dht-node "127.0.0.1:8686" "192.168.0.0:9999:
 
 ``-c,--comment``
-+++++++++++++++
++++++++++++++++++
 Add a comment.
 
 .. code-block:
