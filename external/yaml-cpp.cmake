@@ -4,6 +4,7 @@ if (yaml-cpp_FOUND)
     log_found(yaml-cpp)
 else()
     set(YAML_CPP_BUILD_TESTS OFF)
+    set(YAML_CPP_BUILD_TOOLS OFF)
     set(YAML_CPP_INSTALL OFF)
 
     if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/yaml-cpp)
