@@ -30,3 +30,7 @@ jobs:
                  -DTORRENTTOOLS_BUILD_DOCS=OFF
       - name: Build
         run: cmake --build build --target torrenttools
+      - name: Test
+        run: |
+         cd build
+         ctest
