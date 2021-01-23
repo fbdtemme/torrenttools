@@ -1,22 +1,22 @@
 Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_b5b99/fast && /usr/bin/make  -f CMakeFiles/cmTC_b5b99.dir/build.make CMakeFiles/cmTC_b5b99.dir/build
+Run Build Command(s):/usr/bin/make cmTC_cbb61/fast && /usr/bin/make  -f CMakeFiles/cmTC_cbb61.dir/build.make CMakeFiles/cmTC_cbb61.dir/build
 make[1]: Entering directory '/home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_b5b99.dir/src.cxx.o
-/usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_b5b99.dir/src.cxx.o -c /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp/src.cxx
-Linking CXX executable cmTC_b5b99
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5b99.dir/link.txt --verbose=1
-/usr/bin/c++ CMakeFiles/cmTC_b5b99.dir/src.cxx.o -o cmTC_b5b99 
-/usr/bin/ld: CMakeFiles/cmTC_b5b99.dir/src.cxx.o: in function `main':
+Building CXX object CMakeFiles/cmTC_cbb61.dir/src.cxx.o
+/usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_cbb61.dir/src.cxx.o -c /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_cbb61
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cbb61.dir/link.txt --verbose=1
+/usr/bin/c++ CMakeFiles/cmTC_cbb61.dir/src.cxx.o -o cmTC_cbb61 
+/usr/bin/ld: CMakeFiles/cmTC_cbb61.dir/src.cxx.o: in function `main':
 src.cxx:(.text+0x46): undefined reference to `pthread_create'
 /usr/bin/ld: src.cxx:(.text+0x52): undefined reference to `pthread_detach'
 /usr/bin/ld: src.cxx:(.text+0x5e): undefined reference to `pthread_cancel'
 /usr/bin/ld: src.cxx:(.text+0x6f): undefined reference to `pthread_join'
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_b5b99.dir/build.make:106: cmTC_b5b99] Error 1
+make[1]: *** [CMakeFiles/cmTC_cbb61.dir/build.make:106: cmTC_cbb61] Error 1
 make[1]: Leaving directory '/home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:140: cmTC_b5b99/fast] Error 2
+make: *** [Makefile:140: cmTC_cbb61/fast] Error 2
 
 
 Source file was:
@@ -43,18 +43,18 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_cb5d0/fast && /usr/bin/make  -f CMakeFiles/cmTC_cb5d0.dir/build.make CMakeFiles/cmTC_cb5d0.dir/build
+Run Build Command(s):/usr/bin/make cmTC_d2bb9/fast && /usr/bin/make  -f CMakeFiles/cmTC_d2bb9.dir/build.make CMakeFiles/cmTC_d2bb9.dir/build
 make[1]: Entering directory '/home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_cb5d0.dir/CheckFunctionExists.cxx.o
-/usr/bin/c++   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_cb5d0.dir/CheckFunctionExists.cxx.o -c /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
-Linking CXX executable cmTC_cb5d0
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cb5d0.dir/link.txt --verbose=1
-/usr/bin/c++  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_cb5d0.dir/CheckFunctionExists.cxx.o -o cmTC_cb5d0  -lpthreads 
+Building CXX object CMakeFiles/cmTC_d2bb9.dir/CheckFunctionExists.cxx.o
+/usr/bin/c++   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_d2bb9.dir/CheckFunctionExists.cxx.o -c /home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_d2bb9
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2bb9.dir/link.txt --verbose=1
+/usr/bin/c++  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_d2bb9.dir/CheckFunctionExists.cxx.o -o cmTC_d2bb9  -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_cb5d0.dir/build.make:106: cmTC_cb5d0] Error 1
+make[1]: *** [CMakeFiles/cmTC_d2bb9.dir/build.make:106: cmTC_d2bb9] Error 1
 make[1]: Leaving directory '/home/runner/work/torrenttools/torrenttools/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:140: cmTC_cb5d0/fast] Error 2
+make: *** [Makefile:140: cmTC_d2bb9/fast] Error 2
 
 
 
