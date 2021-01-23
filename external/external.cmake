@@ -27,6 +27,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/re2.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/yaml-cpp.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ctre.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/sigslot.cmake)
+# TODO: Replace with C++20 default implementation once available
+include(${CMAKE_CURRENT_LIST_DIR}/date.cmake)
 
 include(${CMAKE_CURRENT_LIST_DIR}/bencode.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/termcontrol.cmake)
