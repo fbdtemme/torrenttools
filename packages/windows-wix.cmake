@@ -6,7 +6,7 @@ set(CPACK_WIX_UPGRADE_GUID  "E7E112B4-2A91-4E82-BBF8-377C1407CE8F")
 list(APPEND CPACK_WIX_EXTENSIONS        "WixUtilExtension")
 
 # Copy the license file to a txt file as required by WIX
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_LIST_DIR}/wix/LICENSE.txt")
+configure_file("${CMAKE_CURRENT_LIST_DIR}/../LICENSE" "${CMAKE_CURRENT_LIST_DIR}/wix/LICENSE.txt")
 
 list(APPEND CPACK_WIX_PATCH_FILE
         "${CMAKE_CURRENT_LIST_DIR}/wix/update_path.xml"
