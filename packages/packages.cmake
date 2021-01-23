@@ -1,7 +1,3 @@
-
-# Copy the license file to a txt file as required by WIX
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
-
 set(CPACK_SOURCE_GENERATOR                   TGZ RPM)
 set(CPACK_GENERATOR                          WIX)
 set(CPACK_PACKAGE_DESCRIPTION_FILE           "${CMAKE_CURRENT_LIST_DIR}/package_summary.txt")
