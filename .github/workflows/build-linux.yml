@@ -18,3 +18,7 @@ jobs:
           cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
       - name: Build
         run: cmake --build build --target torrenttools
+      - name: Test
+        run: |
+          cd build
+          ctest
