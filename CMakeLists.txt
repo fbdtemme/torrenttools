@@ -25,7 +25,7 @@ set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
 ## Load the sysconf install dir as set by the RPM .spec file
 if(NOT DEFINED SYSCONF_INSTALL_DIR)
-    set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_SYSCONFDIR})
+    set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_SYSCONFDIR_FULL})
     message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
 else()
     message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
@@ -48,6 +48,7 @@ add_executable(torrenttools
         src/info.cpp
         src/verify.cpp
         src/create.cpp
+        src/app_data.cpp
         src/argument_parsers.cpp
         src/config_parser.cpp
         src/tracker_database.cpp
@@ -57,13 +58,12 @@ add_executable(torrenttools
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(torrenttools PUBLIC cxx_std_20)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
-
 target_link_libraries(torrenttools PUBLIC
         dottorrent::dottorrent
         termcontrol::termcontrol
         cliprogress::cliprogress
         fmt::fmt
+        date::date
         gsl::gsl-lite-v1
         CLI11::CLI11
         re2::re2
@@ -89,18 +89,20 @@ if(TORRENTTOOLS_BUILD_DOCS)
 endif()
 
 
-
 if (UNIX)
-    set(torrenttools_sysconf_dir        ${SYSCONF_INSTALL_DIR}/torrenttools)
-    set(torrenttools_local_config_dir   $ENV{HOME}/.config/torrenttools)
-    set(torrenttools_bin_install_dir    ${CMAKE_INSTALL_BINDIR})
+    set(torrenttools_sysconf_dir        "${SYSCONF_INSTALL_DIR}/torrenttools")
+    set(torrenttools_bin_dir             ${CMAKE_INSTALL_BINDIR_FULL})
+    set(torrenttools_install_sysconf_dir ${torrenttools_sysconf_dir})
+    set(torrenttools_install_bin_dir     ${CMAKE_INSTALL_BINDIR})
 elseif (WIN32)
     # Dump everything in the install prefix on windows
-    set(torrenttools_sysconf_dir        ".")
-    set(torrenttools_local_config_dir   ".")
-    set(torrenttools_bin_install_dir    ".")
+    # We need full paths
+    set(torrenttools_sysconf_dir         "." )
+    set(torrenttools_install_sysconf_dir ${CMAKE_INSTALL_PREFIX})
+    set(torrenttools_install_bin_dir     ${CMAKE_INSTALL_PREFIX})
 endif ()
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
 if (TORRENTTOOLS_INSTALL)
     if (MINGW OR WIN32)
@@ -113,16 +115,16 @@ if (TORRENTTOOLS_INSTALL)
         endif()
     endif()
 
-    # install trackers and example config files to global data dir
-    install(FILES resources/config.yaml
-            resources/trackers.json
+    # install trackers to system config dir since it is global data.
+    install(FILES resources/trackers.json
+                  resources/config.yaml
             COMPONENT torrenttools
-            DESTINATION ${torrenttools_sysconf_dir})
+            DESTINATION ${torrenttools_install_sysconf_dir})
 
     # install executable
     install(TARGETS torrenttools
             COMPONENT torrenttools
-            RUNTIME DESTINATION ${torrenttools_bin_install_dir})
+            RUNTIME DESTINATION ${torrenttools_install_bin_dir})
 
     if (MINGW)
         # Install mingw shared libraries to the project dir
