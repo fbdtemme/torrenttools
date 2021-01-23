@@ -66,3 +66,7 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Wed Oct 20 2011 Florian De Temmerman <floriandetemmerman@gmail.com> 0.1.4-1
+- Update to 0.1.4
+- Fix missing changelog entry
+- Remove epel-release dependency for el8 builds
