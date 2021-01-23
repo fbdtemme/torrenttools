@@ -58,23 +58,32 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         options.checksums = checksum_transformer(v);
         return true;
     };
-    CLI::callback_t target_transformer = [&](const CLI::results_t v) -> bool {
-        if (v.size() != 1) {
-            throw std::invalid_argument("multiple targets given");
-        }
-        auto f = fs::path(v.front());
-        if (!fs::exists(f)) {
-            throw std::invalid_argument("path does not exist");
-        }
-        options.target = fs::canonical(f);
+    CLI::callback_t target_parser = [&](const CLI::results_t v) -> bool {
+        options.target = target_transformer(v);
         return true;
     };
     CLI::callback_t io_block_size_parser = [&](const CLI::results_t& v) -> bool {
         options.io_block_size = io_block_size_transformer(v);
         return true;
     };
+    CLI::callback_t private_flag_parser = [&](const CLI::results_t& v) -> bool {
+        auto flag = parse_commandline_bool("--private", v);
+        if (flag.has_value()) {
+            options.is_private = flag;
+        }
+        // set implicit private for flag like behavior.
+        options.is_private = true;
+        return true;
+    };
 
-    app->add_option("target", target_transformer, "Target filename or directory")
+    CLI::callback_t creation_date_parser = [&](const CLI::results_t& v) -> bool {
+        options.creation_date = creation_date_transformer("--creation-date", v);
+        return true;
+    };
+
+    const auto max_size = 1U << 20U;
+
+    app->add_option("target", target_parser, "Target filename or directory")
             ->required()
             ->type_name("<path>")
             ->expected(1);
@@ -90,31 +99,39 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             ->type_name("<path>")
             ->expected(1);
 
+    app->add_flag("--stdout", options.write_to_stdout, "Write the torrent to the standard output");
+
     app->add_option("-a,--announce", announce_parser,
                     "Add one or multiple announces urls.\n"
                     "Multiple trackers will be added in seperate tiers by default. \n"
                     "Use square brackets to groups urls in a single tier:\n"
                     " eg. \"--announce url1 [url1 url2]\"")
             ->type_name("<url>")
-            ->type_size(-1);  // allow multiple values
+            ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
                     "Add one or multiple HTTP/FTP urls as seeds.")
             ->type_name("<url>")
-            ->type_size(-1);  // allow multiple values
+            ->expected(0, max_size);
 
     app->add_option("-d, --dht-node", dht_node_parser,
             "Add one or multiple DHT nodes.")
             ->type_name("<host:port>")
-            ->type_size(-1);  // allow multiple values
+            ->expected(0, max_size);
 
+    // Allow an empty comment to force the precense of the field in the torrent file
     app->add_option("-c, --comment", options.comment,
                     "Add a comment.")
-            ->type_name("<comment>")
-            ->expected(1);
+            ->type_name("<string>");
 
-    app->add_flag_callback("-p, --private", [&](){ options.is_private = true; },
-            "Set the private flag to disable DHT and PEX.");
+    // TODO: Allow private flag to be overridden for supported trackers that require private flag.
+    //       but generate a warning.
+//    app->add_flag_callback("-p, --private", [&](){ options.is_private = true; },
+//            "Set the private flag to disable DHT and PEX.");
+    app->add_option("-p, --private", private_flag_parser,
+            "Set the private flag to disable DHT and PEX.")
+            ->type_name("<[on|off]>")
+            ->expected(0, 1);
 
     app->add_option("-l, --piece-size", size_parser,
                     "Set the piece size.\n"
@@ -141,45 +158,56 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     app->add_option("-t, --threads", options.threads,
                     "Set the number of threads to use for hashing pieces. [default: 2]")
             ->type_name("<n>")
-            ->expected(1);
+            ->expected(1)
+            ->default_val(2);
 
     app->add_option("--checksum", checksum_parser,
             "Include a per file checksum of given algorithm." )
             ->type_name("<algorithm>")
-            ->type_size(-1)   // allow multiple values
+            ->expected(0, max_size)
             ->default_str("");
 
-    app->add_flag_callback("--no-creation-date",
+    auto* no_creation_date_option = app->add_flag_callback("--no-creation-date",
             [&]() { options.set_creation_date = false; },
             "Do not include the creation date.");
 
-    app->add_flag_callback("--no-created-by",
+    auto* creation_date_option = app->add_option("--creation-date", creation_date_parser,
+            "Override the value of the creation date field as ISO-8601 time or POSIX time.\n"
+            "Example: \"2021-01-22T18:21:46Z+0100\"")
+            ->type_name("<ISO-8601|POSIX time>");
+
+    no_creation_date_option->excludes(creation_date_option);
+
+    auto* no_created_by_option = app->add_flag_callback("--no-created-by",
             [&]() { options.set_created_by = false; },
             "Do not include the name and version of this program.");
+
+    auto* created_by_option = app->add_option("--created-by", options.created_by,
+            "Override the value of the created by field.")
+            ->type_name("<string>");
+
+    no_created_by_option->excludes(created_by_option);
 
     app->add_option("--include", options.include_patterns,
         "Only add files matching given regex to the metafile.")
         ->type_name("<regex>")
-        ->expected(-1);
+         ->expected(0, max_size);
 
     app->add_option("--exclude", options.exclude_patterns,
         "Do not add files matching given regex to the metafile.")
         ->type_name("<regex>")
-        ->expected(-1);
+        ->expected(0, max_size);
 
     app->add_flag_callback("--include-hidden",
             [&]() { options.include_hidden_files = true; },
             "Do not skip hidden files.");
-
-    // Advanced options
-    // TODO: Add grouping commandlin help
 
     app->add_option("--io-block-size", io_block_size_parser,
                "The size of blocks read from storage.\n"
                "[default: max(1 MiB, <piece-size>)].\n"
                "Must be larger or equal to the piece size.")
        ->type_name("<size[K|M]>")
-       ->expected(-1);
+       ->expected(1);
 }
 
 
@@ -198,15 +226,15 @@ void configure_matcher(torrenttools::file_matcher& matcher, const create_app_opt
 }
 
 
-void run_with_progress(dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
+void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
 {
     using namespace std::chrono_literals;
 
     std::size_t current_file_index = 0;
     auto& storage = m.storage();
 
-    std::cout << "Hashing files..." << std::endl;
-    cliprogress::application app;
+    os << "Hashing files..." << std::endl;
+    cliprogress::application app(os);
 
 
     // v1 torrents count padding files as regular files in their progress counters
@@ -268,17 +296,17 @@ void run_with_progress(dottorrent::storage_hasher& hasher, const dottorrent::met
     app.wait();
     hasher.wait();
 
-    tc::format_to(std::cout, tc::ecma48::character_position_absolute);
-    tc::format_to(std::cout, tc::ecma48::erase_in_line);
-    tc::format_to(std::cout, tc::ecma48::cursor_up, 2);
+    tc::format_to(os, tc::ecma48::character_position_absolute);
+    tc::format_to(os, tc::ecma48::erase_in_line);
+    tc::format_to(os, tc::ecma48::cursor_up, 2);
 
     auto stop_time = std::chrono::system_clock::now();
     auto total_duration = stop_time - start_time;
 
-    print_creation_statistics(m, total_duration);
+    print_creation_statistics(os, m, total_duration);
 }
 
-void print_creation_statistics(const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
+void print_creation_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
 {
     auto& storage = m.storage();
 
@@ -292,8 +320,8 @@ void print_creation_statistics(const dottorrent::metafile& m, std::chrono::syste
         average_hash_rate_str = "∞ B/s";
     }
 
-    std::cout << fmt::format("Hashing completed in: {}\n", format_duration(duration));
-    std::cout << fmt::format("Average hash rate:    {}\n",    average_hash_rate_str);
+    fmt::print(os, "Hashing completed in: {}\n", format_duration(duration));
+    fmt::print(os, "Average hash rate:    {}\n",    average_hash_rate_str);
 
     // Torrent file is hashed so we can return to infohash
     std::string info_hash_string {};
@@ -315,8 +343,7 @@ void print_creation_statistics(const dottorrent::metafile& m, std::chrono::syste
             info_hash_string = fmt::format("Infohash:             {}\n", infohash_v1);
         }
     }
-
-    std::cout << info_hash_string;
+    os << info_hash_string;
 }
 
 
@@ -334,7 +361,7 @@ void set_files(dottorrent::metafile& m, const create_app_options& options)
         configure_matcher(matcher, options);
         auto files = matcher.run(options.target);
         std::sort(files.begin(), files.end(),
-                [](fs::path& lhs, fs::path& rhs) {
+                [](const fs::path& lhs, const fs::path& rhs) {
                     return rng::lexicographical_compare(lhs.string(), rhs.string()); }
         );
 
@@ -438,6 +465,8 @@ void run_create_app(const create_app_options& options)
     namespace dt = dottorrent;
     using namespace dottorrent::literals;
 
+    std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
+
     // create a new metafile
     dt::metafile m {};
 
@@ -476,17 +505,26 @@ void run_create_app(const create_app_options& options)
     if (options.is_private.has_value()) {
         m.set_private(*options.is_private);
     }
+    // Set created by the override value or the default if requested
     if (options.set_created_by) {
-        m.set_created_by(CREATED_BY_STRING);
+        if (options.created_by.has_value())
+            m.set_created_by(*options.created_by);
+        else
+            m.set_created_by(CREATED_BY_STRING);
     }
+
+    // Set created date to the override value or the default if requested
     if (options.set_creation_date) {
-        m.set_creation_date(std::chrono::system_clock::now());
+        if (options.creation_date.has_value())
+            m.set_creation_date(*options.creation_date);
+        else
+            m.set_creation_date(std::chrono::system_clock::now());
     }
 
     fs::path destination_file = get_destination_path(m, options);
 
-    create_general_info(std::cout, m, destination_file, options.protocol_version, {});
-    std::cout << '\n';
+    create_general_info(os, m, destination_file, options.protocol_version, {});
+    os << '\n';
 
     std::size_t io_block_size = std::min(1_MiB, file_storage.piece_size());
     if (options.io_block_size) {
@@ -502,9 +540,14 @@ void run_create_app(const create_app_options& options)
     };
 
     auto hasher = dt::storage_hasher(file_storage, hasher_options);
-    run_with_progress(hasher, m);
+    run_with_progress(os, hasher, m);
 
     // Join all threads and block until completed.
-    dt::save_metafile(destination_file, m, options.protocol_version);
-    std::cout << fmt::format("Metafile written to:  {}\n", destination_file.string());
+    if (!options.write_to_stdout) {
+        dt::save_metafile(destination_file, m, options.protocol_version);
+        os << fmt::format("Metafile written to:  {}\n", destination_file.string());
+    } else {
+        os << fmt::format("Metafile written to standard output.");
+        dt::write_metafile_to(std::cout, m, options.protocol_version);
+    }
 };

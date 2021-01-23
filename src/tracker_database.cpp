@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <fmt/args.h>
 
+#include "app_data.hpp"
 #include "tracker_database.hpp"
 
 namespace torrenttools {
@@ -226,7 +227,7 @@ tracker_database* load_tracker_database()
 {
     static std::unique_ptr<tracker_database> tracker_db;
     static std::vector<fs::path> data_dirs {
-        USER_DATA_DIR,
+        get_user_data_dir(),
         GLOBAL_DATA_DIR,
         BUILD_DATA_DIR,
     };
