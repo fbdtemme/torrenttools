@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CPackWiXPatch>
+    <CPackWiXFragment Id="CM_FP_torrenttools.config.yml">
+        <CopyFile Id="LocalAppDataFolder.torrenttools.copy1" DestinationDirectory="DP_LocalAppData_torrenttools"/>
+    </CPackWiXFragment>
+    <CPackWiXFragment Id="CM_CP_torrenttools.config.yml">
+        <RemoveFile Id="RF_LocalAppDataFolder_config.yml" Directory="DP_LocalAppData_torrenttools" Name="*" On="uninstall"/>
+        <RemoveFolder Id="RF_LocalAppData_torrenttools" Directory="DP_LocalAppData_torrenttools" On="uninstall"/>
+    </CPackWiXFragment>
+</CPackWiXPatch>

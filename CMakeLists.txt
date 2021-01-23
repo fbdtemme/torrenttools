@@ -97,9 +97,9 @@ if (UNIX)
 elseif (WIN32)
     # Dump everything in the install prefix on windows
     # We need full paths
-    set(torrenttools_sysconf_dir         "." )
-    set(torrenttools_install_sysconf_dir ${CMAKE_INSTALL_PREFIX})
-    set(torrenttools_install_bin_dir     ${CMAKE_INSTALL_PREFIX})
+    set(torrenttools_sysconf_dir         ".")
+    set(torrenttools_install_sysconf_dir ".")
+    set(torrenttools_install_bin_dir     ".")
 endif ()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
@@ -117,7 +117,7 @@ if (TORRENTTOOLS_INSTALL)
 
     # install trackers to system config dir since it is global data.
     install(FILES resources/trackers.json
-                  resources/config.yaml
+                  resources/config.yml
             COMPONENT torrenttools
             DESTINATION ${torrenttools_install_sysconf_dir})
 
