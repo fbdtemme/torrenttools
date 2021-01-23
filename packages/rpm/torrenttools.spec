@@ -22,7 +22,6 @@ BuildRequires:   git
 %{?fedora:Requires:        libstdc++ >= 10.0.0}
 
 %{?el8:BuildRequires:      gcc-toolset-10}
-%{?el8:BuildRequires:      epel-release}
 
 Requires:            openssl >= 1.0.0
 
