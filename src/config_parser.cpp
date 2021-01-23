@@ -65,6 +65,8 @@ std::string_view config::get_tracker_parameter(
 config* load_config()
 {
     static std::unique_ptr<config> config_ptr;
+    static std::string_view config_name = "config.yml";
+
     std::vector<fs::path> data_dirs {
         get_user_data_dir(),
         GLOBAL_DATA_DIR,
@@ -78,15 +80,15 @@ config* load_config()
     fs::path config_location;
     for (const auto& path : data_dirs) {
         std::error_code ec;
-        auto exists = fs::exists(path/"config.yaml", ec);
+        auto exists = fs::exists(path / config_name, ec);
         if (ec) continue;
         if (exists) {
-            config_location = path/"config.yaml";
+            config_location = path/config_name;
             break;
         }
     }
     if (config_location.empty()) {
-        throw std::invalid_argument("could not find config.yaml file");
+        throw std::invalid_argument(fmt::format("could not find {} file", config_name));
     }
 
     config_ptr = std::make_unique<config>(config_location);
