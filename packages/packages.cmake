@@ -19,6 +19,10 @@ set(CPACK_ARCHIVE_COMPONENT_INSTALL          ON)
 set(CPACK_COMPONENTS_ALL                     torrenttools)
 set(CPACK_COMPONENTS_TORRENTTOOLS_REQUIRED   ON)
 
+# Copy the license file to a txt file as required by WIX
+configure_file("${CMAKE_CURRENT_LIST_DIR}/../LICENSE" "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
+set(CPACK_RESOURCE_FILE_LICENSE             "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
+
 # Get the list of ignored files from .gitignore.
 set(gitignore ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore)
 if (EXISTS ${gitignore})
