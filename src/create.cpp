@@ -99,7 +99,8 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             ->type_name("<path>")
             ->expected(1);
 
-    app->add_flag("--stdout", options.write_to_stdout, "Write the torrent to the standard output");
+    app->add_flag_callback("--stdout", [&]() { options.write_to_stdout = true; },
+            "Write the metafile to the standard output");
 
     app->add_option("-a,--announce", announce_parser,
                     "Add one or multiple announces urls.\n"

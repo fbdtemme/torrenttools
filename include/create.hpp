@@ -23,7 +23,7 @@ struct create_app_options
 {
     std::filesystem::path target;
     std::optional<std::filesystem::path> destination;
-    std::optional<bool> write_to_stdout = false;
+    bool write_to_stdout = false;
     dottorrent::protocol protocol_version = dottorrent::protocol::v1;
     std::optional<std::size_t> piece_size;
     std::unordered_set<dottorrent::hash_function> checksums = {};

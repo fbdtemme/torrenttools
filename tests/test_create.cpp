@@ -320,16 +320,16 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.include_patterns.empty());
         }
         SECTION("single value given") {
-            auto cmd = fmt::format("create {} --include \"{}\"", file, "*.git.*");
+            auto cmd = fmt::format("create {} --include \"{}\"", file, ".*\\.git.*");
             PARSE_ARGS(cmd);
             CHECK(create_options.include_patterns.size() == 1);
-            CHECK(create_options.include_patterns.at(0) == "*.git.*");
+            CHECK(create_options.include_patterns.at(0) == ".*\\.git.*");
         }
         SECTION("multiple values given") {
             auto cmd = fmt::format(R"(create {} --include "{}" "{}" --include-hidden)", file, "*.\\.git.*", ".*test.*" );
             PARSE_ARGS(cmd);
-            CHECK(create_options.checksums.size() == 2);
-            CHECK(create_options.include_patterns.at(0) == "*.git.*");
+            CHECK(create_options.include_patterns.size() == 2);
+            CHECK(create_options.include_patterns.at(0) == "*.\\.git.*");
             CHECK(create_options.include_patterns.at(1) == ".*test.*");
         }
     }
@@ -349,8 +349,8 @@ TEST_CASE("test create app argument parsing")
         SECTION("multiple values given") {
             auto cmd = fmt::format(R"(create {} --exclude "{}" "{}" --include-hidden)", file, "*.\\.git.*", ".*test.*" );
             PARSE_ARGS(cmd);
-            CHECK(create_options.checksums.size() == 2);
-            CHECK(create_options.exclude_patterns.at(0) == ".*\\.git.*");
+            CHECK(create_options.exclude_patterns.size() == 2);
+            CHECK(create_options.exclude_patterns.at(0) ==  "*.\\.git.*");
             CHECK(create_options.exclude_patterns.at(1) == ".*test.*");
         }
     }
@@ -435,5 +435,16 @@ TEST_CASE("test create app argument parsing")
             CHECK_FALSE(create_options.io_block_size.has_value());
         }
     }
-
+    SECTION("stdout") {
+        SECTION("default") {
+            auto cmd = fmt::format("create {}", file);
+            PARSE_ARGS(cmd);
+            CHECK_FALSE(create_options.write_to_stdout);
+        }
+        SECTION("option given") {
+            auto cmd = fmt::format("create {} --include-hidden", file);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.include_hidden_files);
+        }
+    }
 }
