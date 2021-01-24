@@ -205,9 +205,11 @@ void create_general_info(std::ostream& os,
 
     tree_options tree_fmt_options {.use_color = options.use_color,
                                    .list_padding_files = options.show_padding_files};
-    fmt::format_to(out, "Files:\n");
-    format_file_tree(out, m, "  ", tree_fmt_options);
-    fmt::format_to(out, "\n{}\n", format_file_stats(m, " ", options.show_padding_files));
+
+    auto file_tree = format_file_tree(m, "  ", tree_fmt_options);
+    auto file_stats = format_file_stats(m, " ", options.show_padding_files);
+
+    fmt::format_to(out, "Files:\n{}\n{}\n", file_tree, file_stats);
 }
 
 void format_announces(std::ostream& os, const dottorrent::metafile& metafile)
