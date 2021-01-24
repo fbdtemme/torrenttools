@@ -154,11 +154,12 @@ void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent:
 
     tree_options tree_options { .show_file_size = false, .show_directory_size = false};
     auto terminal_size = termcontrol::get_terminal_size();
-    format_verify_file_tree(
-            std::ostreambuf_iterator<char>{std::cout},
+    auto verify_file_tree = format_verify_file_tree(
             m, verifier, "  ",
             terminal_size.cols,
             tree_options);
+
+    std::cout << verify_file_tree;
 }
 
 
