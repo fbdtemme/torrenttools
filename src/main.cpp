@@ -15,10 +15,30 @@
 #include "query.hpp"
 #include "help_formatter.hpp"
 
+#ifdef _WIN32
+#define UNICODE
+#define _UNICODE
+#include <windows.h>
+#endif
 
 
 // TODO: Implement peer scrape to check number of seeders/leachers for each announce
 //       without loading in a torrent client.
+
+static void setup_console()
+{
+    std::setlocale(LC_ALL, ".UTF-8");
+    std::ios_base::sync_with_stdio(false);
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    if (!termcontrol::enable_virtual_terminal_processing()) {
+        std::cout << "Warning: Could not enable ANSI escape code processing!" << std::endl;
+    }
+#endif
+}
 
 
 
@@ -36,14 +56,8 @@ void list_available_checksums()
 
 
 int main(int argc, char** argv) {
-    std::setlocale(LC_ALL, "");
-    std::ios_base::sync_with_stdio(false);
 
-#ifdef WIN32
-    if (!termcontrol::enable_virtual_terminal_processing()) {
-        std::cout << "Warning: Could not enable ANSI escape code processing!" << std::endl;
-    }
-#endif
+    setup_console();
 
     info_app_options info_options {};
     create_app_options create_options {};
