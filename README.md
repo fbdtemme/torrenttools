@@ -10,8 +10,9 @@
 A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
+[**Documentation**](#Documentation) |
+[**Packages**](#Packages) |
 [**Examples**](#Examples) |
-[**Installation**](#Installation) |
 [**Building**](#Building) |
 [**License**](#License)
 
@@ -20,14 +21,37 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 * Creating bittorrent metafiles. 
 * Inspecting bittorrent metafiles.
 * Verifying bittorrent metafiles against local data.
+* Editing existing bittorrent metafiles.
 * Support for the new [v2 and hybrid protocols](https://blog.libtorrent.org/2020/09/bittorrent-v2/) .
 * Support for tracker abbreviations.
-* Support for announce parameters. 
+* Support for announce substitution parameters. 
 
 ## Status
 
 This project is under development. 
 The commandline interface can change at any release prior to 1.0.0.
+
+## Documentation
+
+Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttools/).
+
+
+## Packages
+
+Binary and source packages for Fedora 32, Fedora 33, and Fedora Rawhide are available in a COPR repo.
+
+```shell
+sudo dnf copr enable fbdtemme/torrenttools
+sudo dnf install torrenttools
+```
+
+Binary and source packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available in a launchpad repo.
+
+```shell
+sudo add-apt-repository ppa:fbdtemme/torrenttools
+sudo apt-get update
+sudo apt install torrenttools
+```
 
 ## Examples
 
@@ -111,22 +135,6 @@ Options:
 ````
 
 
-## Installation
-
-Binary packages for Fedora 32, Fedora 33, and Fedora Rawhide are available in a COPR repo.
-
-```shell
-sudo dnf copr enable fbdtemme/torrenttools
-sudo dnf install torrenttools
-```
-
-Binary packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available in a launchpad repo.
-
-```shell
-sudo add-apt-repository ppa:fbdtemme/torrenttools
-sudo apt-get update
-sudo apt install torrenttools
-```
 
 
 ## Building
@@ -143,7 +151,7 @@ This library depends on following projects:
 *  [nlohmann/json](https://github.com/nlohmann/json)
 *  [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 *  [bencode](https://github/com/fbdtemme/bencode)
-*  [oneTBB](https://github.com/oneapi-src/oneTBB)
+*  [date](https://github.com/HowardHinnant/date)
 *  [OpenSSL](https://github.com/openssl/openssl) or [libgcrypt](https://github.com/gpg/libgcrypt)
 
 Almost all dependencies can be fetched from github during configure time or can be installed manually.
