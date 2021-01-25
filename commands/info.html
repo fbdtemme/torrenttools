@@ -1,0 +1,513 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Show" href="show.html" /><link rel="prev" title="Edit" href="edit.html" />
+
+    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
+        <title>Info - torrenttools - 0.2.0</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=26485485040e7aaf717c13fd0188a5ad2c2deb60">
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script defer="defer" src="../_static/jquery.js"></script>
+    <script defer="defer" src="../_static/underscore.js"></script>
+    <script defer="defer" src="../_static/doctools.js"></script>
+    <script defer src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">torrenttools - 0.2.0</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">torrenttools - 0.2.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Commands</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="create.html">Create</a></li>
+<li class="toctree-l1"><a class="reference internal" href="edit.html">Edit</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="info">
+<span id="info-command"></span><h1>Info<a class="headerlink" href="#info" title="Permalink to this headline">¶</a></h1>
+<p>The info command is used to print an overview of BitTorrent metafiles features.</p>
+<p>The basic invocation requires only the target .torrent file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools info &lt;target&gt;
+</pre></div>
+</div>
+<p>Either specify all options first or give the target first followed by all options.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>General information about bittorrent metafiles.
+Usage: torrenttools info [OPTIONS] target
+
+Positionals:
+  target &lt;path&gt;                    Target bittorrent metafile.
+
+Options:
+  -h,--help                        Print this help message and exit
+  --raw                            Print the metafile data formatted as JSON. Binary data is filtered out.
+  --show-pieces                    Print the metafile data formatted as JSON.
+                                   Binary data is included as hexadecimal strings.
+  --show-padding-files             Show padding files in the file tree.
+</pre></div>
+</div>
+<p>Output looks as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Metafile:         bittorrent-v2-hybrid-test.torrent
+Protocol version: v1 + v2 (hybrid)
+Infohash:         v1: 8c9a2f583949c757c32e085413b581067eed47d0
+                  v2: d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb
+Piece size:       512 KiB (524288 bytes)
+Created by:       libtorrent
+Created on:       2020-06-03 08:45:06 UTC
+Private:          false
+Name:             bittorrent-v1-v2-hybrid-test
+Source:
+Comment:
+
+Announces:
+
+Files:
+  bittorrent-v1-v2-hybrid-test
+  ├── [6.23 MiB] Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
+  ├── [19.6 MiB] Spaceballs-StateOfTheArt.avi
+  ├── [ 326 MiB] cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4
+  ├── [58.8 MiB] eld-dust.mkv
+  ├── [ 265 MiB] fairlight_cncd-agenda_circling_forth-1080p30lq.mp4
+  ├── [42.5 MiB] meet the deadline - Still _ Evoke 2014.mp4
+  ├── [61.0   B] readme.txt
+  ├── [25.1 MiB] tbl-goa.avi
+  └── [ 111 MiB] tbl-tint.mpg
+
+  854.06 MiB in 0 directories, 9 files
+</pre></div>
+</div>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="raw">
+<h3><code class="docutils literal notranslate"><span class="pre">--raw</span></code><a class="headerlink" href="#raw" title="Permalink to this headline">¶</a></h3>
+<p>This options will print a JSON representation of the torrent with binary fields replaced by a string descibing the content.
+The torrent from the previous example will output as follows</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">"created by"</span><span class="p">:</span> <span class="s2">"libtorrent"</span><span class="p">,</span>
+    <span class="s2">"creation date"</span><span class="p">:</span> <span class="mi">1591173906</span><span class="p">,</span>
+    <span class="s2">"info"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"file tree"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">6535405</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root 8e31d30f9e25c6336768e978261219c8a9ee8ba81f1bf8a07d8b84664428ccc6&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"Spaceballs-StateOfTheArt.avi"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">20506624</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root ef988424c9c4eb263d55dd84ed2cfc366f60a994e9c80b0dd6979c822ed451ae&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">342230630</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root 697d9b53c31b6185867e5df15dba2a7e81fdda6c9aedeaaa83a1d6441989919a&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"eld-dust.mkv"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">61638604</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root c7a9116ac109bc3283f28f1561c417e758ff803ab3a51bc1141f9ad24015b59a&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"fairlight_cncd-agenda_circling_forth-1080p30lq.mp4"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">277889766</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"meet the deadline - Still _ Evoke 2014.mp4"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">44577773</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root cfa94f471a79086ae919ceb8c36e9748435043920692ba4b22f937d72d55f5fc&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"readme.txt"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root 3b3c50a12e27a6b3421b817afd49dfa0d54f69a086cf9914164a9f516e7416e4&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"tbl-goa.avi"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">26296320</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root cd4403e73c8f92fa9ed322f946a5de509f8e774fa3e4f713a3c3b785a085510f&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">"tbl-tint.mpg"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">""</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">115869700</span><span class="p">,</span>
+                    <span class="s2">"pieces root"</span><span class="p">:</span> <span class="s2">"&lt;merkle root 77e9b83c9428ccfaf2423de0e8e4f7ae5ad52fdbc65a29af3d5dc3abb2fc420a&gt;"</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">"files"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">6535405</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">280339</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"280339"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">20506624</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"Spaceballs-StateOfTheArt.avi"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">464896</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"464896"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">342230630</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">129434</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"129434"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">61638604</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"eld-dust.mkv"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">227380</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"227380"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">277889766</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"fairlight_cncd-agenda_circling_forth-1080p30lq.mp4"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">507162</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"507162"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">44577773</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"meet the deadline - Still _ Evoke 2014.mp4"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">510995</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"510995"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"readme.txt"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">524227</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"524227"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"x"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">26296320</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"tbl-goa.avi"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">442368</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">".pad"</span><span class="p">,</span>
+                    <span class="s2">"442368"</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">"length"</span><span class="p">:</span> <span class="mi">115869700</span><span class="p">,</span>
+                <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">"tbl-tint.mpg"</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">"meta version"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"bittorrent-v1-v2-hybrid-test"</span><span class="p">,</span>
+        <span class="s2">"piece length"</span><span class="p">:</span> <span class="mi">524288</span><span class="p">,</span>
+        <span class="s2">"pieces"</span><span class="p">:</span> <span class="s2">"&lt;1715 piece hashes&gt;"</span>
+    <span class="p">},</span>
+    <span class="s2">"piece layers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"&lt;merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972&gt;"</span><span class="p">:</span> <span class="s2">"&lt;531 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root 697d9b53c31b6185867e5df15dba2a7e81fdda6c9aedeaaa83a1d6441989919a&gt;"</span><span class="p">:</span> <span class="s2">"&lt;653 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root 77e9b83c9428ccfaf2423de0e8e4f7ae5ad52fdbc65a29af3d5dc3abb2fc420a&gt;"</span><span class="p">:</span> <span class="s2">"&lt;222 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root 8e31d30f9e25c6336768e978261219c8a9ee8ba81f1bf8a07d8b84664428ccc6&gt;"</span><span class="p">:</span> <span class="s2">"&lt;13 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root c7a9116ac109bc3283f28f1561c417e758ff803ab3a51bc1141f9ad24015b59a&gt;"</span><span class="p">:</span> <span class="s2">"&lt;118 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root cd4403e73c8f92fa9ed322f946a5de509f8e774fa3e4f713a3c3b785a085510f&gt;"</span><span class="p">:</span> <span class="s2">"&lt;51 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root cfa94f471a79086ae919ceb8c36e9748435043920692ba4b22f937d72d55f5fc&gt;"</span><span class="p">:</span> <span class="s2">"&lt;86 piece hashes&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;merkle root ef988424c9c4eb263d55dd84ed2cfc366f60a994e9c80b0dd6979c822ed451ae&gt;"</span><span class="p">:</span> <span class="s2">"&lt;40 piece hashes&gt;"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-pieces">
+<h3><code class="docutils literal notranslate"><span class="pre">--show-pieces</span></code><a class="headerlink" href="#show-pieces" title="Permalink to this headline">¶</a></h3>
+<p>This options must be combined with <code class="docutils literal notranslate"><span class="pre">--raw</span></code>. Instead of a string like &lt;20 piece hashes&gt; a full list with all pieces in
+hexadecimal representation will be printed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"pieces"</span><span class="p">:</span> <span class="p">[</span>
+     <span class="s2">"&lt;piece: 0, SHA1: 23fb3eeb2fb05ab3359f6c27ca2d6e6630f31469&gt;"</span><span class="p">,</span>
+     <span class="s2">"&lt;piece: 1, SHA1: f29c9d5fe198834cc67a95c86a14526a7776e916&gt;"</span><span class="p">,</span>
+     <span class="s2">"&lt;piece: 2, SHA1: 6fc9a5304d0206edce9243ac4ab86c442f38d4e4&gt;"</span><span class="p">,</span>
+     <span class="s2">"&lt;piece: 3, SHA1: 00c48068e56dcd8871e2d1056365688dbe67c23e&gt;"</span><span class="p">,</span>
+     <span class="o">...</span>
+     <span class="o">...</span>
+     <span class="s2">"&lt;piece: 1713, SHA1: 46b4d380397c28b8f0f588b3a3069adb4abb4ff9&gt;"</span><span class="p">,</span>
+         <span class="s2">"&lt;piece: 1714, SHA1: 81a78f2ca2bebdfc662722b943736863f342ca3c&gt;"</span>
+     <span class="p">]</span>
+<span class="p">},</span>
+<span class="s2">"piece layers"</span><span class="p">:</span> <span class="p">{</span>
+     <span class="s2">"&lt;merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972&gt;"</span><span class="p">:</span> <span class="p">[</span>
+         <span class="s2">"&lt;piece: 0, SHA256: 0b28e608a4ef66e5da29939d6b39d82a95e68f8a&gt;"</span><span class="p">,</span>
+         <span class="s2">"&lt;piece: 1, SHA256: c917113c2c577995f153eae664166501e973d43a&gt;"</span><span class="p">,</span>
+         <span class="s2">"&lt;piece: 2, SHA256: d72af73e0a219cee3ceea72f7b6630dbf5401642&gt;"</span><span class="p">,</span>
+         <span class="o">...</span>
+     <span class="p">]</span>
+ <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-padding-files">
+<h3><code class="docutils literal notranslate"><span class="pre">--show-padding-files</span></code><a class="headerlink" href="#show-padding-files" title="Permalink to this headline">¶</a></h3>
+<p>This option will include padding files for hybrid torrent in the file tree.
+By default padding files are not listed.</p>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="show.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Show</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="edit.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Edit</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/commands/info.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Info</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#options">Options</a><ul>
+<li><a class="reference internal" href="#raw"><code class="docutils literal notranslate"><span class="pre">--raw</span></code></a></li>
+<li><a class="reference internal" href="#show-pieces"><code class="docutils literal notranslate"><span class="pre">--show-pieces</span></code></a></li>
+<li><a class="reference internal" href="#show-padding-files"><code class="docutils literal notranslate"><span class="pre">--show-padding-files</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="torrenttools" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Edit" href="edit.html" /><link rel="prev" title="torrenttools" href="../index.html" />
 
     <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
         <title>Create - torrenttools - 0.2.0</title>
@@ -117,6 +117,10 @@
   <p class="caption"><span class="caption-text">Commands</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Create</a></li>
+<li class="toctree-l1"><a class="reference internal" href="edit.html">Edit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html">Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
 </ul>
 
 </div>
@@ -132,13 +136,62 @@
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
         <div class="section" id="create">
-<h1>Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h1>
+<span id="create-command"></span><h1>Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h1>
 <p>The create command is used to create new BitTorrent metafiles.</p>
 <p>The basic invocation requires only a target directory or file to create a .torrent from.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create <span class="o">[</span>OPTIONS<span class="o">]</span> &lt;target&gt;
 </pre></div>
 </div>
-<p>Either specify all options first or give the target first followed by all options.</p>
+<p>Either specify all options first or give the target first followed by all options.
+Overview
+——–</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Create bittorrent metafiles.
+Usage: torrenttools create [OPTIONS] target
+
+Positionals:
+  target &lt;path&gt;                    Target filename or directory
+
+Options:
+  -h,--help                        Print this help message and exit
+  -v,--protocol &lt;protocol&gt;         Set the bittorrent protocol to use.
+                                    Options are 1, 2 or hybrid. [default: 1]
+  -o,--output &lt;path&gt;               Set the filename and/or output directory of the created file.
+                                   [default: &lt;name&gt;.torrent]
+                                    Use a path with trailing slash to only set the output directory.
+  --stdout                         Write the metafile to the standard output
+  -a,--announce &lt;url&gt;...           Add one or multiple announces urls.
+                                   Multiple trackers will be added in seperate tiers by default.
+                                   Use square brackets to groups urls in a single tier:
+                                    eg. "--announce url1 [url1 url2]"
+  -w,--web-seed &lt;url&gt;...           Add one or multiple HTTP/FTP urls as seeds.
+  -d,--dht-node &lt;host:port&gt;...     Add one or multiple DHT nodes.
+  -c,--comment &lt;string&gt;            Add a comment.
+  -p,--private &lt;[on|off]&gt;          Set the private flag to disable DHT and PEX.
+  -l,--piece-size &lt;size[K|M]&gt;      Set the piece size.
+                                   When no unit is specified block size will be either 2^&lt;n&gt; bytes,
+                                   or &lt;n&gt; bytes if n is larger or equal to 16384.
+                                   Piece size must be a power of two in range [16K, 64M].
+                                   Leave empty to determine by total file size. [default: auto]
+  -s,--source &lt;source&gt;             Add a source tag to facilitate cross-seeding.
+  -n,--name &lt;name&gt;                 Set the name of the torrent. This changes the filename for single file torrents
+                                   or the root directory name for multi-file torrents.
+                                   [default: &lt;basename of target&gt;]
+  -t,--threads &lt;n&gt;                 Set the number of threads to use for hashing pieces. [default: 2]
+  --checksum &lt;algorithm&gt;...        Include a per file checksum of given algorithm.
+  --no-creation-date               Do not include the creation date.
+  --creation-date &lt;ISO-8601|POSIX time&gt;
+                                   Override the value of the creation date field as ISO-8601 time or POSIX time.
+                                   eg.: "2021-01-22T18:21:46+0100"
+  --no-created-by                  Do not include the name and version of this program.
+  --created-by &lt;string&gt;            Override the value of the created by field.
+  --include &lt;regex&gt;...             Only add files matching given regex to the metafile.
+  --exclude &lt;regex&gt;...             Do not add files matching given regex to the metafile.
+  --include-hidden                 Do not skip hidden files.
+  --io-block-size &lt;size[K|M]&gt;      The size of blocks read from storage.
+                                   [default: max(1 MiB, &lt;piece-size&gt;)].
+                                   Must be larger or equal to the piece size.
+</pre></div>
+</div>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="v-protocol">
@@ -266,7 +319,7 @@ v2 and hybrid metafiles have per-file merkle roots which makes this options redu
 <div class="section" id="creation-date">
 <h3><code class="docutils literal notranslate"><span class="pre">--creation-date</span></code><a class="headerlink" href="#creation-date" title="Permalink to this headline">¶</a></h3>
 <p>Override the value of the creation date field as an ISO-8601 time or POSIX time string.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrentools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="s2">"2021-01-22T18:21:46Z+0100"</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrentools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="s2">"2021-01-22T18:21:46+0100"</span>
 <span class="n">torrentools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="mi">1611339706</span>
 </pre></div>
 </div>
@@ -275,17 +328,17 @@ v2 and hybrid metafiles have per-file merkle roots which makes this options redu
 <h3><code class="docutils literal notranslate"><span class="pre">--no-created-by</span></code><a class="headerlink" href="#no-created-by" title="Permalink to this headline">¶</a></h3>
 <p>Do not include the name and version of this program.</p>
 </div>
-<div class="section" id="include-hidden">
-<h3><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code><a class="headerlink" href="#include-hidden" title="Permalink to this headline">¶</a></h3>
-<p>Do not skip hidden files when scanning the target directory for files.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">include</span><span class="o">-</span><span class="n">hidden</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="created-by">
 <h3><code class="docutils literal notranslate"><span class="pre">--created-by</span></code><a class="headerlink" href="#created-by" title="Permalink to this headline">¶</a></h3>
 <p>Override the value of the created by field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">created</span><span class="o">-</span><span class="n">by</span> <span class="s2">"Me"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="include-hidden">
+<h3><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code><a class="headerlink" href="#include-hidden" title="Permalink to this headline">¶</a></h3>
+<p>Do not skip hidden files when scanning the target directory for files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">create</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">include</span><span class="o">-</span><span class="n">hidden</span>
 </pre></div>
 </div>
 </div>
@@ -318,7 +371,15 @@ This value must be larger or equal to the piece-size.</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="edit.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Edit</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="../index.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -378,8 +439,8 @@ This value must be larger or equal to the piece-size.</p>
 <li><a class="reference internal" href="#no-creation-date"><code class="docutils literal notranslate"><span class="pre">--no-creation-date</span></code></a></li>
 <li><a class="reference internal" href="#creation-date"><code class="docutils literal notranslate"><span class="pre">--creation-date</span></code></a></li>
 <li><a class="reference internal" href="#no-created-by"><code class="docutils literal notranslate"><span class="pre">--no-created-by</span></code></a></li>
-<li><a class="reference internal" href="#include-hidden"><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code></a></li>
 <li><a class="reference internal" href="#created-by"><code class="docutils literal notranslate"><span class="pre">--created-by</span></code></a></li>
+<li><a class="reference internal" href="#include-hidden"><code class="docutils literal notranslate"><span class="pre">--include-hidden</span></code></a></li>
 <li><a class="reference internal" href="#include"><code class="docutils literal notranslate"><span class="pre">--include</span></code></a></li>
 <li><a class="reference internal" href="#exclude"><code class="docutils literal notranslate"><span class="pre">--exclude</span></code></a></li>
 <li><a class="reference internal" href="#io-block-size"><code class="docutils literal notranslate"><span class="pre">--io-block-size</span></code></a></li>

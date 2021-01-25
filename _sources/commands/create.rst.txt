@@ -1,3 +1,5 @@
+.. _create_command:
+
 Create
 ======
 
@@ -10,6 +12,56 @@ The basic invocation requires only a target directory or file to create a .torre
     torrenttools create [OPTIONS] <target>
 
 Either specify all options first or give the target first followed by all options.
+Overview
+--------
+
+.. code-block:: none
+
+    Create bittorrent metafiles.
+    Usage: torrenttools create [OPTIONS] target
+
+    Positionals:
+      target <path>                    Target filename or directory
+
+    Options:
+      -h,--help                        Print this help message and exit
+      -v,--protocol <protocol>         Set the bittorrent protocol to use.
+                                        Options are 1, 2 or hybrid. [default: 1]
+      -o,--output <path>               Set the filename and/or output directory of the created file.
+                                       [default: <name>.torrent]
+                                        Use a path with trailing slash to only set the output directory.
+      --stdout                         Write the metafile to the standard output
+      -a,--announce <url>...           Add one or multiple announces urls.
+                                       Multiple trackers will be added in seperate tiers by default.
+                                       Use square brackets to groups urls in a single tier:
+                                        eg. "--announce url1 [url1 url2]"
+      -w,--web-seed <url>...           Add one or multiple HTTP/FTP urls as seeds.
+      -d,--dht-node <host:port>...     Add one or multiple DHT nodes.
+      -c,--comment <string>            Add a comment.
+      -p,--private <[on|off]>          Set the private flag to disable DHT and PEX.
+      -l,--piece-size <size[K|M]>      Set the piece size.
+                                       When no unit is specified block size will be either 2^<n> bytes,
+                                       or <n> bytes if n is larger or equal to 16384.
+                                       Piece size must be a power of two in range [16K, 64M].
+                                       Leave empty to determine by total file size. [default: auto]
+      -s,--source <source>             Add a source tag to facilitate cross-seeding.
+      -n,--name <name>                 Set the name of the torrent. This changes the filename for single file torrents
+                                       or the root directory name for multi-file torrents.
+                                       [default: <basename of target>]
+      -t,--threads <n>                 Set the number of threads to use for hashing pieces. [default: 2]
+      --checksum <algorithm>...        Include a per file checksum of given algorithm.
+      --no-creation-date               Do not include the creation date.
+      --creation-date <ISO-8601|POSIX time>
+                                       Override the value of the creation date field as ISO-8601 time or POSIX time.
+                                       eg.: "2021-01-22T18:21:46+0100"
+      --no-created-by                  Do not include the name and version of this program.
+      --created-by <string>            Override the value of the created by field.
+      --include <regex>...             Only add files matching given regex to the metafile.
+      --exclude <regex>...             Do not add files matching given regex to the metafile.
+      --include-hidden                 Do not skip hidden files.
+      --io-block-size <size[K|M]>      The size of blocks read from storage.
+                                       [default: max(1 MiB, <piece-size>)].
+                                       Must be larger or equal to the piece size.
 
 Options
 -------
@@ -169,20 +221,13 @@ Override the value of the creation date field as an ISO-8601 time or POSIX time 
 
 .. code-block::
 
-    torrentools create test-dir --creation-date "2021-01-22T18:21:46Z+0100"
+    torrentools create test-dir --creation-date "2021-01-22T18:21:46+0100"
     torrentools create test-dir --creation-date 1611339706
 
 ``--no-created-by``
 +++++++++++++++++++
 Do not include the name and version of this program.
 
-``--include-hidden``
-++++++++++++++++++++
-Do not skip hidden files when scanning the target directory for files.
-
-.. code-block::
-
-    torrenttools create test-dir --include-hidden
 
 ``--created-by``
 ++++++++++++++++
@@ -191,6 +236,15 @@ Override the value of the created by field.
 .. code-block::
 
     torrenttools test-dir --created-by "Me"
+
+
+``--include-hidden``
+++++++++++++++++++++
+Do not skip hidden files when scanning the target directory for files.
+
+.. code-block::
+
+    torrenttools create test-dir --include-hidden
 
 ``--include``
 +++++++++++++
