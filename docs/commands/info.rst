@@ -282,7 +282,7 @@ This options must be combined with ``--raw``. Instead of a string like <20 piece
 hexadecimal representation will be printed.
 
 .. code-block::
-
+    {
        "pieces": [
             "<piece: 0, SHA1: 23fb3eeb2fb05ab3359f6c27ca2d6e6630f31469>",
             "<piece: 1, SHA1: f29c9d5fe198834cc67a95c86a14526a7776e916>",
@@ -291,17 +291,18 @@ hexadecimal representation will be printed.
             ...
             ...
             "<piece: 1713, SHA1: 46b4d380397c28b8f0f588b3a3069adb4abb4ff9>",
-                "<piece: 1714, SHA1: 81a78f2ca2bebdfc662722b943736863f342ca3c>"
-            ]
-       },
-       "piece layers": {
-            "<merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972>": [
-                "<piece: 0, SHA256: 0b28e608a4ef66e5da29939d6b39d82a95e68f8a>",
-                "<piece: 1, SHA256: c917113c2c577995f153eae664166501e973d43a>",
-                "<piece: 2, SHA256: d72af73e0a219cee3ceea72f7b6630dbf5401642>",
-                ...
-            ]
+            "<piece: 1714, SHA1: 81a78f2ca2bebdfc662722b943736863f342ca3c>"
+       ]
+    },
+    "piece layers": {
+        "<merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972>": [
+            "<piece: 0, SHA256: 0b28e608a4ef66e5da29939d6b39d82a95e68f8a>",
+            "<piece: 1, SHA256: c917113c2c577995f153eae664166501e973d43a>",
+            "<piece: 2, SHA256: d72af73e0a219cee3ceea72f7b6630dbf5401642>",
+            ...
+        ],
         ...
+    }
 
 ``--show-padding-files``
 +++++++++++++++++++++++++

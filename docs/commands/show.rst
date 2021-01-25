@@ -26,3 +26,16 @@ Overview
       source                           Show the source field.
       query                            Show data referenced by a bencode pointer.
 
+
+.. code-block:
+
+    Usage: torrenttools show announce [OPTIONS] target
+
+    Positionals:
+      target <path>                    Target bittorrent metafile.
+
+    Options:
+      -h,--help                        Print this help message and exit
+      --flat                           Flatten announce tiers.
+                                       This results in the output containing one announce per line.
+
