@@ -9,8 +9,12 @@ Commands
 --------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Commands
 
     commands/create
+    commands/edit
+    commands/info
+    commands/show
+    commands/verify
 
