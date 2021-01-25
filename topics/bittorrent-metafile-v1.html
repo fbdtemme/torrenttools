@@ -1,0 +1,386 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Bencode format" href="bencode.html" />
+
+    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
+        <title>BitTorrent metafile v1 - torrenttools - 0.2.0</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=26485485040e7aaf717c13fd0188a5ad2c2deb60">
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script defer="defer" src="../_static/jquery.js"></script>
+    <script defer="defer" src="../_static/underscore.js"></script>
+    <script defer="defer" src="../_static/doctools.js"></script>
+    <script defer src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">torrenttools - 0.2.0</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">torrenttools - 0.2.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Commands</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../commands/create.html">Create</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/edit.html">Edit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/info.html">Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/show.html">Show</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/verify.html">Verify</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="bencode.html">Bencode format</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">BitTorrent metafile v1</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="bittorrent-metafile-v1">
+<h1>BitTorrent metafile v1<a class="headerlink" href="#bittorrent-metafile-v1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Metainfo files (also known as .torrent files) are bencoded dictionaries with the following keys:</p>
+<ul class="simple">
+<li><p>announce: The URL of the tracker.</p></li>
+<li><p>info : This maps to a dictionary, with keys described below.</p></li>
+</ul>
+<p>All strings in a .torrent file that contains text must be UTF-8 encoded.</p>
+</div>
+<div class="section" id="info-dictionary">
+<h2>info dictionary<a class="headerlink" href="#info-dictionary" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="name">
+<h3>name<a class="headerlink" href="#name" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>name</strong> key maps to a UTF-8 encoded string which is the suggested name to save the file (or directory) as.
+It is purely advisory.</p>
+</div>
+<div class="section" id="piece-length">
+<h3>piece length<a class="headerlink" href="#piece-length" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>piece length</strong> maps to the number of bytes in each piece the file is split into.
+For the purposes of transfer, files are split into fixed-size pieces which are all the same length,
+except for possibly the last one which may be truncated. piece length is almost always a power of two.</p>
+</div>
+<div class="section" id="pieces">
+<h3>pieces<a class="headerlink" href="#pieces" title="Permalink to this headline">¶</a></h3>
+<p><strong>pieces</strong> maps to a string whose length is a multiple of 20.
+It is to be subdivided into strings of length 20, each of which is the SHA1 hash of the piece at the corresponding index.</p>
+</div>
+<div class="section" id="files">
+<h3>files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
+<p>This key is only present if no length key is present. One of the two must be present.
+If <strong>files</strong> is present the metafile represent a set of files which go in a directory structure.
+<strong>files</strong> maps to a list representing all files in to metafile.
+Each file maps to dictionaries containing two keys :</p>
+<ul class="simple">
+<li><p><strong>length</strong>: The length of the file, in bytes.</p></li>
+<li><p><strong>path</strong>: A list of UTF-8 encoded strings corresponding to subdirectory names, the last of which is the actual file name (a zero length list is an error case).</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><strong>files</strong> list structure in JSON.</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="s2">"files"</span><span class="p">:</span> <span class="p">[</span>
+     <span class="p">{</span>
+         <span class="s2">"length"</span><span class="p">:</span> <span class="mi">6535405</span><span class="p">,</span>
+         <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+             <span class="s2">"Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"</span>
+         <span class="p">]</span>
+     <span class="p">},</span>
+     <span class="p">{</span>
+         <span class="s2">"length"</span><span class="p">:</span> <span class="mi">20506624</span><span class="p">,</span>
+         <span class="s2">"path"</span><span class="p">:</span> <span class="p">[</span>
+             <span class="s2">"subdirectory"</span><span class="p">,</span>
+             <span class="s2">"Spaceballs-StateOfTheArt.avi"</span>
+         <span class="p">]</span>
+     <span class="p">}</span>
+  <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="length">
+<h3>length<a class="headerlink" href="#length" title="Permalink to this headline">¶</a></h3>
+<p>This key is only present if no files key is present. One of the two must be present.
+If “length” is present then the download represents a single file.
+Length maps to the length of the file in bytes.</p>
+<p>For the purposes of the other keys, the multi-file case is treated as only having a single file by concatenating the files in the order they appear in the files list.
+The files list is the value files maps to, and is a list of dictionaries containing the following keys:</p>
+</div>
+</div>
+<div class="section" id="extensions">
+<h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
+<p>Over the years various extensions were proposed to the original bittorrent metainfo file format.
+The extensions are published as BEP (BitTorrent Enhancement Proposal) modeled after PEP’s (Python Enhancement Proposal).</p>
+<div class="section" id="multitracker-metadata-extension">
+<h3>Multitracker Metadata Extension<a class="headerlink" href="#multitracker-metadata-extension" title="Permalink to this headline">¶</a></h3>
+<p>This extensions adds support for multiple trackers. A new key <strong>announce-list</strong> is added.</p>
+<p>The tiers of announces will be processed sequentially; all URLs in each tier must be checked before the client goes on to the next tier.
+URLs within each tier will be processed in a randomly chosen order;
+in other words, the list will be shuffled when first read, and then parsed in order.
+In addition, if a connection with a tracker is successful, it will be moved to the front of the tier.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">The <strong>announce-list</strong> key in JSON for a single tier per tracker.</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"announce-list"</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="p">[</span> <span class="s2">"tracker1"</span> <span class="p">],</span>
+    <span class="p">[</span> <span class="s2">"backup1"</span> <span class="p">],</span>
+    <span class="p">[</span> <span class="s2">"backup2"</span> <span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>On each announce, first try tracker1, then if that cannot be reached, try backup1 and backup2 respectively.
+On the next announce, repeat in the same order.
+This is meant for when the trackers are standard and can not share information.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">The <strong>announce-list</strong> key in JSON with multiple trackers in a tier.</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"announce-list"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">[</span> <span class="s2">"tracker1"</span><span class="p">,</span> <span class="s2">"tracker2"</span><span class="p">],</span>
+    <span class="p">[</span> <span class="s2">"backup1"</span> <span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>This form is meant for trackers which can trade peer information and will cause the clients to help balance the load between the trackers.
+The first tier, consisting of tracker1 and tracker2, is shuffled.
+Both trackers 1 and 2 will be tried on each announce (though perhaps in varying order) before the client tries to reach backup1.</p>
+</div>
+<div class="section" id="private-torrents">
+<h3>Private torrents<a class="headerlink" href="#private-torrents" title="Permalink to this headline">¶</a></h3>
+<p>Private torrents are indicated by the key-value pair “private: 1” in the “info” dict of the torrent’s metainfo file.
+This is used to disable peer sharing mechanism such as DHT and PEX.</p>
+</div>
+<div class="section" id="dht-protocol">
+<h3>DHT protocol<a class="headerlink" href="#dht-protocol" title="Permalink to this headline">¶</a></h3>
+<p>DHT is a way to share peers ina swarm without a centralized tracker.
+A trackerless torrent dictionary does not have an <strong>announce</strong> key.
+Instead, a trackerless torrent has a “nodes” key.
+This key should be set to the K closest nodes in the torrent generating client’s routing table.
+Alternatively, the key could be set to a known good node such as one operated by the person generating the torrent.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text"><strong>nodes</strong> list in JSON</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"nodes"</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="mi">6881</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"your.router.node"</span><span class="p">,</span> <span class="mi">4804</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"2001:db8:100:0:d5c8:db3f:995e:c0f7"</span><span class="p">,</span> <span class="mi">1941</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="extended-file-attributes">
+<h3>Extended file attributes<a class="headerlink" href="#extended-file-attributes" title="Permalink to this headline">¶</a></h3>
+<p>This extensions adds the following fields to the <strong>files</strong> list:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>attr</strong><span class="classifier">A variable-length string.</span></dt><dd><p>When present the characters each represent a file attribute.
+l = symlink, x = executable, h = hidden, p = padding file.
+Characters appear in no particular order and unknown characters should be ignored.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>sha1</strong><span class="classifier">20 bytes.</span></dt><dd><p>The SHA1 digest calculated over the contents of the file itself, without any additional padding.
+Can be used to aid file deduplication.
+The hash should only be considered as a hint, pieces hashes are the canonical reference for integrity checking.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>symlink path</strong><span class="classifier">An array of strings.</span></dt><dd><p>Path of the symlink target relative to the torrent root directory.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="simple">
+<dt>Sources:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Bencode">wikipedia - Bencode</a></p></li>
+<li><p><a class="reference external" href="http://www.bittorrent.org/beps/bep_0003.html">BitTorrent protocol specification v1</a></p></li>
+<li><p><a class="reference external" href="http://www.bittorrent.org/beps/bep_0005.html">BEP 5</a></p></li>
+<li><p><a class="reference external" href="http://www.bittorrent.org/beps/bep_0012.html">BEP 12</a></p></li>
+<li><p><a class="reference external" href="http://www.bittorrent.org/beps/bep_0027.html">BEP 27</a></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="bencode.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Bencode format</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/topics/bittorrent-metafile-v1.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">BitTorrent metafile v1</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#info-dictionary">info dictionary</a><ul>
+<li><a class="reference internal" href="#name">name</a></li>
+<li><a class="reference internal" href="#piece-length">piece length</a></li>
+<li><a class="reference internal" href="#pieces">pieces</a></li>
+<li><a class="reference internal" href="#files">files</a></li>
+<li><a class="reference internal" href="#length">length</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extensions">Extensions</a><ul>
+<li><a class="reference internal" href="#multitracker-metadata-extension">Multitracker Metadata Extension</a></li>
+<li><a class="reference internal" href="#private-torrents">Private torrents</a></li>
+<li><a class="reference internal" href="#dht-protocol">DHT protocol</a></li>
+<li><a class="reference internal" href="#extended-file-attributes">Extended file attributes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+  </body>
+</html>

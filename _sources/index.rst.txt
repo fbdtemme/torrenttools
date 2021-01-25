@@ -18,3 +18,10 @@ Commands
     commands/show
     commands/verify
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Knowledge base
+
+    topics/bencode
+    topics/bittorrent-metafile-v1
+
