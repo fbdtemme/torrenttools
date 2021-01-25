@@ -19,12 +19,13 @@
 #include <dottorrent/storage_verifier.hpp>
 
 #include "natural_sort.hpp"
-#include "utils.hpp"
+#include "formatters.hpp"
 
 
 namespace fs = std::filesystem;
 namespace tc = termcontrol;
 namespace dt = dottorrent;
+namespace tt = torrenttools;
 namespace rng = std::ranges;
 namespace clp = cliprogress;
 

@@ -1,10 +1,10 @@
 
 #include <algorithm>
 #include <functional>
-#include <charconv>
+#include <vector>
+#include <string>
 
 #include <fmt/format.h>
-#include <fmt/chrono.h>
 
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
@@ -13,19 +13,18 @@
 
 #include "create.hpp"
 #include "file_matcher.hpp"
-#include "utils.hpp"
-#include "natural_sort.hpp"
+#include "formatters.hpp"
 #include "info.hpp"
 #include "argument_parsers.hpp"
 #include "indicator.hpp"
-#include "tree_view.hpp"
 #include "tracker_database.hpp"
 #include "config_parser.hpp"
 
 
-// TODO: Try to handle too many levels of symbolic links. Cmake
+namespace tc = termcontrol;
+namespace tt = torrenttools;
 
-//#include "progress.hpp"
+// TODO: Try to handle too many levels of symbolic links.
 
 using namespace std::string_literals;
 using namespace std::chrono_literals;
@@ -67,12 +66,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         return true;
     };
     CLI::callback_t private_flag_parser = [&](const CLI::results_t& v) -> bool {
-        auto flag = parse_commandline_bool("--private", v);
-        if (flag.has_value()) {
-            options.is_private = flag;
-        }
-        // set implicit private for flag like behavior.
-        options.is_private = true;
+        options.is_private = parse_explicit_flag("--private", v);
         return true;
     };
 
@@ -89,12 +83,14 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             ->expected(1);
 
     app->add_option("-v,--protocol", protocol_parser,
-           "Set the bittorrent protocol to use. Options are 1, 2 or hybrid. [default: 1]")
+           "Set the bittorrent protocol to use.\n "
+           "Options are 1, 2 or hybrid. [default: 1]")
             ->type_name("<protocol>")
             ->expected(1);
 
     app->add_option("-o,--output", options.destination,
-            "Set the filename and/or output directory of the created file. [default: <name>.torrent]\n"
+            "Set the filename and/or output directory of the created file.\n"
+            "[default: <name>.torrent]\n "
             "Use a path with trailing slash to only set the output directory.")
             ->type_name("<path>")
             ->expected(1);
@@ -107,17 +103,17 @@ void configure_create_app(CLI::App* app, create_app_options& options)
                     "Multiple trackers will be added in seperate tiers by default. \n"
                     "Use square brackets to groups urls in a single tier:\n"
                     " eg. \"--announce url1 [url1 url2]\"")
-            ->type_name("<url>")
+            ->type_name("<url>...")
             ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
                     "Add one or multiple HTTP/FTP urls as seeds.")
-            ->type_name("<url>")
+            ->type_name("<url>...")
             ->expected(0, max_size);
 
     app->add_option("-d, --dht-node", dht_node_parser,
             "Add one or multiple DHT nodes.")
-            ->type_name("<host:port>")
+            ->type_name("<host:port>...")
             ->expected(0, max_size);
 
     // Allow an empty comment to force the precense of the field in the torrent file
@@ -127,8 +123,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     // TODO: Allow private flag to be overridden for supported trackers that require private flag.
     //       but generate a warning.
-//    app->add_flag_callback("-p, --private", [&](){ options.is_private = true; },
-//            "Set the private flag to disable DHT and PEX.");
+
     app->add_option("-p, --private", private_flag_parser,
             "Set the private flag to disable DHT and PEX.")
             ->type_name("<[on|off]>")
@@ -164,7 +159,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("--checksum", checksum_parser,
             "Include a per file checksum of given algorithm." )
-            ->type_name("<algorithm>")
+            ->type_name("<algorithm>...")
             ->expected(0, max_size)
             ->default_str("");
 
@@ -174,7 +169,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     auto* creation_date_option = app->add_option("--creation-date", creation_date_parser,
             "Override the value of the creation date field as ISO-8601 time or POSIX time.\n"
-            "Example: \"2021-01-22T18:21:46Z+0100\"")
+            "eg.: \"2021-01-22T18:21:46+0100\"")
             ->type_name("<ISO-8601|POSIX time>");
 
     no_creation_date_option->excludes(creation_date_option);
@@ -191,12 +186,12 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("--include", options.include_patterns,
         "Only add files matching given regex to the metafile.")
-        ->type_name("<regex>")
+        ->type_name("<regex>...")
          ->expected(0, max_size);
 
     app->add_option("--exclude", options.exclude_patterns,
         "Do not add files matching given regex to the metafile.")
-        ->type_name("<regex>")
+        ->type_name("<regex>...")
         ->expected(0, max_size);
 
     app->add_flag_callback("--include-hidden",
@@ -316,12 +311,12 @@ void print_creation_statistics(std::ostream& os, const dottorrent::metafile& m, 
     auto seconds = std::chrono::duration_cast<fsecs>(duration).count();
 
     if (seconds != 0) {
-        average_hash_rate_str = format_hash_rate(storage.total_file_size() / seconds);
+        average_hash_rate_str = tt::format_hash_rate(storage.total_file_size() / seconds);
     } else {
         average_hash_rate_str = "∞ B/s";
     }
 
-    fmt::print(os, "Hashing completed in: {}\n", format_duration(duration));
+    fmt::print(os, "Hashing completed in: {}\n", tt::format_duration(duration));
     fmt::print(os, "Average hash rate:    {}\n",    average_hash_rate_str);
 
     // Torrent file is hashed so we can return to infohash
@@ -377,14 +372,14 @@ void set_files(dottorrent::metafile& m, const create_app_options& options)
 }
 
 
-void set_trackers(dottorrent::metafile& m, const create_app_options& options)
+void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::string>>& announce_list)
 {
     const auto* config     = torrenttools::load_config();
     const auto* tracker_db = torrenttools::load_tracker_database();
 
     // a single tracker
-    if (options.announce_list.size() == 1 && options.announce_list.at(0).size() == 1) {
-        const auto& tracker = options.announce_list.at(0).at(0);
+    if (announce_list.size() == 1 && announce_list.at(0).size() == 1) {
+        const auto& tracker = announce_list.at(0).at(0);
 
         if (tracker_db->contains(tracker)) {
             const auto& tracker_entry = tracker_db->at(tracker);
@@ -401,7 +396,7 @@ void set_trackers(dottorrent::metafile& m, const create_app_options& options)
         std::size_t tier_idx = 0;
         std::vector<bool> private_flags{};
 
-        for (const auto& tier : options.announce_list) {
+        for (const auto& tier : announce_list) {
             for (const auto& tracker : tier) {
 
                 // load data from tracker database
@@ -422,7 +417,7 @@ void set_trackers(dottorrent::metafile& m, const create_app_options& options)
     }
 }
 
-fs::path get_destination_path(dottorrent::metafile& m, const create_app_options& options)
+fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> destination_path)
 {
     const auto* tracker_db = torrenttools::load_tracker_database();
 
@@ -433,17 +428,18 @@ fs::path get_destination_path(dottorrent::metafile& m, const create_app_options&
     // destination filename
     std::string destination_name {};
 
-    if (options.destination) {
+    if (destination_path.has_value()) {
         // options is a complete path + filename
-        if (options.destination->has_filename()) {
-            destination = *options.destination;
+        if (destination_path->has_filename()) {
+            destination = *destination_path;
             return destination;
         }
-         // option is only a desination directory and not a filename
+         // option is only a destination directory and not a filename
         else {
-            destination_directory = *options.destination;
+            destination_directory = *destination_path;
         }
-    } else {
+    }
+    else {
         destination_directory = fs::current_path();
     }
 
@@ -483,7 +479,7 @@ void run_create_app(const create_app_options& options)
     }
 
     // announces
-    set_trackers(m, options);
+    set_trackers(m, options.announce_list);
 
     // web seeds
     for (const auto& url : options.web_seeds) {
@@ -514,6 +510,10 @@ void run_create_app(const create_app_options& options)
             m.set_created_by(CREATED_BY_STRING);
     }
 
+    if (options.name) {
+        m.set_name(*options.name);
+    }
+
     // Set created date to the override value or the default if requested
     if (options.set_creation_date) {
         if (options.creation_date.has_value())
@@ -522,7 +522,7 @@ void run_create_app(const create_app_options& options)
             m.set_creation_date(std::chrono::system_clock::now());
     }
 
-    fs::path destination_file = get_destination_path(m, options);
+    fs::path destination_file = get_destination_path(m, options.destination);
 
     create_general_info(os, m, destination_file, options.protocol_version, {});
     os << '\n';

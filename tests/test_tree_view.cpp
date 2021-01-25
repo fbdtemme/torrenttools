@@ -10,15 +10,10 @@
 
 #include <dottorrent/metafile.hpp>
 #include "tree_view.hpp"
-
+#include "test_resources.hpp"
 
 namespace fs = std::filesystem;
 namespace dt = dottorrent;
-
-static auto fedora_torrent = fs::path(TEST_DIR) / "resources"
-                             / "Fedora-Workstation-Live-x86_64-30.torrent";
-static auto tree_index_test = fs::path(TEST_DIR) / "resources"
-                             / "tree_index_test.torrent";
 
 TEST_CASE("test tree_index") {
     SECTION("only root dir") {

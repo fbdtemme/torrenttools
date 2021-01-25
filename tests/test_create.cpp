@@ -146,17 +146,20 @@ TEST_CASE("test create app argument parsing")
         SECTION("explicit true") {
             auto cmd = fmt::format("create {} --private on", file);
             PARSE_ARGS(cmd);
-            CHECK(create_options.is_private == true);
+            CHECK(create_options.is_private.has_value());
+            CHECK(*create_options.is_private);
         }
         SECTION("explicit off") {
             auto cmd = fmt::format("create {} --private off", file);
             PARSE_ARGS(cmd);
-            CHECK(create_options.is_private == true);
+            CHECK(create_options.is_private.has_value());
+            CHECK_FALSE(*create_options.is_private);
         }
         SECTION("implicit on") {
             auto cmd = fmt::format("create {} --private", file);
             PARSE_ARGS(cmd);
-            CHECK(create_options.is_private == true);
+            CHECK(create_options.is_private.has_value());
+            CHECK(*create_options.is_private);
         }
     }
     SECTION("piece size") {

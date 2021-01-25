@@ -16,11 +16,13 @@ list(TRANSFORM torrenttools_SOURCES PREPEND ${PROJECT_SOURCE_DIR}/)
 target_sources(torrenttools-tests PRIVATE
         main.cpp
         test_create.cpp
+        test_show.cpp
         test_file_matcher.cpp
         test_info.cpp
         test_tree_view.cpp
         test_utils.cpp
         test_tracker_database.cpp
+        test_edit.cpp
         ${torrenttools_SOURCES}
 )
 
@@ -32,7 +34,9 @@ target_link_libraries(torrenttools-tests
         ${torrenttools_LINK_LIBRARIES}
 )
 
-
-target_compile_definitions(torrenttools-tests PRIVATE TEST_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\")
+set(TEST_RESOUCES_DIR)
+target_compile_definitions(torrenttools-tests PRIVATE
+        TEST_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+        TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\")
 
 catch_discover_tests(torrenttools-tests)

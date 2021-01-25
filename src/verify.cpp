@@ -3,8 +3,10 @@
 //
 #include "verify.hpp"
 #include "indicator.hpp"
-#include "utils.hpp"
+#include "ls_colors.hpp"
 #include "tree_view.hpp"
+#include "cli_helpers.hpp"
+
 #include <fmt/format.h>
 
 #include <cliprogressbar/application.hpp>
@@ -58,12 +60,7 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
 
 void run_verify_app(verify_app_options& options)
 {
-    if (!fs::exists(options.metafile)) {
-        throw std::invalid_argument("file does not exist");
-    }
-    if (fs::is_directory(options.metafile)) {
-        throw std::invalid_argument("target must be a file");
-    }
+    verify_metafile(options.metafile);
 
     auto m = dottorrent::load_metafile(options.metafile);
 
@@ -172,13 +169,13 @@ void print_verify_statistics(const dottorrent::metafile& m, std::chrono::system_
     auto seconds = std::chrono::duration_cast<fsecs>(duration).count();
 
     if (seconds != 0) {
-        average_hash_rate_str = format_hash_rate(storage.total_file_size()/seconds);
+        average_hash_rate_str = tt::format_hash_rate(storage.total_file_size()/seconds);
     }
     else {
         average_hash_rate_str = "∞ B/s";
     }
 
     std::cout << '\n' << std::endl;
-    std::cout << fmt::format("Verifying completed in: {}\n", format_duration(duration));
+    std::cout << fmt::format("Verifying completed in: {}\n", tt::format_duration(duration));
     std::cout << fmt::format("Average hash rate:      {}\n", average_hash_rate_str);
 }

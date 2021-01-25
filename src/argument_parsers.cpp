@@ -122,11 +122,11 @@ std::vector<dottorrent::dht_node> dht_node_transformer(const std::vector<std::st
     std::vector<dottorrent::dht_node> res {};
 
     for (const auto& node : s) {
-        auto it = rng::find(node, ':');
-        if (it == node.end()) {
+        auto pos = node.find_last_of(':');
+        if (pos == node.size()) {
             throw std::invalid_argument("Invalid dht node: no port number seperator ':'");
         }
-        auto port_str = std::string_view(std::next(it), node.end());
+        auto port_str = std::string_view(node.begin()+pos+1, node.end());
         std::uint16_t port;
 
         if (auto [ptr, ecc] = std::from_chars(
@@ -135,12 +135,12 @@ std::vector<dottorrent::dht_node> dht_node_transformer(const std::vector<std::st
             throw std::invalid_argument("Invalid dht node: invalid port number");
         }
 
-        res.emplace_back(std::string_view(node.begin(), it), port);
+        res.emplace_back(std::string_view(node.data(), pos), port);
     }
     return res;
 }
 
-dottorrent::protocol protocol_transformer(const std::vector<std::string>& v)
+dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, bool allow_hybrid)
 {
     if (v.size() > 1) {
         throw std::invalid_argument("multiple options given.");
@@ -149,6 +149,9 @@ dottorrent::protocol protocol_transformer(const std::vector<std::string>& v)
 
     auto it = s.begin();
     if (s == "hybrid") {
+        if (!allow_hybrid) {
+            throw std::invalid_argument("Hybrid protocol is not allowed for this option");
+        }
         return dottorrent::protocol::hybrid;
     }
 
@@ -231,10 +234,12 @@ std::vector<std::optional<bool>> parse_commandline_booleans(std::string_view opt
         if (value == "on" || value == "true" || value == "1") {
             result.emplace_back(true);
         }
-        if (value == "off" || value == "false" || value == "0") {
+        else if (value == "off" || value == "false" || value == "0") {
             result.emplace_back(false);
         }
-        result.emplace_back(std::nullopt);
+        else {
+            result.emplace_back(std::nullopt);
+        }
     }
     return result;
 }
@@ -350,4 +355,44 @@ creation_date_transformer(std::string_view option, const std::vector<std::string
     auto utc_time = parse_utc_datetime(v.at(0));
     // cast to normal system_clock duration
     return std::chrono::system_clock::time_point(utc_time);
+}
+
+torrenttools::list_edit_mode parse_list_edit_mode(std::string_view options, const std::vector<std::string>& v)
+{
+    using namespace torrenttools;
+
+    if (v.empty())
+        throw std::invalid_argument("expected argument");
+
+    if (v.size() != 1)
+        throw std::invalid_argument("multiple options given.");
+
+    auto value = v.at(0);
+    rng::transform(value, std::back_inserter(value), [](const char c) { return std::tolower(c); });
+
+    if (value == "a" | value == "append") {
+        return list_edit_mode::append;
+    }
+    else if (value == "p" | value == "prepend") {
+        return list_edit_mode::prepend;
+    }
+    else if (value == "r" | value == "replace") {
+        return list_edit_mode::replace;
+    }
+    else {
+        throw std::invalid_argument("Invalid list edit mode.");
+    }
+}
+
+
+bool parse_explicit_flag(std::string_view option, const std::vector<std::string>& v)
+{
+    auto flag = parse_commandline_bool(option, v);
+    if (flag.has_value()) {
+        return *flag;
+    }
+    else {
+        // set implicit private for flag like behavior.
+        return true;
+    }
 }
