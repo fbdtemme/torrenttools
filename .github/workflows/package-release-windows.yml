@@ -42,5 +42,5 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: build/torrenttools-${{ get_version.outputs.version }}.msi
-          asset_name: my-artifact.zip
+          asset_name: torrenttools-${{ get_version.outputs.version }}.msi
           asset_content_type: application/x-msi

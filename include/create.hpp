@@ -58,6 +58,6 @@ void print_creation_statistics(std::ostream& os, const dottorrent::metafile& m, 
 
 void set_files(dottorrent::metafile& m, const create_app_options& options);
 
-void set_trackers(dottorrent::metafile& m, const create_app_options& options);
+void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::string>>& options);
 
-fs::path get_destination_path(dottorrent::metafile& m, const create_app_options& options);
+fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> options);

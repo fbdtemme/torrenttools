@@ -11,7 +11,7 @@
 #include "dottorrent/metafile.hpp"
 #include "dottorrent/serialization/all.hpp"
 #include "info.hpp"
-#include "utils.hpp"
+#include "formatters.hpp"
 #include "tree_view.hpp"
 #include "config.hpp"
 
@@ -20,12 +20,14 @@
 #endif
 
 #include "escape_binary_fields.hpp"
+#include "cli_helpers.hpp"
 
 
 namespace fs = std::filesystem;
 namespace dt = dottorrent;
 namespace bc = bencode;
 namespace rng = std::ranges;
+namespace tt = torrenttools;
 
 using namespace std::string_view_literals;
 using namespace std::chrono_literals;
@@ -37,20 +39,10 @@ constexpr std::string_view program_version_string = PROJECT_VERSION;
 
 void run_info_app(info_app_options& options)
 {
-    if (!fs::exists(options.metafile))
-        throw std::invalid_argument(
-                fmt::format("Metafile not found: {}", options.metafile.string()));
-
-    if (fs::is_directory(options.metafile))
-        throw std::invalid_argument(
-                fmt::format("Target is a directory: {}", options.metafile.string()));
+    verify_metafile(options.metafile);
 
     if (options.raw) {
         create_raw_info(std::cout, options.metafile, options.show_pieces);
-        return;
-    }
-    if (options.query) {
-        run_query(options.metafile, *options.query);
         return;
     }
 
@@ -59,9 +51,7 @@ void run_info_app(info_app_options& options)
     formatting_options fmt_options {.show_padding_files = options.show_padding_files};
 
 #ifdef __unix__
-    if (isatty(STDOUT_FILENO)) {
-        fmt_options.use_color = true;
-    } else {
+    if (!isatty(STDOUT_FILENO)) {
         fmt_options.use_color = false;
     }
 #endif
@@ -91,13 +81,6 @@ void configure_info_app(CLI::App* app, info_app_options& options)
     app->add_flag("--show-padding-files", options.show_padding_files,
             "Show padding files in the file tree.")
             ->default_val(false);
-
-    auto* query_options = app->add_option("--query", options.query,
-            "Retrieve a field referenced by a bpointer in the target field.")
-       ->type_name("<query>");
-
-    query_options->excludes(raw_option);
-    query_options->excludes(show_pieces_option);
 }
 
 
@@ -135,7 +118,7 @@ void create_general_info(std::ostream& os,
 
     const std::string piece_size = fmt::format(
             options.piece_size_format,
-            format_size(m.piece_size()),
+            tt::format_size(m.piece_size()),
             m.piece_size());
 
     std::string creation_date;
@@ -149,7 +132,7 @@ void create_general_info(std::ostream& os,
     const auto& entry = options.entry_format;
 
     const std::string& source_path = metafile_path.string();
-    std::string protocol_version_string = format_protocol_version(protocol_version);
+    std::string protocol_version_string = tt::format_protocol_version(protocol_version);
 
     const std::string& comment = format_multiline("Comment"sv,         m.comment(), options);
 
@@ -250,32 +233,4 @@ void create_raw_info(std::ostream& os, const fs::path& metafile_path, bool inclu
     auto formatter = bc::events::encode_json_to{std::cout};
     bencode::connect(formatter, bv);
     std::cout << std::endl;
-}
-
-void run_query(const fs::path& target, std::string query, bool include_binary)
-{
-    std::ifstream ifs (target);
-    std::string data(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
-
-    auto bv = bencode::decode_value(data);
-    if (!include_binary) {
-        bv = escape_binary_metafile_fields(bv);
-    }
-    else {
-        bv = escape_binary_metafile_fields_hex(bv);
-    }
-    try {
-        auto pointer = bc::bpointer(query);
-        auto result = bv.at(pointer);
-        bc::events::encode_json_to formatter(std::cout);
-        bc::connect(formatter, result);
-        std::cout << std::endl;
-    }
-    catch (const bc::bpointer_error& err) {
-        auto help_message = fmt::format("Invalid query: {}", err.what());
-        throw std::invalid_argument(help_message);
-    }
-    catch (const bc::out_of_range& err) {
-        throw std::invalid_argument("No data matching query");
-    }
 }

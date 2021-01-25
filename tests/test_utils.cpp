@@ -2,7 +2,7 @@
 #include <iostream>
 //#include <detail/format.hpp>
 
-#include "utils.hpp"
+#include "ls_colors.hpp"
 
 TEST_CASE("test parse_file ls_colors")
 {

@@ -78,7 +78,7 @@ bool tree_printer::print_entry(const fs::path& path, const dt::file_entry* entry
 
         if (options_.show_file_size) {
             line = fmt::format(
-                    "{}{}[{}] {}", prefix_, node, format_tree_size(entry_ptr->file_size()), formatted_name);
+                    "{}{}[{}] {}", prefix_, node, tt::format_tree_size(entry_ptr->file_size()), formatted_name);
         } else {
             line = fmt::format("{}{}{}", prefix_, node, formatted_name);
         }
@@ -96,7 +96,7 @@ bool tree_printer::print_entry(const fs::path& path, const dt::file_entry* entry
 
         if (options_.show_directory_size) {
             line = fmt::format(
-                    "{}{}[{}] {}", prefix_, node, format_tree_size(dir_size), formatted_name);
+                    "{}{}[{}] {}", prefix_, node, tt::format_tree_size(dir_size), formatted_name);
         } else {
             line = fmt::format("{}{}{}", prefix_, node, formatted_name);
         }
@@ -169,11 +169,11 @@ std::string format_verify_file_tree(
         line.resize(max_file_line_size, ' ');
 
         if (file_ptr != nullptr) {
-            file_size = format_size(file_ptr->file_size());
+            file_size = tt::format_size(file_ptr->file_size());
             double pct = verifier.percentage(*file_ptr);
             percentage_bar = clp::draw_progress_bar(pct,
                     { .complete_frames = std::span(clp::bar_frames::horizontal_blocks) }, {}, 10);
-            percentage = format_percentage(pct);
+            percentage = tt::format_percentage(pct);
         }
         else {
             file_size.clear();
@@ -203,7 +203,7 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
     std::size_t total_file_count = 0;
 
     if (include_pad_files) {
-        total_file_size = format_size(m.total_file_size());
+        total_file_size = tt::format_size(m.total_file_size());
         total_file_count = storage.file_count();
     }
     else {
@@ -214,7 +214,7 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
                 total_file_count += 1;
             }
         }
-        total_file_size = format_size(file_size_counter);
+        total_file_size = tt::format_size(file_size_counter);
     }
 
     fmt::format_to(out, size_template,
