@@ -1,6 +1,6 @@
 on:
   release:
-    types: [created]
+    types: [created, published]
 
 name: Upload windows installer
 
