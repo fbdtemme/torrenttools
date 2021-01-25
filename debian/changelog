@@ -1,3 +1,9 @@
+torrenttools (0.2.0) focal groovy hirsute; urgency=low
+
+  * Update to v0.2.0.
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Mon, 18 Jan 2021 11:54:28 +0100
+
 torrenttools (0.1.3) focal groovy hirsute; urgency=low
 
   * Remove TBB dependency.
