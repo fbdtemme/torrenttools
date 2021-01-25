@@ -9,7 +9,7 @@ Name:            torrenttools
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         MIT
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
@@ -61,12 +61,19 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %files
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/torrenttools
-%{_sysconfdir}/torrenttools/config.yaml
+%{_sysconfdir}/torrenttools/config.yml
 %{_sysconfdir}/torrenttools/trackers.json
 %{_bindir}/torrenttools
 
 %changelog
-* Wed Oct 20 2011 Florian De Temmerman <floriandetemmerman@gmail.com> 0.1.4-1
+* Mon Jan 25 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.2.0-2
+- Fix wrong yml extensions
+
+* Mon Jan 25 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.2.0-1
+- Update to 0.2.0
+- Fix wrong changelog date
+
+* Wed Jan 20 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.1.4-1
 - Update to 0.1.4
 - Fix missing changelog entry
 - Remove epel-release dependency for el8 builds

@@ -9,7 +9,7 @@ Name:            @PACKAGE_NAME@
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         @PACKAGE_LICENSE@
-Release:         @CPACK_RPM_PACKAGE_RELEASE@%{?dist}
+Release:         2%{?dist}
 Summary:         @PACKAGE_DESCRIPTION_SUMMARY@
 
 BuildRequires:   openssl-devel
@@ -61,11 +61,14 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %files
 %defattr(-,root,root,-)
 %dir %{_sysconfdir}/torrenttools
-%{_sysconfdir}/torrenttools/config.yaml
+%{_sysconfdir}/torrenttools/config.yml
 %{_sysconfdir}/torrenttools/trackers.json
 %{_bindir}/torrenttools
 
 %changelog
+* Mon Jan 25 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.2.0-2
+- Fix wrong yml extensions
+
 * Mon Jan 25 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.2.0-1
 - Update to 0.2.0
 - Fix wrong changelog date
