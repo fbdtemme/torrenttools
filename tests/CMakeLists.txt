@@ -17,12 +17,13 @@ target_sources(torrenttools-tests PRIVATE
         main.cpp
         test_create.cpp
         test_show.cpp
-        test_file_matcher.cpp
         test_info.cpp
+        test_edit.cpp
+        test_magnet.cpp
+        test_file_matcher.cpp
         test_tree_view.cpp
         test_utils.cpp
         test_tracker_database.cpp
-        test_edit.cpp
         ${torrenttools_SOURCES}
 )
 
