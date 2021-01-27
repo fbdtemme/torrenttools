@@ -49,6 +49,7 @@ add_executable(torrenttools
         src/verify.cpp
         src/create.cpp
         src/edit.cpp
+        src/magnet.cpp
         src/app_data.cpp
         src/argument_parsers.cpp
         src/config_parser.cpp
