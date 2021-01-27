@@ -91,6 +91,19 @@ TEST_CASE("test show app argument parsing")
         }
     }
 
+    SECTION("file size --human-readable") {
+        SECTION("on") {
+            auto cmd = fmt::format("show size {} --human-readable", file);
+            PARSE_ARGS(cmd);
+            CHECK(show_options.file_size_human_readable);
+        }
+        SECTION("off") {
+            auto cmd = fmt::format("show size {}", file);
+            PARSE_ARGS(cmd);
+            CHECK_FALSE(show_options.file_size_human_readable);
+        }
+    }
+
     SECTION("creation-date --iso") {
         SECTION("on") {
             auto cmd = fmt::format("show creation-date {} --iso", file);
@@ -238,6 +251,28 @@ TEST_CASE("test show piece-size")
         options.piece_size_human_readable = true;
         run_show_piece_size_subapp(options);
         CHECK(buffer.str() == "256 KiB\n");
+    }
+}
+
+
+TEST_CASE("test show size")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+
+    show_app_options options{
+            .metafile = fedora_torrent
+    };
+
+    SECTION("in bytes") {
+        run_show_file_size_subapp(options);
+        CHECK(buffer.str() == "1934755007\n");
+    }
+
+    SECTION("in human readable format") {
+        options.file_size_human_readable = true;
+        run_show_file_size_subapp(options);
+        CHECK(buffer.str() == "1.80 GiB\n");
     }
 }
 

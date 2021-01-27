@@ -38,6 +38,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     auto comment_subapp = app->add_subcommand("comment",        "Show the comment field.");
     auto source_subapp = app->add_subcommand("source",          "Show the source field.");
     auto query_subapp = app->add_subcommand("query",            "Show data referenced by a bencode pointer.");
+    auto file_size_subapp = app->add_subcommand("size",         "Show the total file size.");
 
     configure_show_announce_subapp(announce_subapp, options);
     configure_show_protocol_subapp(protocol_subapp, options);
@@ -50,6 +51,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     configure_show_comment_subapp(comment_subapp, options);
     configure_show_source_subapp(source_subapp, options);
     configure_show_query_subapp(query_subapp, options);
+    configure_show_file_size_subapp(file_size_subapp, options);
 }
 
 
@@ -191,6 +193,18 @@ void configure_show_query_subapp(CLI::App* query_subapp, show_app_options& optio
 }
 
 
+void configure_show_file_size_subapp(CLI::App* file_size_subapp, show_app_options& options)
+{
+    file_size_subapp->parse_complete_callback([&](){ options.subcommand = "size"; });
+
+    file_size_subapp->add_option("target", options.metafile, "Target bittorrent metafile.")
+                 ->type_name("<path>")
+                 ->required();
+
+    file_size_subapp->add_flag("-H,--human-readable", options.file_size_human_readable,
+            "Output size in a human readable format: eg. 1 MiB.");
+}
+
 
 void run_show_app(CLI::App* show_app, const show_app_options& options)
 {
@@ -207,6 +221,7 @@ void run_show_app(CLI::App* show_app, const show_app_options& options)
             {"name",            &run_show_name_subapp},
             {"comment",         &run_show_comment_subapp},
             {"source",          &run_show_source_subapp},
+            {"size",            &run_show_file_size_subapp},
             {"query",           &run_show_query_subapp},
     };
 
@@ -380,6 +395,17 @@ void run_show_source_subapp(const show_app_options& options)
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.source() << std::endl;
+}
+
+void run_show_file_size_subapp(const show_app_options& options)
+{
+    verify_metafile(options.metafile);
+    auto m = dt::load_metafile(options.metafile);
+    if (options.file_size_human_readable) {
+        std::cout << tt::format_size(m.total_regular_file_size()) << std::endl;
+    } else {
+        std::cout << m.total_regular_file_size() << std::endl;
+    }
 }
 
 
