@@ -43,7 +43,6 @@ struct create_app_options
     std::optional<std::chrono::system_clock::time_point> creation_date = std::nullopt;
     std::uint8_t threads = 4;
     std::optional<std::size_t> io_block_size;
-
 };
 
 void configure_create_app(CLI::App* app, create_app_options& options);
@@ -53,6 +52,8 @@ void configure_matcher(torrenttools::file_matcher& matcher, const create_app_opt
 void run_create_app(const create_app_options& options);
 
 void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m);
+
+void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m);
 
 void print_creation_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration);
 

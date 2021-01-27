@@ -209,6 +209,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
 
 
+
 void configure_matcher(torrenttools::file_matcher& matcher, const create_app_options& options)
 {
     for (const auto& pattern : options.include_patterns ) {
@@ -295,6 +296,73 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
     tc::format_to(os, tc::ecma48::character_position_absolute);
     tc::format_to(os, tc::ecma48::erase_in_line);
     tc::format_to(os, tc::ecma48::cursor_up, 2);
+
+    auto stop_time = std::chrono::system_clock::now();
+    auto total_duration = stop_time - start_time;
+
+    print_creation_statistics(os, m, total_duration);
+}
+
+
+
+/// Progress using only carriage return and newline characters.
+void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
+{
+    using namespace std::chrono_literals;
+
+    std::size_t current_file_index = 0;
+    auto& storage = m.storage();
+
+    os << "Hashing files..." << std::endl;
+
+    // v1 torrents count padding files as regular files in their progress counters
+    // v2 and hybrid torrents do not take padding files into account in their progress counters.
+    std::size_t total_file_size;
+
+    auto start_time = std::chrono::system_clock::now();
+    hasher.start();
+
+    std::size_t index = 0;
+
+
+    auto print_line = [&](std::size_t file_idx, std::size_t bytes_hashed) {
+        std::size_t regular_file_count = storage.regular_file_count();
+        const auto is_padding_file = [](const dt::file_entry& e) { return e.is_padding_file(); };
+        std::size_t regular_file_idx =
+                file_idx -
+                std::count_if(storage.begin(), storage.begin()+file_idx, is_padding_file);
+
+        double percentage = 0;
+        if (storage[file_idx].file_size() != 0 ){
+            percentage = double(bytes_hashed) / storage[file_idx].file_size() * 100;
+        } else {
+            percentage = 100;
+        }
+
+        std::string filename = storage[file_idx].path().filename().string();
+         fmt::print(os, "\r({}/{}) {}... {:>3.0f}%", regular_file_idx+1, regular_file_count, filename, percentage);
+    };
+
+    while (hasher.bytes_done() < total_file_size) {
+        auto [index, file_bytes_hashed] = hasher.current_file_progress();
+
+        // Current file has been completed, update last entry for the previous file(s) and move to next one
+        if (index != current_file_index && index < storage.file_count()) {
+            for ( ; current_file_index < index; ) {
+                // set to 100%
+                print_line(current_file_index, file_bytes_hashed);
+                ++current_file_index;
+                os << std::endl;
+            }
+        }
+        print_line(current_file_index, file_bytes_hashed);
+        std::this_thread::sleep_for(80ms);
+    }
+
+    auto complete_progress = storage.at(current_file_index).file_size();
+    print_line(current_file_index, complete_progress);
+
+    hasher.wait();
 
     auto stop_time = std::chrono::system_clock::now();
     auto total_duration = stop_time - start_time;
@@ -524,7 +592,23 @@ void run_create_app(const create_app_options& options)
 
     fs::path destination_file = get_destination_path(m, options.destination);
 
-    create_general_info(os, m, destination_file, options.protocol_version, {});
+    formatting_options fmt_options = {};
+    bool simple_progress = false;
+
+#ifdef __unix__
+    bool runs_in_tty = true;
+    if (options.write_to_stdout) {
+        runs_in_tty = isatty(STDERR_FILENO);
+    } else {
+        runs_in_tty = isatty(STDOUT_FILENO);
+    }
+    if (!runs_in_tty) {
+        fmt_options.use_color = false;
+        simple_progress = true;
+    }
+#endif
+
+    create_general_info(os, m, destination_file, options.protocol_version, fmt_options);
     os << '\n';
 
     std::size_t io_block_size = std::min(1_MiB, file_storage.piece_size());
@@ -541,7 +625,12 @@ void run_create_app(const create_app_options& options)
     };
 
     auto hasher = dt::storage_hasher(file_storage, hasher_options);
-    run_with_progress(os, hasher, m);
+
+    if (simple_progress) {
+        run_with_simple_progress(os, hasher, m);
+    } else {
+        run_with_progress(os, hasher, m);
+    }
 
     // Join all threads and block until completed.
     if (!options.write_to_stdout) {
