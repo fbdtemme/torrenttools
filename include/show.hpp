@@ -14,6 +14,7 @@ struct show_app_options
     std::string subcommand;
     bool announce_flatten = false;
     bool piece_size_human_readable = false;
+    bool file_size_human_readable = false;
     dt::protocol infohash_protocol = dt::protocol::hybrid;
     bool infohash_truncate = false;
     bool creation_date_iso_format = false;
@@ -42,6 +43,8 @@ void configure_show_name_subapp(CLI::App* name_subapp, show_app_options& options
 
 void configure_show_comment_subapp(CLI::App* comment_subapp, show_app_options& options);
 
+void configure_show_file_size_subapp(CLI::App* file_size_subapp, show_app_options& options);
+
 void configure_show_source_subapp(CLI::App* source_subapp, show_app_options& options);
 
 void configure_show_query_subapp(CLI::App* source_subapp, show_app_options& options);
@@ -67,5 +70,7 @@ void run_show_name_subapp(const show_app_options& options);
 void run_show_comment_subapp(const show_app_options& options);
 
 void run_show_source_subapp(const show_app_options& options);
+
+void run_show_file_size_subapp(const show_app_options& options);
 
 void run_show_query_subapp(const show_app_options& options);
