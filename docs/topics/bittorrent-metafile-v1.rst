@@ -152,6 +152,44 @@ This extensions adds the following fields to the **files** list:
     Path of the symlink target relative to the torrent root directory.
 
 
+.. code-block::
+    :caption: Extended attributes in JSON for multi-file format
+
+    {
+      "info":
+      {
+        "files":
+        {[
+          {
+            "attr": "phxl",
+            "sha1": <20 bytes>,
+            "symlink path": ["dir1", "dir2", "target.ext"],
+            ...
+          },
+          {
+            ...
+          }
+        ]},
+        ...
+      },
+      ...
+    }
+
+
+.. code-block::
+    :caption: Extended attributes in JSON for single-file format
+
+    {
+      "info":
+      {
+        "attr": "hx",
+        "sha1": <20 bytes>,
+        ...
+      },
+      ...
+    }
+
+
 
 Sources:
     * `wikipedia - Bencode <https://en.wikipedia.org/wiki/Bencode>`_
