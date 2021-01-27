@@ -1,10 +1,11 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Named trackers" href="named-trackers.html" /><link rel="prev" title="torrenttools" href="index.html" />
 
-    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/><title>Index - torrenttools - 0.2.0</title>
-<link rel="stylesheet" href="_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
+    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
+        <title>Features - torrenttools - 0.2.0</title>
+      <link rel="stylesheet" href="_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
     <link rel="stylesheet" href="_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
     
@@ -113,8 +114,8 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="why-torrenttools.html">Features</a></li>
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="named-trackers.html">Named trackers</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
@@ -144,20 +145,82 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        
-<section class="genindex-section">
-  <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox">
-  
-  </div>
-</section>
+        <div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Feature-rich</strong>:</dt><dd><p>Torrenttools has multiple subcommands to satisfy all kinds of BitTorrent metafile task.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>v2 support</strong>:</dt><dd><p>Torrenttools is ready for the new v2 protocol with support for creating hybrid and v2-only metafiles.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Multi-threaded hashing</strong>:</dt><dd><p>Generating hashes of data is fully asynchronous to fully leverage fast storage.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Per-file checksums</strong>:</dt><dd><p>Support for multiple checksum algorithms to include a per-file hash inside the BitTorrent metafile.
+This enables clients to deduplicate or detect common files between different torrents.
+For the default OpenSSL backend following checksums are supported:</p>
+<ul>
+<li><p>whirlpool</p></li>
+<li><p>ripemd160</p></li>
+<li><p>shake256</p></li>
+<li><p>shake128</p></li>
+<li><p>sha3_512</p></li>
+<li><p>sha3_384</p></li>
+<li><p>sha3_256</p></li>
+<li><p>sha3_224</p></li>
+<li><p>sha512</p></li>
+<li><p>sha384</p></li>
+<li><p>sha256</p></li>
+<li><p>sha224</p></li>
+<li><p>sha1</p></li>
+<li><p>blake2s_256</p></li>
+<li><p>blake2b_512</p></li>
+<li><p>md5</p></li>
+<li><p>md4</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Named trackers</strong>:</dt><dd><p>Named trackers allow uploaders to quickly generate without having to lookup announce urls for different trackers.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 
       </article>
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="named-trackers.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Named trackers</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
@@ -167,6 +230,11 @@
               and
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="_sources/why-torrenttools.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
         </div>
         
       </footer>

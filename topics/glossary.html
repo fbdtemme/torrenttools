@@ -1,0 +1,292 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="BitTorrent metafile v1" href="bittorrent-metafile-v1.html" />
+
+    <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
+        <title>Glossary - torrenttools - 0.2.0</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=26485485040e7aaf717c13fd0188a5ad2c2deb60">
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script defer="defer" src="../_static/jquery.js"></script>
+    <script defer="defer" src="../_static/underscore.js"></script>
+    <script defer="defer" src="../_static/doctools.js"></script>
+    <script defer src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">torrenttools - 0.2.0</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">torrenttools - 0.2.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Commands</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../commands/create.html">Create</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/edit.html">Edit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/info.html">Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/show.html">Show</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/verify.html">Verify</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="bencode.html">Bencode format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Glossary</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><dl class="simple">
+<dt>announce:</dt><dd><p>The act of telling a tracker or the DHT network about the existence of oneself and how other peers can connect, by specifying port one is listening on.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>block:</dt><dd><p>A subset of a piece. Almost always 16 kiB of payload, unless the piece size is smaller. This is the granularity file payload is requested from peers on the network.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DHT:</dt><dd><p>The distributed hash table is a cross-swarm, world-wide network of bittorrent peers. It’s loosely connected, implementing the Kademlia protocol. Its purpose is to act as a tracker. Peers can announce their presence to nodes on the DHT and other peers can discover them to join the swarm.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>HTTP tracker:</dt><dd><p>A tracker that uses the HTTP protocol for announces.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>info dictionary:</dt><dd><p>The subset of a torrent file that describes piece hashes and file names. This is the only mandatory part necessary to join the swarm (network of peers) for the torrent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>info hash:</dt><dd><p>The hash of the info dictionary. This uniquely identifies a torrent and is used by the protocol to ensure peers talking to each other agree on which swarm they are participating in. Sometimes spelled info-hash.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>leecher:</dt><dd><p>A peer that is still interested in downloading more pieces for the torrent. It is not a seed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>magnet link:</dt><dd><p>A URI containing the info hash for a torrent, allowing peers to join its swarm. May optionally contain a display name, trackers and web seeds. Typically magnet links rely on peers joining the swarm via the DHT.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>metadata:</dt><dd><p>Synonymous to a torrent file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>peer:</dt><dd><p>A computer running bittorrent client software that participates in the network for a particular torrent/set of files.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>piece:</dt><dd><p>The smallest number of bytes that can be validated when downloading (no longer the case in bittorrent V2). The smallest part of the files that can be advertised to other peers. The size of a piece is determined by the info dictionary inside the torrent file.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>seed:</dt><dd><p>A computer running bittorrent client software that has the complete files for a specific torrent, able to share any piece for that file with other peers in the network</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>swarm:</dt><dd><p>The network of peers participating in sharing and downloading of a specific torrent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>torrent:</dt><dd><p>May refer to a torrent file or the swarm (network of peers) created around the torrent file.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>torrent file:</dt><dd><p>A file ending in .torrent describing the content of a set of files (but not containing the content). Importantly, it contains hashes of all files, split up into pieces. It may optionally contain references to trackers and nodes on the DHT network to aid peers in joining the network of peers sharing these files.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>tracker:</dt><dd><p>A server peers can announce to and receive other peers back belonging to the same swarm. Trackers are used to introduce peers to each other, within a swarm. When announcing, the info hash of the torrent is included. Trackers can introduce peers to any info-hash that’s specified, given other peers also use the same tracker. Some trackers restrict which info hashes they support based on a white list.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>UDP tracker:</dt><dd><p>A tracker that uses a UDP based protocol for announces.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>web seed:</dt><dd><p>A web server that is acting a seed, providing access to all pieces of all files over HTTP. This is an extension that client software may or may not support.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="simple">
+<dt>Sources:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://www.libtorrent.org/manual-ref.html#glossary">libtorrent documentation</a></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="bittorrent-metafile-v1.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">BitTorrent metafile v1</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/topics/glossary.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </main>
+</div>
+  </body>
+</html>

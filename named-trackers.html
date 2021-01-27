@@ -1,10 +1,10 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Features" href="why-torrenttools.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Create" href="commands/create.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
 
     <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
-        <title>Home - torrenttools - 0.2.0</title>
+        <title>Named trackers - torrenttools - 0.2.0</title>
       <link rel="stylesheet" href="_static/styles/furo.css?digest=33d2fc4f3f180ec1ffc6524e273e21d7d58cbe49">
     <link rel="stylesheet" href="_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
@@ -90,7 +90,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">torrenttools - 0.2.0</div></a>
+      <a href="index.html"><div class="brand">torrenttools - 0.2.0</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
   
   <div class="sidebar-logo-container">
     <img class="sidebar-logo" src="_static/torrenttools-icon.svg" alt="Logo"/>
@@ -114,9 +114,9 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="why-torrenttools.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Named trackers</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
 <ul>
@@ -145,36 +145,49 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="torrenttools">
-<h1>torrenttools<a class="headerlink" href="#torrenttools" title="Permalink to this headline">¶</a></h1>
-<p>A commandline tool for creating, inspecting and modifying bittorrent metafiles.</p>
-<p>Source code is hosted on <a class="reference external" href="https://github.com/fbdtemme/bencode">GitHub</a> under the MIT license.</p>
-<div class="section" id="index">
-<h2>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="why-torrenttools.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="named-trackers.html">Named trackers</a></li>
-</ul>
+        <div class="section" id="named-trackers">
+<h1>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h1>
+<p>“Named trackers” are trackers which are declared in the trackers.json configuration file.</p>
+<div class="section" id="announce-url-substitution">
+<h2>Announce url substitution<a class="headerlink" href="#announce-url-substitution" title="Permalink to this headline">¶</a></h2>
+<p>When a tracker is defined in the trackers.json file you can specify the full name or abbreviation to
+the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> option in the create or edit command.
+The tracker name will be replaced by the announce url in the BitTorrent metafile.
+Some private trackers have unique identifiers per user in the tracker announce url.
+These are supported as well by defining announce-url parameters between curly brackets in the announce-url.
+The announce-url parameter will be replaced by the value defined in the config.yml configuration file.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Declaration of a private tracker with parameter <em>pid</em> in trackers.json.</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"PrivateTracker"</span><span class="p">,</span>
+    <span class="nt">"abbreviation"</span><span class="p">:</span> <span class="s2">"PT"</span><span class="p">,</span>
+    <span class="nt">"announce_url"</span><span class="p">:</span> <span class="s2">"http://private-tracker.org:8600/{pid}/announce"</span><span class="p">,</span>
+    <span class="nt">"private"</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">}</span>
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Commands</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="commands/create.html">Create</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands/edit.html">Edit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands/info.html">Info</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands/show.html">Show</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands/verify.html">Verify</a></li>
-</ul>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Knowledge base</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="topics/bencode.html">Bencode format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topics/bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topics/glossary.html">Glossary</a></li>
-</ul>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Definition of the <em>pid</em> parameter in config.yml</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tracker-parameters</span><span class="p">:</span>
+  <span class="nt">PrivateTracker</span><span class="p">:</span>
+    <span class="nt">pid</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">01qwqwdlc922_sample_pid_d93fqd6fji9</span>
+</pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="private-flag-selection">
+<h2>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h2>
+<p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter
+the private flag will be set according to the value specified in the tracker database.
+The user can always override this value by explicitly passing a different value to the <code class="docutils literal notranslate"><span class="pre">-p|-private</span></code> option.</p>
+</div>
+<div class="section" id="bittorrent-metafile-default-filename">
+<h2>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h2>
+<p>Named trackers will prefix the abbreviation between square brackets to the
+default filename of the generated BitTorrent metafile.
+For a tracker named PrivateTracker and abbreviation PT the default filename for a target directory “content”
+would be: <code class="docutils literal notranslate"><span class="pre">[PT]example.torrent</span></code>.</p>
 </div>
 </div>
 
@@ -182,16 +195,26 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="why-torrenttools.html">
+          <a class="next-page" href="commands/create.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Features</div>
+                <div class="title">Create</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="why-torrenttools.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Features</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
@@ -202,7 +225,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="_sources/index.rst.txt"
+            <a class="muted-link" href="_sources/named-trackers.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -222,10 +245,10 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">torrenttools</a><ul>
-<li><a class="reference internal" href="#index">Index</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Named trackers</a><ul>
+<li><a class="reference internal" href="#announce-url-substitution">Announce url substitution</a></li>
+<li><a class="reference internal" href="#private-flag-selection">Private flag selection</a></li>
+<li><a class="reference internal" href="#bittorrent-metafile-default-filename">BitTorrent metafile default filename</a></li>
 </ul>
 </li>
 </ul>

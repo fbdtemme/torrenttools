@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Bencode format" href="bencode.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Glossary" href="glossary.html" /><link rel="prev" title="Bencode format" href="bencode.html" />
 
     <meta name="generator" content="sphinx-3.4.3, furo 2020.12.30.beta24"/>
         <title>BitTorrent metafile v1 - torrenttools - 0.2.0</title>
@@ -114,7 +114,11 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption"><span class="caption-text">Commands</span></p>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Commands</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../commands/create.html">Create</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/edit.html">Edit</a></li>
@@ -126,6 +130,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="bencode.html">Bencode format</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">BitTorrent metafile v1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
 </div>
@@ -293,6 +298,44 @@ The hash should only be considered as a hint, pieces hashes are the canonical re
 </dl>
 </li>
 </ul>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Extended attributes in JSON for multi-file format</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">"info"</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s2">"files"</span><span class="p">:</span>
+    <span class="p">{[</span>
+      <span class="p">{</span>
+        <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"phxl"</span><span class="p">,</span>
+        <span class="s2">"sha1"</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">20</span> <span class="nb">bytes</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s2">"symlink path"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"dir1"</span><span class="p">,</span> <span class="s2">"dir2"</span><span class="p">,</span> <span class="s2">"target.ext"</span><span class="p">],</span>
+        <span class="o">...</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="o">...</span>
+      <span class="p">}</span>
+    <span class="p">]},</span>
+    <span class="o">...</span>
+  <span class="p">},</span>
+  <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Extended attributes in JSON for single-file format</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">"info"</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s2">"attr"</span><span class="p">:</span> <span class="s2">"hx"</span><span class="p">,</span>
+    <span class="s2">"sha1"</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">20</span> <span class="nb">bytes</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="o">...</span>
+  <span class="p">},</span>
+  <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 <dl class="simple">
 <dt>Sources:</dt><dd><ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Bencode">wikipedia - Bencode</a></p></li>
@@ -311,7 +354,15 @@ The hash should only be considered as a hint, pieces hashes are the canonical re
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="glossary.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Glossary</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="bencode.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
