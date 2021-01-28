@@ -2,10 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED] 
+## [v0.2.1] - 2021-01-28
 ### Added 
 * magnet command to generate magnet URI's from a bittorrent metafile.
 * Simpler progress reporting when output is piped (eg. ruTorrent task output).
+* Add "show size" command.
+
+### Changed
+* Fix race triggered when hashing multiple small files in v2 hasher.
 
 ## [v0.2.0] - 2021-01-25
 ### Added
