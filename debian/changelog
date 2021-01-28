@@ -1,3 +1,9 @@
+torrenttools (0.2.1) focal groovy hirsute; urgency=low
+
+  * Update to v0.2.1.
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Tue, 28 Jan 2021 15:43:00 +0100
+
 torrenttools (0.2.0) focal groovy hirsute; urgency=low
 
   * Update to v0.2.0.
