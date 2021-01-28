@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED] 
 ### Added 
 * magnet command to generate magnet URI's from a bittorrent metafile.
+* Simpler progress reporting when output is piped (eg. ruTorrent task output).
 
 ## [v0.2.0] - 2021-01-25
 ### Added
