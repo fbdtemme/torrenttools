@@ -13,6 +13,7 @@ include /usr/share/dpkg/architecture.mk
 override_dh_auto_configure:
 	dh_auto_configure -- \
 		  -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_TARGET_MULTIARCH)" \
+		  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		  -DCMAKE_CXX_COMPILER=g++-10
 
 # Do not run tests
