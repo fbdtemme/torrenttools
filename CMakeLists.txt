@@ -57,7 +57,10 @@ add_executable(torrenttools
         src/escape_binary_fields.cpp
         src/tree_view.cpp
         src/show.cpp
-        src/formatters.cpp)
+        src/formatters.cpp
+        src/progress.cpp
+        src/indicator.cpp
+)
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(torrenttools PUBLIC cxx_std_20)
