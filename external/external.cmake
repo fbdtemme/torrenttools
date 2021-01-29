@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.14)
 
 include(FetchContent)
 
-function(log_found library)
+function(log_target_found library)
+    message(STATUS "Target of dependency ${library} already exist in project.")
+endfunction()
+
+function(log_module_found library)
     message(STATUS "Local installation of dependency ${library} found.")
 endfunction()
 

@@ -1,23 +1,28 @@
+if (TARGET Pal::Sigslot)
+    log_target_found(PalSigslot)
+    return()
+endif()
 
 find_package(PalSigslot QUIET)
 if (PalSigslot_FOUND)
-    log_found(PalSigslot)
+    log_module_found(PalSigslot)
+    return()
+endif()
+
+set(SIGSLOT_COMPILE_EXAMPLES OFF)
+set(SIGSLOT_COMPILE_TESTS OFF)
+
+if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/sigslot)
+    log_dir_found(sigslot)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/sigslot)
+    set(sigslot_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/sigslot)
 else()
-    set(SIGSLOT_COMPILE_EXAMPLES OFF)
-    set(SIGSLOT_COMPILE_TESTS OFF)
+    log_fetch(PalSigslot)
 
-    if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/sigslot)
-        log_dir_found(sigslot)
-        add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/sigslot)
-        set(sigslot_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/sigslot)
-    else()
-        log_fetch(PalSigslot)
-
-        FetchContent_Declare(
-                PalSigslot
-                GIT_REPOSITORY https://github.com/palacaze/sigslot.git
-                GIT_TAG        master
-        )
-        FetchContent_MakeAvailable(PalSigslot)
-    endif()
+    FetchContent_Declare(
+            PalSigslot
+            GIT_REPOSITORY https://github.com/palacaze/sigslot.git
+            GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(PalSigslot)
 endif()
