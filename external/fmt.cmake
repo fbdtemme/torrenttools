@@ -1,5 +1,6 @@
-
-find_package(fmt QUIET)
+# Add a future release of fmt for when missing args.h header is released.
+# This disables to system installation packages
+find_package(fmt 7.1.4 QUIET)
 if (fmt_FOUND)
     log_found(fmt)
 else()
