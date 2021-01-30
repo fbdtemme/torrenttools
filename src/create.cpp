@@ -389,7 +389,7 @@ void run_create_app(const create_app_options& options)
         m.set_comment(*options.comment);
     }
     if (options.source) {
-        m.set_comment(*options.source);
+        m.set_source(*options.source);
     }
     // override the tracker default if explicitly set
     if (options.is_private.has_value()) {
