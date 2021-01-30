@@ -29,7 +29,8 @@ jobs:
       - name: Build
         run: cmake --build build --target torrenttools
       - name: Package
-        run: ctest .
+        working-directory: build
+        run: cpack -G "WIX"
       - name: Get the version
         id: get_version
         run: |
