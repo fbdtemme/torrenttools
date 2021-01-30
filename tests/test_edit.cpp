@@ -516,7 +516,7 @@ TEST_CASE("test edit source")
         options.source = "torrenttools";
         run_edit_app(options);
         auto m = dt::load_metafile(output);
-        CHECK_FALSE(m.source() == "torrenttools");
+        CHECK(m.source() == options.source);
     }
     SECTION("remove source") {
         options.source = "";
