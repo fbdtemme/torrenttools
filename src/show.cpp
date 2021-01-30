@@ -27,31 +27,33 @@ namespace tt = torrenttools;
 
 void configure_show_app(CLI::App* app, show_app_options& options)
 {
-    auto announce_subapp = app->add_subcommand("announce",     "Show the announces.");
-    auto protocol_subapp = app->add_subcommand("protocol",     "Show the protocol.");
-    auto infohash_subapp = app->add_subcommand("infohash",     "Show the the infohash.");
-    auto piece_size_subapp = app->add_subcommand("piece-size", "Show the piece size.");
-    auto created_by_subapp = app->add_subcommand("created-by", "Show the created-by field.");
+    auto announce_subapp = app->add_subcommand("announce",           "Show the announces.");
+    auto comment_subapp = app->add_subcommand("comment",             "Show the comment field.");
+    auto created_by_subapp = app->add_subcommand("created-by",       "Show the created-by field.");
     auto creation_date_subapp = app->add_subcommand("creation-date", "Show the creation-date field.");
-    auto private_subapp = app->add_subcommand("private",        "Show the private flag.");
-    auto name_subapp = app->add_subcommand("name",              "Show the metafile name.");
-    auto comment_subapp = app->add_subcommand("comment",        "Show the comment field.");
-    auto source_subapp = app->add_subcommand("source",          "Show the source field.");
-    auto query_subapp = app->add_subcommand("query",            "Show data referenced by a bencode pointer.");
-    auto file_size_subapp = app->add_subcommand("size",         "Show the total file size.");
+    auto file_size_subapp = app->add_subcommand("size",              "Show the total file size.");
+    auto files_subapp = app->add_subcommand("files",                "Show the files in a metafile.");
+    auto infohash_subapp = app->add_subcommand("infohash",           "Show the the infohash.");
+    auto name_subapp = app->add_subcommand("name",                   "Show the metafile name.");
+    auto piece_size_subapp = app->add_subcommand("piece-size",       "Show the piece size.");
+    auto private_subapp = app->add_subcommand("private",             "Show the private flag.");
+    auto protocol_subapp = app->add_subcommand("protocol",           "Show the protocol.");
+    auto query_subapp = app->add_subcommand("query",                 "Show data referenced by a bencode pointer.");
+    auto source_subapp = app->add_subcommand("source",               "Show the source field.");
 
     configure_show_announce_subapp(announce_subapp, options);
-    configure_show_protocol_subapp(protocol_subapp, options);
-    configure_show_infohash_subapp(infohash_subapp, options);
-    configure_show_piece_size_subapp(piece_size_subapp, options);
+    configure_show_comment_subapp(comment_subapp, options);
     configure_show_created_by_subapp(created_by_subapp, options);
     configure_show_creation_date_subapp(creation_date_subapp, options);
-    configure_show_private_subapp(private_subapp, options);
-    configure_show_name_subapp(name_subapp, options);
-    configure_show_comment_subapp(comment_subapp, options);
-    configure_show_source_subapp(source_subapp, options);
-    configure_show_query_subapp(query_subapp, options);
     configure_show_file_size_subapp(file_size_subapp, options);
+    configure_show_files_subapp(files_subapp, options);
+    configure_show_infohash_subapp(infohash_subapp, options);
+    configure_show_name_subapp(name_subapp, options);
+    configure_show_piece_size_subapp(piece_size_subapp, options);
+    configure_show_private_subapp(private_subapp, options);
+    configure_show_protocol_subapp(protocol_subapp, options);
+    configure_show_query_subapp(query_subapp, options);
+    configure_show_source_subapp(source_subapp, options);
 }
 
 
@@ -206,23 +208,41 @@ void configure_show_file_size_subapp(CLI::App* file_size_subapp, show_app_option
 }
 
 
+void configure_show_files_subapp(CLI::App* files_subapp, show_app_options& options)
+{
+    files_subapp->parse_complete_callback([&](){ options.subcommand = "files"; });
+
+    files_subapp->add_option("target", options.metafile, "Target bittorrent metafile.")
+                    ->type_name("<path>")
+                    ->required();
+
+    files_subapp->add_flag("--show-padding-files", options.show_padding_files,
+               "Show padding files in the file tree.")
+       ->default_val(false);
+
+    files_subapp->add_flag("--prefix", options.files_prefix,
+                        "Show padding files in the file tree.")
+                ->default_val(false);
+}
+
 void run_show_app(CLI::App* show_app, const show_app_options& options)
 {
     using run_show_app_function_type = void (*)(const show_app_options&);
 
     static std::unordered_map<std::string_view, run_show_app_function_type> dispatch_table {
             {"announce",        &run_show_announce_subapp},
-            {"piece-size",      &run_show_piece_size_subapp},
-            {"protocol",        &run_show_protocol_subapp},
-            {"infohash",        &run_show_infohash_subapp},
+            {"comment",         &run_show_comment_subapp},
             {"created-by",      &run_show_created_by_subapp},
             {"creation-date",   &run_show_creation_date_subapp},
-            {"private",         &run_show_private_subapp},
+            {"files",           &run_show_files_subapp},
+            {"infohash",        &run_show_infohash_subapp},
             {"name",            &run_show_name_subapp},
-            {"comment",         &run_show_comment_subapp},
-            {"source",          &run_show_source_subapp},
-            {"size",            &run_show_file_size_subapp},
+            {"piece-size",      &run_show_piece_size_subapp},
+            {"private",         &run_show_private_subapp},
+            {"protocol",        &run_show_protocol_subapp},
             {"query",           &run_show_query_subapp},
+            {"size",            &run_show_file_size_subapp},
+            {"source",          &run_show_source_subapp},
     };
 
     if (!options.subcommand.empty()) {
@@ -411,6 +431,7 @@ void run_show_file_size_subapp(const show_app_options& options)
 
 void run_show_query_subapp(const show_app_options& options)
 {
+    verify_metafile(options.metafile);
     std::ifstream ifs (options.metafile);
     std::string data(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
 
@@ -434,5 +455,19 @@ void run_show_query_subapp(const show_app_options& options)
     }
     catch (const bc::out_of_range& err) {
         throw std::invalid_argument("No data matching query");
+    }
+}
+
+
+void run_show_files_subapp(const show_app_options& options)
+{
+    verify_metafile(options.metafile);
+    auto m = dt::load_metafile(options.metafile);
+
+    for (const auto& f: m.storage()) {
+        if (!options.show_padding_files && f.is_padding_file())
+            continue;
+
+        std::cout << options.files_prefix / f.path() << std::endl;
     }
 }
