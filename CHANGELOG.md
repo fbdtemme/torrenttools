@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.2] - 2021-01-30
+### Changed
+* Fix source tag not being set in create command.
+
 ## [v0.2.1] - 2021-01-28
 ### Added 
 * magnet command to generate magnet URI's from a bittorrent metafile.
