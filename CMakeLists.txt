@@ -44,22 +44,23 @@ option(TORRENTTOOLS_BUILD_DOCS "Generate documentation" OFF)
 include(external/external.cmake)
 
 add_executable(torrenttools
-        src/main.cpp
-        src/info.cpp
-        src/verify.cpp
-        src/create.cpp
-        src/edit.cpp
-        src/magnet.cpp
         src/app_data.cpp
         src/argument_parsers.cpp
         src/config_parser.cpp
-        src/tracker_database.cpp
+        src/create.cpp
+        src/edit.cpp
         src/escape_binary_fields.cpp
-        src/tree_view.cpp
-        src/show.cpp
         src/formatters.cpp
-        src/progress.cpp
         src/indicator.cpp
+        src/info.cpp
+        src/magnet.cpp
+        src/main.cpp
+        src/pad.cpp
+        src/progress.cpp
+        src/show.cpp
+        src/tracker_database.cpp
+        src/tree_view.cpp
+        src/verify.cpp
 )
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

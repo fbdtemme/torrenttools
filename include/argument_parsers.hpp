@@ -23,6 +23,8 @@ std::unordered_set<dottorrent::hash_function> checksum_transformer(const std::ve
 
 std::filesystem::path target_transformer(const std::vector<std::string>& v);
 
+std::filesystem::path metafile_transformer(const std::vector<std::string> v);
+
 std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v);
 
 std::vector<std::optional<bool>> parse_commandline_booleans(std::string_view option, const std::vector<std::string>& v);

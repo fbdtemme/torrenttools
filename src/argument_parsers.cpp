@@ -20,6 +20,7 @@
 namespace rng = std::ranges;
 namespace dt = dottorrent;
 
+
 using namespace dottorrent::literals;
 static std::string err_msg = "Invalid value {} for option {}: {}.";
 
@@ -178,6 +179,23 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v)
     return std::filesystem::canonical(f);
 }
 
+std::filesystem::path metafile_transformer(const std::vector<std::string> v)
+{
+    if (v.size() != 1) {
+        throw std::invalid_argument("Multiple targets given.");
+    }
+    auto metafile = std::filesystem::path(v.front());
+
+    if (!std::filesystem::exists(metafile))
+        throw std::invalid_argument(
+                fmt::format("Metafile not found: {}", metafile.string()));
+
+    if (std::filesystem::is_directory(metafile))
+        throw std::invalid_argument(
+                fmt::format("Target is a directory, not a metafile: {}", metafile.string()));
+
+    return metafile;
+}
 
 std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v)
 {
