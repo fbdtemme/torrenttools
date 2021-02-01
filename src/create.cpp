@@ -284,6 +284,9 @@ void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::st
                 m.set_source(tracker_entry.name);
             }
         }
+        else {
+            m.add_tracker(tracker, 0);
+        }
     }
     else {
         std::size_t tier_idx = 0;
@@ -298,8 +301,9 @@ void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::st
                     m.add_tracker(tracker_entry.substitute_parameters(*config), tier_idx);
                     private_flags.push_back(tracker_entry.is_private);
                 }
-
-                m.add_tracker(tracker, tier_idx);
+                else {
+                    m.add_tracker(tracker, tier_idx);
+                }
             }
             ++tier_idx;
         }
@@ -337,7 +341,9 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
     }
 
     // Single tracker torrent for which we know the tracker.
-    if (m.trackers().size() == 1) {
+    bool is_known_tracker = tracker_db->contains(m.trackers().front());
+
+    if (m.trackers().size() == 1 && is_known_tracker) {
         destination_name = fmt::format(
                 "[{}]{}.torrent",
                 tracker_db->at(m.trackers().front()).abbreviation,
