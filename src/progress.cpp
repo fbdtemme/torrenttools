@@ -3,6 +3,15 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <memory>
+#include <string>
+#include <string_view>
+
+#include <cliprogressbar/posix_signal_notifier.hpp>
+#include <cliprogressbar/events/event.hpp>
+#include <cliprogressbar/event_queue.hpp>
+#include <cliprogressbar/widget.hpp>
+#include <cliprogressbar/layout/box_layout_manager.hpp>
 
 #include <fmt/format.h>
 #include <termcontrol/termcontrol.hpp>
@@ -14,6 +23,19 @@
 
 namespace tc = termcontrol;
 namespace tt = torrenttools;
+namespace tc = termcontrol;
+
+
+
+
+/// The main application class
+/// event_queue
+/// progress_bar spawn thread with
+
+/// Class bar
+
+// TODO: progress plugins for eta rate and timers
+
 
 void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
 {
@@ -28,19 +50,15 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
 
     // v1 torrents count padding files as regular files in their progress counters
     // v2 and hybrid torrents do not take padding files into account in their progress counters.
-    std::size_t total_file_size;
-    std::unique_ptr<cliprogress::progress_indicator> indicator;
-
+    std::size_t total_file_size = 0;
     if (hasher.protocol() == dt::protocol::v1) {
         total_file_size = storage.total_file_size();
-        indicator = make_indicator(storage, storage.at(current_file_index));
     } else {
         total_file_size = storage.total_regular_file_size();
-        indicator = make_indicator_v2(storage, storage.at(current_file_index));
     }
 
+    auto indicator = std::make_shared<progress_indicator>(&app, storage, true);
     indicator->start();
-    app.start();
 
     auto start_time = std::chrono::system_clock::now();
     hasher.start();
@@ -48,41 +66,26 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
     std::size_t index = 0;
 
     while (hasher.bytes_done() < total_file_size) {
-        auto [index, file_bytes_hashed] = hasher.current_file_progress();
+        auto [index, file_bytes_done] = hasher.current_file_progress();
+        auto total_bytes_done = hasher.bytes_done();
 
         // Current file has been completed, update last entry for the previous file(s) and move to next one
         if (index != current_file_index && index < storage.file_count()) {
             for ( ; current_file_index < index; ) {
-                // set to 100%
-                if (indicator) {
-                    auto complete_size = storage.at(current_file_index).file_size();
-                    indicator->set_value(complete_size);
-                    on_indicator_completion(indicator);
-                    indicator->stop();
-                }
-
+                auto complete_size = storage.at(current_file_index).file_size();
+                indicator->set_per_file_value(complete_size);
                 ++current_file_index;
-
-                if (hasher.protocol() == dt::protocol::v1) {
-                    indicator = make_indicator(storage, storage.at(current_file_index));
-                } else {
-                    indicator = make_indicator_v2(storage, storage.at(current_file_index));
-                }
-                if (indicator) { indicator->start(); }
+                indicator->set_current_file(current_file_index);
             }
         }
-        if (indicator) { indicator->set_value(file_bytes_hashed); }
-        std::this_thread::sleep_for(80ms);
+        indicator->set_per_file_value(file_bytes_done);
+        indicator->set_total_value(total_bytes_done);
+        std::this_thread::sleep_for(250ms);
     }
 
-    if (indicator) {
-        auto complete_progress = storage.at(current_file_index).file_size();
-        indicator->set_value(complete_progress);
-        on_indicator_completion(indicator);
-        indicator->stop();
-    }
-    app.request_stop();
-    app.wait();
+    indicator->set_total_value(storage.total_file_size());
+    indicator->set_per_file_value( storage.at(current_file_index).file_size());
+    indicator->stop();
     hasher.wait();
 
     tc::format_to(os, tc::ecma48::character_position_absolute);

@@ -24,11 +24,20 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 * Support for the new [v2 and hybrid protocols](https://blog.libtorrent.org/2020/09/bittorrent-v2/) .
 * Support for tracker abbreviations.
 * Support for announce substitution parameters. 
+* Fast multi-buffer hashing with Intel ISA-L.
 
 ## Status
 
 This project is under development. 
 The commandline interface can change at any release prior to 1.0.0.
+
+## Performance
+
+Following test were performed on a RAM Disk with 1 MiB piece size 
+and as target a 9.0 GiB [Centos8-stream image](http://isoredirect.centos.org/centos/8/isos/x86_64/).
+The CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
+
+![Benchmark](benchmark/benchmark.svg)
 
 ## Documentation
 
@@ -52,6 +61,8 @@ sudo apt-get update
 sudo apt install torrenttools
 ```
 
+A windows installer is available as an asset on the [release](https://github.com/fbdtemme/torrenttools/releases) page.
+
 
 ## Building
 
@@ -71,7 +82,7 @@ This library depends on following projects:
 *  [OpenSSL](https://github.com/openssl/openssl) or [libgcrypt](https://github.com/gpg/libgcrypt)
 
 Almost all dependencies can be fetched from github during configure time or can be installed manually.
-oneTBB and OpenSSL (or libgcrypt if so configured) have to be installed on the system in advance.
+OpenSSL or Intel ISA-L crypto have to be installed on the system in advance.
 
 ### Installing build dependencies
 
@@ -83,10 +94,30 @@ sudo apt install build-essential git cmake g++-10 libtbb2 libtbb-dev libssl-dev
 
 Fedora 33
 ```shell
-sudo dnf install cmake make g++ git openssl-devel libtbb-devel 
+sudo dnf install cmake make g++ git openssl-devel libtbb-devel
 ```
 
+### Building Intel ISA-L crypto from source
 
+```shell
+wget https://github.com/intel/isa-l_crypto
+cd isa-l_crypto
+./autogen.sh
+./configure
+make
+sudo make install
+````
+
+### Configuration
+
+| Option                         |  Type    |  Description                 |
+|--------------------------------|----------|------------------------------| 
+| TORRENTTOOLS_BUILD_TESTS       | Bool     | Build tests.                 |
+| TORRENTTOOLS_BUILD_DOCS        | Bool     | Build documentation.         |
+| TORRENTTOOLS_INSTALL           | Bool     | Generate an install target.  |
+| DOTTORRENT_CRYPTO_MULTIBUFFER  | Bool     | Enable fast multi buffer hashing. Requires Intel ISA-L Crypto library. |
+
+### Building
 
 This project requires C++20.
 Currently only GCC 10 is supported.
@@ -99,6 +130,8 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --target torrenttools
 ```
+
+### Installation
 
 Installing the project:
 

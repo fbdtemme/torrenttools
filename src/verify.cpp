@@ -95,45 +95,43 @@ void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent:
 
     std::cout << "Verifying files... " << std::endl;
 
-    auto indicator = make_indicator(storage, storage.at(current_file_index));
-    indicator->start();
     app.start();
 
     auto start_time = std::chrono::system_clock::now();
     verifier.start();
-
-    // v1 torrents count padding files as regular files in their progress counters
-    // v2 and hybrid torrents do not take padding files into account in their progress counters.
-    std::size_t total_file_size;
-    if (verifier.protocol() == dt::protocol::v1) {
-        total_file_size = storage.total_file_size();
-    } else {
-        total_file_size = storage.total_regular_file_size();
-    }
-
-    while (verifier.bytes_done() < total_file_size) {
-        auto [index, file_bytes_verified] = verifier.current_file_progress();
-
-        // Current file has been completed, update last entry for the previous file(s) and move to next one
-        if (index != current_file_index) {
-            for ( ; current_file_index < index; ) {
-                auto complete_size = storage.at(current_file_index).file_size();
-                indicator->set_value(complete_size);
-                on_indicator_completion(indicator);
-                indicator->stop();
-
-                indicator = make_indicator(storage, storage.at(++current_file_index));
-                indicator->start();
-            }
-        }
-        indicator->set_value(file_bytes_verified);
-        std::this_thread::sleep_for(100ms);
-    }
-
-    auto complete_progress = storage.at(current_file_index).file_size();
-    indicator->set_value(complete_progress);
-    on_indicator_completion(indicator);
-    indicator->stop();
+//
+//    // v1 torrents count padding files as regular files in their progress counters
+//    // v2 and hybrid torrents do not take padding files into account in their progress counters.
+//    std::size_t total_file_size;
+//    if (verifier.protocol() == dt::protocol::v1) {
+//        total_file_size = storage.total_file_size();
+//    } else {
+//        total_file_size = storage.total_regular_file_size();
+//    }
+//
+//    while (verifier.bytes_done() < total_file_size) {
+//        auto [index, file_bytes_verified] = verifier.current_file_progress();
+//
+//        // Current file has been completed, update last entry for the previous file(s) and move to next one
+//        if (index != current_file_index) {
+//            for ( ; current_file_index < index; ) {
+//                auto complete_size = storage.at(current_file_index).file_size();
+//                indicator->set_value(complete_size);
+//                on_indicator_completion(indicator);
+//                indicator->stop();
+//
+//                indicator = make_indicator(storage, storage.at(++current_file_index));
+//                indicator->start();
+//            }
+//        }
+//        indicator->set_value(file_bytes_verified);
+//        std::this_thread::sleep_for(100ms);
+//    }
+//
+//    auto complete_progress = storage.at(current_file_index).file_size();
+//    indicator->set_value(complete_progress);
+//    on_indicator_completion(indicator);
+//    indicator->stop();
     app.request_stop();
     app.wait();
 

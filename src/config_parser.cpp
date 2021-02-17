@@ -59,9 +59,6 @@ std::string_view config::get_tracker_parameter(
     return it2->second;
 }
 
-
-
-
 config* load_config()
 {
     static std::unique_ptr<config> config_ptr;
