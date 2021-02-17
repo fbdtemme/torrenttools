@@ -24,6 +24,7 @@ struct create_app_options
     std::filesystem::path target;
     std::optional<std::filesystem::path> destination;
     bool write_to_stdout = false;
+    bool read_from_stdin = false;
     dottorrent::protocol protocol_version = dottorrent::protocol::v1;
     std::optional<std::size_t> piece_size;
     std::unordered_set<dottorrent::hash_function> checksums = {};
@@ -41,8 +42,8 @@ struct create_app_options
     std::optional<std::string> created_by {};
     bool set_creation_date = true;
     std::optional<std::chrono::system_clock::time_point> creation_date = std::nullopt;
-    std::uint8_t threads = 4;
-    std::optional<std::size_t> io_block_size;
+    std::uint8_t threads = 2;
+    std::optional<std::size_t> io_block_size = std::nullopt;
     bool simple_progress = false;
 };
 

@@ -26,6 +26,7 @@ struct show_app_options
 
 
 void configure_show_app(CLI::App* app, show_app_options& options);
+void configure_show_common(CLI::App* subapp, show_app_options& options);
 
 void configure_show_announce_subapp(CLI::App* announce_subapp, show_app_options& options);
 void configure_show_comment_subapp(CLI::App* comment_subapp, show_app_options& options);

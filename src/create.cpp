@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <ranges>
+#include <optional>
+#include <iostream>
 
 #include <fmt/format.h>
 #include <CLI/CLI.hpp>
@@ -61,9 +63,29 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         return true;
     };
     CLI::callback_t target_parser = [&](const CLI::results_t v) -> bool {
-        options.target = target_transformer(v);
+        auto target = target_transformer(v);
+        if (target == "-") {
+            options.read_from_stdin = true;
+            std::string line {};
+            std::getline(std::cin, line);
+            options.target = target_transformer(std::vector{line});
+        } else {
+            options.target = target;
+        }
         return true;
     };
+
+    CLI::callback_t destination_parser = [&](const CLI::results_t v) -> bool {
+        auto destination = target_transformer(v, /*check_exists=*/false);
+        if (destination == "-") {
+            options.write_to_stdout = true;
+            options.destination = std::nullopt;
+        } else {
+            options.destination = destination;
+        }
+        return true;
+    };
+
     CLI::callback_t io_block_size_parser = [&](const CLI::results_t& v) -> bool {
         options.io_block_size = io_block_size_transformer(v);
         return true;
@@ -91,15 +113,12 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             ->type_name("<protocol>")
             ->expected(1);
 
-    app->add_option("-o,--output", options.destination,
+    app->add_option("-o,--output", destination_parser,
             "Set the filename and/or output directory of the created file.\n"
             "[default: <name>.torrent]\n "
             "Use a path with trailing slash to only set the output directory.")
             ->type_name("<path>")
             ->expected(1);
-
-    app->add_flag_callback("--stdout", [&]() { options.write_to_stdout = true; },
-            "Write the metafile to the standard output");
 
     app->add_option("-a,--announce", announce_parser,
                     "Add one or multiple announces urls.\n"
@@ -203,7 +222,6 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("--io-block-size", io_block_size_parser,
                "The size of blocks read from storage.\n"
-               "[default: max(1 MiB, <piece-size>)].\n"
                "Must be larger or equal to the piece size.")
        ->type_name("<size[K|M]>")
        ->expected(1);
@@ -340,10 +358,7 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
         destination_directory = fs::current_path();
     }
 
-    // Single tracker torrent for which we know the tracker.
-    bool is_known_tracker = tracker_db->contains(m.trackers().front());
-
-    if (m.trackers().size() == 1 && is_known_tracker) {
+    if (m.trackers().size() == 1 && tracker_db->contains(m.trackers().front())) {
         destination_name = fmt::format(
                 "[{}]{}.torrent",
                 tracker_db->at(m.trackers().front()).abbreviation,
@@ -362,7 +377,6 @@ void run_create_app(const create_app_options& options)
     using namespace dottorrent::literals;
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
-
     // create a new metafile
     dt::metafile m {};
 
@@ -443,16 +457,15 @@ void run_create_app(const create_app_options& options)
     create_general_info(os, m, destination_file, options.protocol_version, fmt_options);
     os << '\n';
 
-    std::size_t io_block_size = std::min(1_MiB, file_storage.piece_size());
-    if (options.io_block_size) {
-        io_block_size = *options.io_block_size;
+    if (options.io_block_size && *options.io_block_size < file_storage.piece_size()) {
+        throw std::invalid_argument("io-block-size must be larger or equal to the piece size.");
     }
 
     // hash checking
     dt::storage_hasher_options hasher_options {
             .protocol_version = options.protocol_version,
             .checksums = {options.checksums},
-            .min_chunk_size = io_block_size,
+            .min_io_block_size = options.io_block_size,
             .threads = options.threads
     };
 

@@ -10,7 +10,10 @@
 #include <bencode/events/encode_json_to.hpp>
 #include "dottorrent/metafile.hpp"
 #include "dottorrent/serialization/all.hpp"
+
+
 #include "info.hpp"
+#include "argument_parsers.hpp"
 #include "formatters.hpp"
 #include "tree_view.hpp"
 #include "config.hpp"
@@ -63,9 +66,14 @@ void run_info_app(info_app_options& options)
 
 void configure_info_app(CLI::App* app, info_app_options& options)
 {
-    app->add_option("target", options.metafile, "Target bittorrent metafile.")
-            ->type_name("<path>")
-            ->required();
+    CLI::callback_t metafile_parser = [&](const CLI::results_t& v) -> bool {
+        options.metafile = metafile_transformer(v);
+        return true;
+    };
+
+    app->add_option("target", metafile_parser, "Target bittorrent metafile.")
+          ->type_name("<path>")
+          ->required();
 
     auto* raw_option = app->add_flag("--raw", options.raw,
             "Print the metafile data formatted as JSON. Binary data is filtered out.")
