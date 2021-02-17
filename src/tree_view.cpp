@@ -114,7 +114,7 @@ std::string format_file_tree(const dottorrent::metafile& m, std::string_view pre
 
     if (storage.file_mode() == dottorrent::file_mode::multi) {
         fmt::format_to(out, "  {}\n", m.name());
-        auto printer = tree_printer(m.storage(), prefix, options);
+        auto printer = tree_printer(storage, prefix, options);
         printer.walk();
         fmt::format_to(out, printer.result());
     }
