@@ -36,10 +36,9 @@ endif()
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
 option(TORRENTTOOLS_BUILD_DOCS "Generate documentation" OFF)
-#
-add_subdirectory(../cliprogress cliprogress)
-add_subdirectory(../dottorrent dottorrent)
 
+#add_subdirectory(../cliprogress cliprogress)
+#add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
 
