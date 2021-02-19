@@ -21,7 +21,9 @@ std::vector<dottorrent::dht_node> dht_node_transformer(const std::vector<std::st
 
 std::unordered_set<dottorrent::hash_function> checksum_transformer(const std::vector<std::string>& s);
 
-std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists = true);
+std::filesystem::path target_transformer(const std::vector<std::string>& v,
+                                         bool check_exists = true,
+                                         bool keep_trailing = true);
 
 std::filesystem::path metafile_transformer(const std::vector<std::string>& v);
 

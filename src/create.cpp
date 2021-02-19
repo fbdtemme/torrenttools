@@ -349,9 +349,9 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
             destination = *destination_path;
             return destination;
         }
-            // option is only a destination directory and not a filename
+        // option is only a destination directory and not a filename
         else {
-            destination_directory = *destination_path;
+            destination_directory = destination_path->parent_path();
         }
     }
     else {
