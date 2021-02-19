@@ -2,14 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.3.0] - UNRELEASED
+## [v0.3.0] - 2012-02-19
 ### Added
 * Faster hashing backend using Intel ISA-L Crypto multi-buffer hashing.
 * Read target name from input stream.
 
 ### Changed
 * Fix announce url not properly set for single tracker metafiles.
-* Progress bar now shows total progress instead of per-file progress and estimated duration. 
+* Progress bar now shows total progress instead of per-file progress and ETA. 
+* Reduced resource consumption by removing busy waiting.
 
 ## [v0.2.2] - 2021-01-30
 ### Changed
