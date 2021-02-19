@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.3.1] - 2012-02-19
+### Changed
+* Fix regression in create command --output option.
+
 ## [v0.3.0] - 2012-02-19
 ### Added
 * Faster hashing backend using Intel ISA-L Crypto multi-buffer hashing.

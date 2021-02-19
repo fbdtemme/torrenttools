@@ -7,7 +7,7 @@ cmake_policy(SET CMP0077 NEW)
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.3.0
+        VERSION 0.3.1
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
