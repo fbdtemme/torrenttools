@@ -167,7 +167,7 @@ dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, boo
     throw std::invalid_argument(fmt::format("Invalid bittorrent protocol: {}", s));
 }
 
-std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists)
+std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists, bool keep_trailing)
 {
     if (v.size() != 1) {
         throw std::invalid_argument("Multiple targets given.");
@@ -178,12 +178,21 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v, bool
 
     auto f = std::filesystem::path(v.front());
     if (check_exists && !std::filesystem::exists(f)) {
-        throw std::invalid_argument("Path does not exist.");
+        throw std::invalid_argument(fmt::format("Path does not exist: {}", f.string()));
     }
+
     if (check_exists) {
         return std::filesystem::canonical(f);
-    } else {
-        return std::filesystem::weakly_canonical(f);
+    }
+    else {
+        bool has_trailing_dir_seperator = f.filename().empty();
+        bool is_directory = std::filesystem::is_directory(f);
+        auto canonical_f = std::filesystem::weakly_canonical(f);
+
+        if (keep_trailing && (has_trailing_dir_seperator || is_directory)) {
+            return canonical_f / "";
+        }
+        return canonical_f;
     }
 }
 

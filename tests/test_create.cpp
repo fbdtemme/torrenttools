@@ -163,6 +163,7 @@ TEST_CASE("test create app argument parsing")
             CHECK(*create_options.is_private);
         }
     }
+
     SECTION("piece size") {
         SECTION("as power of two") {
             auto cmd = fmt::format("create {} --piece-size {}", file, 20);
@@ -439,16 +440,28 @@ TEST_CASE("test create app argument parsing")
             CHECK_FALSE(create_options.io_block_size.has_value());
         }
     }
-    SECTION("stdout") {
+    SECTION("output") {
         SECTION("default") {
             auto cmd = fmt::format("create {}", file);
             PARSE_ARGS(cmd);
-            CHECK_FALSE(create_options.write_to_stdout);
+            CHECK_FALSE(create_options.destination);
         }
-        SECTION("option given") {
-            auto cmd = fmt::format("create {} --include-hidden", file);
+        SECTION("full path") {
+            auto cmd = fmt::format("create {} --output {}", file, "/home/test/output.torrent");
             PARSE_ARGS(cmd);
-            CHECK(create_options.include_hidden_files);
+            CHECK(create_options.destination == "/home/test/output.torrent");
+        }
+        SECTION("Directory with trailing slash") {
+            auto cmd = fmt::format("create {} --output {}", file,  "/home/test/Downloads/");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.destination->string() == "/home/test/Downloads/");
+        }
+        SECTION("Existing directory -> append trailing slash") {
+            temporary_directory tmp_dir {};
+
+            auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.destination->string() == tmp_dir.path() / "");
         }
     }
 }
