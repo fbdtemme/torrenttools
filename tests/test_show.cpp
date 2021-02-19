@@ -116,6 +116,20 @@ TEST_CASE("test show app argument parsing")
             CHECK_FALSE(show_options.creation_date_iso_format);
         }
     }
+
+    SECTION("files: --show-padding-files")
+    {
+        SECTION("on") {
+            auto cmd = fmt::format("show files {} --show-padding-files", file);
+            PARSE_ARGS(cmd);
+            CHECK(show_options.show_padding_files);
+        }
+        SECTION("off") {
+            auto cmd = fmt::format("show files {}", file);
+            PARSE_ARGS(cmd);
+            CHECK_FALSE(show_options.show_padding_files);
+        }
+    }
 }
 
 
@@ -363,4 +377,73 @@ TEST_CASE("test show query")
     options.metafile = private_torrent;
     run_show_source_subapp(options);
     CHECK(buffer.str() == "test\n");
+}
+
+TEST_CASE("test show files")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    show_app_options options {
+        .metafile = bittorrent_hybrid
+    };
+
+    SECTION("files only") {
+        std::string expected = (
+R"("Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"
+"Spaceballs-StateOfTheArt.avi"
+"cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4"
+"eld-dust.mkv"
+"fairlight_cncd-agenda_circling_forth-1080p30lq.mp4"
+"meet the deadline - Still _ Evoke 2014.mp4"
+"readme.txt"
+"tbl-goa.avi"
+"tbl-tint.mpg"
+)");
+
+        run_show_files_subapp(options);
+        CHECK(buffer.str() == expected);
+    }
+
+    SECTION("files and padding files only") {
+        options.show_padding_files = true;
+        std::string expected = (
+R"("Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"
+".pad/280339"
+"Spaceballs-StateOfTheArt.avi"
+".pad/464896"
+"cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4"
+".pad/129434"
+"eld-dust.mkv"
+".pad/227380"
+"fairlight_cncd-agenda_circling_forth-1080p30lq.mp4"
+".pad/507162"
+"meet the deadline - Still _ Evoke 2014.mp4"
+".pad/510995"
+"readme.txt"
+".pad/524227"
+"tbl-goa.avi"
+".pad/442368"
+"tbl-tint.mpg"
+)");
+
+        run_show_files_subapp(options);
+        CHECK(buffer.str() == expected);
+    }
+
+    SECTION("with prefix") {
+        options.files_prefix = "/path/to/torrent/data";
+        std::string expected = (
+R"("/path/to/torrent/data/Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4"
+"/path/to/torrent/data/Spaceballs-StateOfTheArt.avi"
+"/path/to/torrent/data/cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4"
+"/path/to/torrent/data/eld-dust.mkv"
+"/path/to/torrent/data/fairlight_cncd-agenda_circling_forth-1080p30lq.mp4"
+"/path/to/torrent/data/meet the deadline - Still _ Evoke 2014.mp4"
+"/path/to/torrent/data/readme.txt"
+"/path/to/torrent/data/tbl-goa.avi"
+"/path/to/torrent/data/tbl-tint.mpg"
+)");
+        run_show_files_subapp(options);
+        CHECK(buffer.str() == expected);
+    }
 }

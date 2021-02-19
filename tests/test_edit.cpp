@@ -300,6 +300,17 @@ TEST_CASE("test edit announce")
         .destination = output,
     };
 
+    SECTION("replace single tracker") {
+        options.announce_list = std::vector<std::vector<std::string>>{
+                {"https://test1.com/announce"}
+        };
+        options.list_mode = tt::list_edit_mode::replace;
+
+        run_edit_app(options);
+        auto m = dt::load_metafile(output);
+        CHECK(dt::as_nested_vector(m.trackers()) == options.announce_list);
+    }
+
     SECTION("list_mode - reset") {
         options.announce_list = std::vector<std::vector<std::string>> {
                 {"https://test1.com/announce"},

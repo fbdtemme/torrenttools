@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.2.2
+%global tag      0.3.0
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
@@ -66,6 +66,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Fri Feb 19 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.3.0-1
+- Update to 0.3.0
+
 * Sat Jan 30 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.2.2-1
 - Update to 0.2.2
 

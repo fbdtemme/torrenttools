@@ -23,10 +23,11 @@ else()
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib")
+message(STATUS ${CMAKE_MODULE_PATH})
 
 if(IS_DIRECTORY "${Catch2_SOURCE_DIR}")
     set_property(DIRECTORY ${Catch2_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
-    set(CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib" ${CMAKE_MODULE_PATH})
+    list(APPEND CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} PARENT_SCOPE)
 endif()
 

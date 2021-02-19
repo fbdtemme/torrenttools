@@ -484,16 +484,18 @@ TEST_CASE("test create app: private flag")
     };
 
     SECTION("true") {
-        create_options.is_private = true;
-        run_create_app(create_options);
+        auto options = create_options;
+        options.is_private = true;
+        run_create_app(options);
         auto m = dt::load_metafile(output);
-        CHECK(m.is_private() == create_options.is_private);
+        CHECK(m.is_private() == options.is_private);
     }
     SECTION("false") {
-        create_options.is_private = false;
-        run_create_app(create_options);
+        auto options = create_options;
+        options.is_private = true;
+        run_create_app(options);
         auto m = dt::load_metafile(output);
-        CHECK(m.is_private() == create_options.is_private);
+        CHECK(m.is_private() == options.is_private);
     }
 }
 
@@ -504,18 +506,20 @@ TEST_CASE("test create app: creation-date")
     temporary_directory tmp_dir {};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-creation-date.torrent";
-    create_app_options options {
+    create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
     };
 
     SECTION("--no-creation-date") {
+        auto options = create_options;
         options.set_creation_date = false;
         run_create_app(options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() == std::chrono::seconds(0));
     }
     SECTION("overriding creation date") {
+        auto options = create_options;
         options.creation_date = std::chrono::system_clock::time_point(std::chrono::seconds(1611339706));
         run_create_app(options);
         auto m = dt::load_metafile(output);
@@ -529,18 +533,20 @@ TEST_CASE("test create app: created-by")
     temporary_directory tmp_dir {};
 
     fs::path output = fs::path(tmp_dir) / "test-create-created-by.torrent";
-    create_app_options options {
+    create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
     };
 
     SECTION("--no-created-by") {
+        auto options = create_options;
         options.set_created_by = false;
         run_create_app(options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by().empty());
     }
     SECTION("overriding created-by") {
+        auto options = create_options;
         options.created_by = "me";
         run_create_app(options);
         auto m = dt::load_metafile(output);
@@ -554,18 +560,20 @@ TEST_CASE("test create app: comment")
     temporary_directory tmp_dir {};
 
     fs::path output = fs::path(tmp_dir) / "test-create-comment.torrent";
-    create_app_options options {
+    create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
     };
 
     SECTION("no comment") {
+        auto options = create_options;
         options.comment = std::nullopt;
         run_create_app(options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment().empty());
     }
     SECTION("comment") {
+        auto options = create_options;
         options.comment = "comment";
         run_create_app(options);
         auto m = dt::load_metafile(output);
