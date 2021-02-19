@@ -39,3 +39,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/termcontrol.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cliprogress.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/dottorrent.cmake)
 
+if (DOTTORRENT_CRYPTO_MULTIBUFFER)
+    include(${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto.cmake)
+endif()
+
+
