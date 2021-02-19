@@ -14,7 +14,8 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 		  -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_TARGET_MULTIARCH)" \
 		  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-		  -DCMAKE_CXX_COMPILER=g++-10
+		  -DCMAKE_CXX_COMPILER=g++-10 \
+		  -DDOTTORRENT_CRYPTO_MULTIBUFFER=ON
 
 # Do not run tests
 override_dh_auto_test:
