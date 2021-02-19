@@ -9,13 +9,15 @@ Name:            torrenttools
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         MIT
-Release:         1%{?dist}
+Release:         2%{?dist}
 Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
 BuildRequires:   cmake
 BuildRequires:   make
 BuildRequires:   git
+BuildRequires:   autoconf
+BuildRequires:   automake
 
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
@@ -66,6 +68,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Fri Feb 19 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.3.0-2
+- Fix missing autotools dependencies
+
 * Fri Feb 19 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.3.0-1
 - Update to 0.3.0
 
