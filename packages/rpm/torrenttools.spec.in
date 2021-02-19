@@ -18,6 +18,8 @@ BuildRequires:   make
 BuildRequires:   git
 BuildRequires:   autoconf
 BuildRequires:   automake
+BuildRequires:   libtool
+BuildRequires:   nasm
 
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
