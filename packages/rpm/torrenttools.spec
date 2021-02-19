@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.3.0
+%global tag      0.3.1
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
@@ -9,7 +9,7 @@ Name:            torrenttools
 URL:             %{forgeurl}
 Source:          %{forgesource}
 License:         MIT
-Release:         2%{?dist}
+Release:         1%{?dist}
 Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
@@ -70,6 +70,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Fri Feb 19 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.3.1-1
+- Update to 0.3.1
+
 * Fri Feb 19 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.3.0-2
 - Fix missing autotools dependencies
 
