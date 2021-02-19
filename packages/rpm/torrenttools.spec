@@ -39,9 +39,9 @@ source /opt/rh/gcc-toolset-10/enable
 %endif
 
 %if 0%{?el8}
-%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo . .
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_CRYPTO_MULTIBUFFER=ON . .
 %else
-%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_CRYPTO_MULTIBUFFER=ON
 %endif
 
 %if 0%{?el8}
