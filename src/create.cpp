@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <ranges>
+#include <optional>
+#include <iostream>
 
 #include <fmt/format.h>
 #include <CLI/CLI.hpp>
@@ -61,9 +63,29 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         return true;
     };
     CLI::callback_t target_parser = [&](const CLI::results_t v) -> bool {
-        options.target = target_transformer(v);
+        auto target = target_transformer(v);
+        if (target == "-") {
+            options.read_from_stdin = true;
+            std::string line {};
+            std::getline(std::cin, line);
+            options.target = target_transformer(std::vector{line});
+        } else {
+            options.target = target;
+        }
         return true;
     };
+
+    CLI::callback_t destination_parser = [&](const CLI::results_t v) -> bool {
+        auto destination = target_transformer(v, /*check_exists=*/false);
+        if (destination == "-") {
+            options.write_to_stdout = true;
+            options.destination = std::nullopt;
+        } else {
+            options.destination = destination;
+        }
+        return true;
+    };
+
     CLI::callback_t io_block_size_parser = [&](const CLI::results_t& v) -> bool {
         options.io_block_size = io_block_size_transformer(v);
         return true;
@@ -81,99 +103,96 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     const auto max_size = 1U << 20U;
 
     app->add_option("target", target_parser, "Target filename or directory")
-            ->required()
-            ->type_name("<path>")
-            ->expected(1);
+       ->required()
+       ->type_name("<path>")
+       ->expected(1);
 
     app->add_option("-v,--protocol", protocol_parser,
-           "Set the bittorrent protocol to use.\n "
-           "Options are 1, 2 or hybrid. [default: 1]")
-            ->type_name("<protocol>")
-            ->expected(1);
+               "Set the bittorrent protocol to use.\n "
+               "Options are 1, 2 or hybrid. [default: 1]")
+       ->type_name("<protocol>")
+       ->expected(1);
 
-    app->add_option("-o,--output", options.destination,
-            "Set the filename and/or output directory of the created file.\n"
-            "[default: <name>.torrent]\n "
-            "Use a path with trailing slash to only set the output directory.")
-            ->type_name("<path>")
-            ->expected(1);
-
-    app->add_flag_callback("--stdout", [&]() { options.write_to_stdout = true; },
-            "Write the metafile to the standard output");
+    app->add_option("-o,--output", destination_parser,
+               "Set the filename and/or output directory of the created file.\n"
+               "[default: <name>.torrent]\n "
+               "Use a path with trailing slash to only set the output directory.")
+       ->type_name("<path>")
+       ->expected(1);
 
     app->add_option("-a,--announce", announce_parser,
-                    "Add one or multiple announces urls.\n"
-                    "Multiple trackers will be added in seperate tiers by default. \n"
-                    "Use square brackets to groups urls in a single tier:\n"
-                    " eg. \"--announce url1 [url1 url2]\"")
-            ->type_name("<url>...")
-            ->expected(0, max_size);
+               "Add one or multiple announces urls.\n"
+               "Multiple trackers will be added in seperate tiers by default. \n"
+               "Use square brackets to groups urls in a single tier:\n"
+               " eg. \"--announce url1 [url1 url2]\"")
+       ->type_name("<url>...")
+       ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
-                    "Add one or multiple HTTP/FTP urls as seeds.")
-            ->type_name("<url>...")
-            ->expected(0, max_size);
+               "Add one or multiple HTTP/FTP urls as seeds.")
+       ->type_name("<url>...")
+       ->expected(0, max_size);
 
     app->add_option("-d, --dht-node", dht_node_parser,
-            "Add one or multiple DHT nodes.")
-            ->type_name("<host:port>...")
-            ->expected(0, max_size);
+               "Add one or multiple DHT nodes.")
+       ->type_name("<host:port>...")
+       ->expected(0, max_size);
 
     // Allow an empty comment to force the precense of the field in the torrent file
     app->add_option("-c, --comment", options.comment,
-                    "Add a comment.")
-            ->type_name("<string>");
+               "Add a comment.")
+       ->type_name("<string>");
 
     // TODO: Allow private flag to be overridden for supported trackers that require private flag.
     //       but generate a warning.
 
     app->add_option("-p, --private", private_flag_parser,
-            "Set the private flag to disable DHT and PEX.")
-            ->type_name("<[on|off]>")
-            ->expected(0, 1);
+               "Set the private flag to disable DHT and PEX.")
+       ->type_name("<[on|off]>")
+       ->expected(0, 1);
 
     app->add_option("-l, --piece-size", size_parser,
-                    "Set the piece size.\n"
-                    "When no unit is specified block size will be either 2^<n> bytes,\n"
-                    "or <n> bytes if n is larger or equal to 16384.\n"
-                    "Piece size must be a power of two in range [16K, 64M].\n"
-                    "Leave empty to determine by total file size. [default: auto]")
-            ->type_name("<size[K|M]>")
-            ->expected(1);
+               "Set the piece size.\n"
+               "When no unit is specified block size will be either 2^<n> bytes,\n"
+               "or <n> bytes if n is larger or equal to 16384.\n"
+               "Piece size must be a power of two in range [16K, 64M].\n"
+               "Leave empty to determine by total file size. [default: auto]")
+       ->type_name("<size[K|M]>")
+       ->expected(1);
 
     app->add_option("-s, --source", options.source,
-                    "Add a source tag to facilitate cross-seeding.")
-            ->type_name("<source>")
-            ->expected(1);
+               "Add a source tag to facilitate cross-seeding.")
+       ->type_name("<source>")
+       ->expected(1);
 
     app->add_option("-n, --name", options.name,
-                    "Set the name of the torrent. "
-                    "This changes the filename for single file torrents \n"
-                    "or the root directory name for multi-file torrents.\n"
-                    "[default: <basename of target>]")
-            ->type_name("<name>")
-            ->expected(1);
+               "Set the name of the torrent. "
+               "This changes the filename for single file torrents \n"
+               "or the root directory name for multi-file torrents.\n"
+               "[default: <basename of target>]")
+       ->type_name("<name>")
+       ->expected(1);
 
     app->add_option("-t, --threads", options.threads,
-                    "Set the number of threads to use for hashing pieces. [default: 2]")
-            ->type_name("<n>")
-            ->expected(1)
-            ->default_val(2);
+               "Set the number of threads to use for hashing pieces. [default: 2]")
+       ->type_name("<n>")
+       ->expected(1)
+       ->default_val(2);
 
     app->add_option("--checksum", checksum_parser,
-            "Include a per file checksum of given algorithm." )
-            ->type_name("<algorithm>...")
-            ->expected(0, max_size)
-            ->default_str("");
+               "Include a per file checksum of given algorithm." )
+       ->type_name("<algorithm>...")
+       ->expected(0, max_size)
+       ->default_str("");
 
     auto* no_creation_date_option = app->add_flag_callback("--no-creation-date",
             [&]() { options.set_creation_date = false; },
             "Do not include the creation date.");
 
     auto* creation_date_option = app->add_option("--creation-date", creation_date_parser,
-            "Override the value of the creation date field as ISO-8601 time or POSIX time.\n"
-            "eg.: \"2021-01-22T18:21:46+0100\"")
-            ->type_name("<ISO-8601|POSIX time>");
+                                            "Override the value of the creation date field as ISO-8601 time or POSIX time.\n"
+                                            "eg.: \"2021-01-22T18:21:46+0100\"")
+                                    ->type_name("<ISO-8601|POSIX time>");
 
     no_creation_date_option->excludes(creation_date_option);
 
@@ -182,20 +201,20 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             "Do not include the name and version of this program.");
 
     auto* created_by_option = app->add_option("--created-by", options.created_by,
-            "Override the value of the created by field.")
-            ->type_name("<string>");
+                                         "Override the value of the created by field.")
+                                 ->type_name("<string>");
 
     no_created_by_option->excludes(created_by_option);
 
     app->add_option("--include", options.include_patterns,
-        "Only add files matching given regex to the metafile.")
-        ->type_name("<regex>...")
-         ->expected(0, max_size);
+               "Only add files matching given regex to the metafile.")
+       ->type_name("<regex>...")
+       ->expected(0, max_size);
 
     app->add_option("--exclude", options.exclude_patterns,
-        "Do not add files matching given regex to the metafile.")
-        ->type_name("<regex>...")
-        ->expected(0, max_size);
+               "Do not add files matching given regex to the metafile.")
+       ->type_name("<regex>...")
+       ->expected(0, max_size);
 
     app->add_flag_callback("--include-hidden",
             [&]() { options.include_hidden_files = true; },
@@ -203,7 +222,6 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("--io-block-size", io_block_size_parser,
                "The size of blocks read from storage.\n"
-               "[default: max(1 MiB, <piece-size>)].\n"
                "Must be larger or equal to the piece size.")
        ->type_name("<size[K|M]>")
        ->expected(1);
@@ -331,7 +349,7 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
             destination = *destination_path;
             return destination;
         }
-         // option is only a destination directory and not a filename
+            // option is only a destination directory and not a filename
         else {
             destination_directory = *destination_path;
         }
@@ -340,10 +358,7 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
         destination_directory = fs::current_path();
     }
 
-    // Single tracker torrent for which we know the tracker.
-    bool is_known_tracker = tracker_db->contains(m.trackers().front());
-
-    if (m.trackers().size() == 1 && is_known_tracker) {
+    if (m.trackers().size() == 1 && tracker_db->contains(m.trackers().front())) {
         destination_name = fmt::format(
                 "[{}]{}.torrent",
                 tracker_db->at(m.trackers().front()).abbreviation,
@@ -362,7 +377,6 @@ void run_create_app(const create_app_options& options)
     using namespace dottorrent::literals;
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
-
     // create a new metafile
     dt::metafile m {};
 
@@ -443,16 +457,15 @@ void run_create_app(const create_app_options& options)
     create_general_info(os, m, destination_file, options.protocol_version, fmt_options);
     os << '\n';
 
-    std::size_t io_block_size = std::min(1_MiB, file_storage.piece_size());
-    if (options.io_block_size) {
-        io_block_size = *options.io_block_size;
+    if (options.io_block_size && *options.io_block_size < file_storage.piece_size()) {
+        throw std::invalid_argument("io-block-size must be larger or equal to the piece size.");
     }
 
     // hash checking
     dt::storage_hasher_options hasher_options {
             .protocol_version = options.protocol_version,
             .checksums = {options.checksums},
-            .min_chunk_size = io_block_size,
+            .min_io_block_size = options.io_block_size,
             .threads = options.threads
     };
 
