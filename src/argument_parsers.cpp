@@ -20,6 +20,7 @@
 namespace rng = std::ranges;
 namespace dt = dottorrent;
 
+
 using namespace dottorrent::literals;
 static std::string err_msg = "Invalid value {} for option {}: {}.";
 
@@ -166,18 +167,50 @@ dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, boo
     throw std::invalid_argument(fmt::format("Invalid bittorrent protocol: {}", s));
 }
 
-std::filesystem::path target_transformer(const std::vector<std::string>& v)
+std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists)
 {
     if (v.size() != 1) {
         throw std::invalid_argument("Multiple targets given.");
     }
+    if (v.front() == "-") {
+        return "-";
+    }
+
     auto f = std::filesystem::path(v.front());
-    if (!std::filesystem::exists(f)) {
+    if (check_exists && !std::filesystem::exists(f)) {
         throw std::invalid_argument("Path does not exist.");
     }
-    return std::filesystem::canonical(f);
+    if (check_exists) {
+        return std::filesystem::canonical(f);
+    } else {
+        return std::filesystem::weakly_canonical(f);
+    }
 }
 
+
+/// Parse the name of a target metafile.
+std::filesystem::path metafile_transformer(const std::vector<std::string>& v)
+{
+    if (v.size() != 1) {
+        throw std::invalid_argument("Multiple targets given.");
+    }
+
+    if (v.front() == "-") {
+        return "-";
+    }
+
+    auto metafile = std::filesystem::path(v.front());
+
+    if (!std::filesystem::exists(metafile))
+        throw std::invalid_argument(
+                fmt::format("Metafile not found: {}", metafile.string()));
+
+    if (std::filesystem::is_directory(metafile))
+        throw std::invalid_argument(
+                fmt::format("Target is a directory, not a metafile: {}", metafile.string()));
+
+    return std::filesystem::canonical(metafile);
+}
 
 std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v)
 {

@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.15)
 
 # Version string
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0077 NEW)
 
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.2.2
+        VERSION 0.3.0
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
@@ -35,31 +36,32 @@ endif()
 option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
 option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
 option(TORRENTTOOLS_BUILD_DOCS "Generate documentation" OFF)
-#
+
 #add_subdirectory(../cliprogress cliprogress)
+#add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
-#add_subdirectory(../dottorrent dottorrent)
 
 include(external/external.cmake)
 
 add_executable(torrenttools
-        src/main.cpp
-        src/info.cpp
-        src/verify.cpp
-        src/create.cpp
-        src/edit.cpp
-        src/magnet.cpp
         src/app_data.cpp
         src/argument_parsers.cpp
         src/config_parser.cpp
-        src/tracker_database.cpp
+        src/create.cpp
+        src/edit.cpp
         src/escape_binary_fields.cpp
-        src/tree_view.cpp
-        src/show.cpp
         src/formatters.cpp
-        src/progress.cpp
         src/indicator.cpp
+        src/info.cpp
+        src/magnet.cpp
+        src/main.cpp
+        src/pad.cpp
+        src/progress.cpp
+        src/show.cpp
+        src/tracker_database.cpp
+        src/tree_view.cpp
+        src/verify.cpp
 )
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

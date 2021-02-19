@@ -82,13 +82,11 @@ struct filetree_index
 
 
     explicit filetree_index(const dottorrent::file_storage& storage, bool list_padding_files = false)
-            : indices_()
-            , directories_()
-            , storage_(storage)
+            : storage_(storage)
             , list_padding_files_(list_padding_files)
     {
-        create_sorted_file_indices(storage);
-        create_directory_map(storage);
+        create_sorted_file_indices(storage_);
+        create_directory_map(storage_);
 
         if (!list_padding_files_) {
             remove_padding_file_only_directories();
@@ -139,18 +137,21 @@ struct filetree_index
     }
 
 private:
-    void create_sorted_file_indices(const dottorrent::file_storage& storage)
+    void create_sorted_file_indices(const dt::file_storage& storage)
     {
         indices_.resize(storage.file_count());
         std::iota(indices_.begin(), indices_.end(), 0);
 
-        static auto cmp =  [&](std::size_t lhs, std::size_t rhs) {
+        const auto cmp = [&](std::size_t lhs, std::size_t rhs) {
+
+            Expects(lhs < storage.size());
+            Expects(rhs < storage.size());
             return storage[lhs] < storage[rhs];
         };
         std::sort(indices_.begin(), indices_.end(), cmp);
     }
 
-    void create_directory_map(const dottorrent::file_storage& storage)
+    void create_directory_map(const dt::file_storage& storage)
     {
         fs::path current_root_dir {};
 
@@ -199,8 +200,8 @@ private:
     }
 
     std::reference_wrapper<const dottorrent::file_storage> storage_;
-    std::vector<std::size_t> indices_;
-    std::map<fs::path, node> directories_;
+    std::vector<std::size_t> indices_ {};
+    std::map<fs::path, node> directories_ {};
     bool list_padding_files_;
 };
 

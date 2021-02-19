@@ -8,13 +8,14 @@
 
 #include <termcontrol/termcontrol.hpp>
 
-#include "info.hpp"
-#include "create.hpp"
 #include "config.hpp"
-#include "verify.hpp"
-#include "show.hpp"
+#include "create.hpp"
 #include "edit.hpp"
+#include "info.hpp"
 #include "magnet.hpp"
+#include "pad.hpp"
+#include "show.hpp"
+#include "verify.hpp"
 
 #include "help_formatter.hpp"
 
@@ -69,6 +70,7 @@ int main(int argc, char** argv) {
     show_app_options show_options {};
     edit_app_options edit_options {};
     magnet_app_options magnet_options {};
+    pad_app_options pad_options {};
 
     CLI::App app(main_description, PROJECT_NAME);
     app.formatter(std::make_shared<help_formatter>());
@@ -80,6 +82,7 @@ int main(int argc, char** argv) {
     auto show_app    = app.add_subcommand("show",   "Show specific fields of bittorrent metafiles.");
     auto edit_app    = app.add_subcommand("edit",   "Edit bittorrent metafiles.");
     auto magnet_app  = app.add_subcommand("magnet", "Generate a magnet URI for bittorrent metafiles.");
+    auto pad_app     = app.add_subcommand("pad",    "Generate padding files for a metafile.");
 
     /// List available checksums
     app.add_flag_callback(
@@ -97,6 +100,7 @@ int main(int argc, char** argv) {
     configure_show_app(show_app, show_options);
     configure_edit_app(edit_app, edit_options);
     configure_magnet_app(magnet_app, magnet_options);
+    configure_pad_app(pad_app, pad_options);
 
     try {
         app.parse(argc, argv);
@@ -118,6 +122,9 @@ int main(int argc, char** argv) {
         }
         else if (app.got_subcommand(magnet_app)) {
             run_magnet_app(magnet_options);
+        }
+        else if (app.got_subcommand(pad_app)) {
+            run_pad_app(pad_options);
         }
     }
     catch (const CLI::CallForHelp &e) {

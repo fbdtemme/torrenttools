@@ -16,14 +16,15 @@ list(TRANSFORM torrenttools_SOURCES PREPEND ${PROJECT_SOURCE_DIR}/)
 target_sources(torrenttools-tests PRIVATE
         main.cpp
         test_create.cpp
-        test_show.cpp
-        test_info.cpp
         test_edit.cpp
-        test_magnet.cpp
         test_file_matcher.cpp
+        test_info.cpp
+        test_magnet.cpp
+        test_pad.cpp
+        test_show.cpp
+        test_tracker_database.cpp
         test_tree_view.cpp
         test_utils.cpp
-        test_tracker_database.cpp
         ${torrenttools_SOURCES}
 )
 

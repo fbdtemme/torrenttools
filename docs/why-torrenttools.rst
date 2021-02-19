@@ -34,6 +34,6 @@ Features
     * md4
 
 * **Named trackers**:
-    Named trackers allow uploaders to quickly generate without having to lookup announce urls for different trackers.
+    Named trackers allow uploaders to quickly generate metafiles without having to lookup announce urls for different trackers.
 
 
