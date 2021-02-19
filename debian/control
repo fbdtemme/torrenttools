@@ -2,7 +2,17 @@ Source: torrenttools
 Priority: optional
 Section: net
 Maintainer: Florian De Temmerman <floriandetemmerman@gmail.com>
-Build-Depends: debhelper (>=12~), git, cmake, libstdc++-10-dev, g++-10, libssl-dev, libssl1.1
+Build-Depends: debhelper (>=12~),
+ git,
+ cmake,
+ libstdc++-10-dev,
+ g++-10,
+ libssl-dev,
+ libssl1.1,
+ autoconf,
+ automake,
+ libtool,
+ nasm,
 Homepage: https://www.github.com/fbdtemme/torrenttools
 
 Package: torrenttools
