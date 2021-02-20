@@ -292,9 +292,21 @@ void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::st
     if (announce_list.size() == 1 && announce_list.at(0).size() == 1) {
         const auto& tracker = announce_list.at(0).at(0);
 
+        // Check for tracker name or abbreviation
         if (tracker_db->contains(tracker)) {
             const auto& tracker_entry = tracker_db->at(tracker);
             m.add_tracker(tracker_entry.substitute_parameters(*config));
+            m.set_private(tracker_entry.is_private);
+
+            // set source tag to facilitate cross-seeding
+            if (tracker_entry.is_private) {
+                m.set_source(tracker_entry.name);
+            }
+        }
+        // Check for tracker url -> do not substitute but do set private flag and source tag
+        else if (auto it = tracker_db->find_by_url(tracker); it != tracker_db->end()) {
+            const auto& tracker_entry = *it;
+            m.add_tracker(tracker);
             m.set_private(tracker_entry.is_private);
 
             // set source tag to facilitate cross-seeding
@@ -358,15 +370,17 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
         destination_directory = fs::current_path();
     }
 
-    if (m.trackers().size() == 1 && tracker_db->contains(m.trackers().front())) {
-        destination_name = fmt::format(
-                "[{}]{}.torrent",
-                tracker_db->at(m.trackers().front()).abbreviation,
-                m.name());
-    } else {
-        destination_name = fmt::format("{}.torrent", m.name());
-    }
+    destination_name = fmt::format("{}.torrent", m.name());
 
+    if (m.trackers().size() == 1) {
+        auto it = tracker_db->find_by_url(m.trackers().front());
+        if (it != tracker_db->end()) {
+            destination_name = fmt::format(
+                    "[{}]{}.torrent",
+                    it->abbreviation,
+                    m.name());
+        }
+    }
     return destination_directory / destination_name;
 };
 
