@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.3.2] - 2012-02-20
+### Changed
+* Fix announce url substitution overriding announce url
+
 ## [v0.3.1] - 2012-02-19
 ### Changed
 * Fix regression in create command --output option.
