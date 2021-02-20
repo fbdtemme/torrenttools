@@ -93,29 +93,12 @@ bool tracker_database::contains(std::string_view key) const noexcept
         else if (auto it = find_by_name(lkey); it != end()) {
             return true;
         }
-        else if (auto it = find_by_url(lkey); it != end()) {
-            return true;
-        }
-    }
-    else if (key.starts_with("http")) {
-        if (auto it = find_by_url(lkey); it != end()) {
-            return true;
-        }
-        else if (auto it = find_by_name(lkey); it != end()) {
-            return true;
-        }
-        else if (auto it = find_by_abbreviation(lkey); it != end()) {
-            return true;
-        }
     }
     else {
         if (auto it = find_by_name(lkey); it != end()) {
             return true;
         }
         else if (auto it = find_by_abbreviation(lkey); it != end()) {
-            return true;
-        }
-        else if (auto it = find_by_url(lkey); it != end()) {
             return true;
         }
     }
@@ -164,29 +147,12 @@ const tracker& tracker_database::at(std::string_view key) const
         else if (auto it = find_by_name(lkey); it != end()) {
             return *it;
         }
-        else if (auto it = find_by_url(lkey); it != end()) {
-            return *it;
-        }
-    }
-    else if (key.starts_with("http")) {
-        if (auto it = find_by_url(lkey); it != end()) {
-            return *it;
-        }
-        else if (auto it = find_by_name(lkey); it != end()) {
-            return *it;
-        }
-        else if (auto it = find_by_abbreviation(lkey); it != end()) {
-            return *it;
-        }
     }
     else {
         if (auto it = find_by_name(lkey); it != end()) {
              return *it;
         }
         else if (auto it = find_by_abbreviation(lkey); it != end()) {
-            return *it;
-        }
-        else if (auto it = find_by_url(lkey); it != end()) {
             return *it;
         }
     }
