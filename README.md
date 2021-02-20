@@ -53,7 +53,8 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
 
 ## Packages
 
-Binary and source packages for Fedora 32, Fedora 33, and Fedora Rawhide are available in a COPR repo.
+Binary and source packages for Fedora 32, Fedora 33, Fedora 34,
+Fedora Rawhide and Centos stream are available in a COPR repo.
 
 ```shell
 sudo dnf copr enable fbdtemme/torrenttools
@@ -104,17 +105,6 @@ Fedora 33
 sudo dnf install cmake make g++ git openssl-devel libtbb-devel
 ```
 
-### Building Intel ISA-L crypto from source
-
-```shell
-wget https://github.com/intel/isa-l_crypto
-cd isa-l_crypto
-./autogen.sh
-./configure
-make
-sudo make install
-````
-
 ### Configuration
 
 | Option                         |  Type    |  Description                 |
@@ -122,7 +112,7 @@ sudo make install
 | TORRENTTOOLS_BUILD_TESTS       | Bool     | Build tests.                 |
 | TORRENTTOOLS_BUILD_DOCS        | Bool     | Build documentation.         |
 | TORRENTTOOLS_INSTALL           | Bool     | Generate an install target.  |
-| DOTTORRENT_CRYPTO_MULTIBUFFER  | Bool     | Enable fast multi buffer hashing. Requires Intel ISA-L Crypto library. |
+| DOTTORRENT_CRYPTO_MULTIBUFFER  | Bool     | Enable fast multi buffer hashing. |
 
 ### Building
 

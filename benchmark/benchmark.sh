@@ -80,21 +80,38 @@ function benchmark_transmission()
 }
 
 
+
+function benchmark_py3createtorrent()
+{
+    target="$1"
+    threads="$2"
+    rm *.torrent
+    out="$(time py3createtorrent -p 1024 "$target" 1> /dev/null 2> /dev/null)"
+    echo "$out"
+    return;
+}
+
+
 cd "$working_dir"
 
-if [ $program_name == "mktorrent" ]; then
-    # echo "mktorrent"
+if [[ $program_name == "mktorrent" ]]; then
     benchmark_mktorrent "$target" "$threads"
-elif [ $program_name == "torrenttools_openssl" ]; then
+elif [[ $program_name == "torrenttools_openssl" ]]; then
     benchmark_torrenttools_openssl "$target" "$threads"
-elif [ $program_name == "torrenttools_isal" ]; then
+elif [[ $program_name == "torrenttools_isal" ]]; then
     benchmark_torrenttools_isal "$target" "$threads"
-elif [ $program_name == "imdl" ]; then
+elif [[ $program_name == "imdl" ]]; then
     benchmark_imdl "$target" "$threads"
-elif [ $program_name == "pyrocore" ]; then
+elif [[ $program_name == "pyrocore" ]]; then
     benchmark_pyrocore "$target" "$threads"
-elif [ $program_name == "dottorrent-cli" ]; then
+elif [[ $program_name == "dottorrent-cli" ]]; then
     benchmark_dottorrent_cli "$target" "$threads"   
-elif [ $program_name == "transmission-create" ]; then
+elif [[ $program_name == "transmission-create" ]]; then
     benchmark_transmission "$target" "$threads"
+elif [[ $program_name == "py3createtorrent" ]]; then
+    benchmark_py3createtorrent "$target" "$threads"
+elif [[ $program_name == "maketorrent" ]]; then
+    benchmark_maketorrent "$target" "$threads"
+else 
+    echo "Error: Invalid program name: $program_name"
 fi
