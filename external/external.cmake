@@ -34,13 +34,14 @@ include(${CMAKE_CURRENT_LIST_DIR}/sigslot.cmake)
 # TODO: Replace with C++20 default implementation once available
 include(${CMAKE_CURRENT_LIST_DIR}/date.cmake)
 
-include(${CMAKE_CURRENT_LIST_DIR}/bencode.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/termcontrol.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cliprogress.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/dottorrent.cmake)
-
+# Make sure to call this before dottorrent.cmake to enable offline builds
 if (DOTTORRENT_CRYPTO_MULTIBUFFER)
     include(${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto.cmake)
 endif()
 
+
+include(${CMAKE_CURRENT_LIST_DIR}/bencode.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/termcontrol.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cliprogress.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/dottorrent.cmake)
 
