@@ -11,7 +11,8 @@ endif()
 
 include(ExternalProject)
 include(GNUInstallDirs)
-find_program(MAKE_EXECUTABLE NAMES make nmake)
+
+find_package(NASM REQUIRED)
 
 set(isal_crypto_install_dir "${CMAKE_CURRENT_BINARY_DIR}/_deps/isa-l_crypto-install")
 set(isal_crypto_install_libdir "${isal_crypto_install_dir}/${CMAKE_INSTALL_LIBDIR}")
@@ -27,8 +28,8 @@ if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto)
             UPDATE_DISCONNECTED ON
             CONFIGURE_COMMAND   "./autogen.sh"
             COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir}
-            BUILD_COMMAND       ${MAKE_EXECUTABLE} .
-            INSTALL_COMMAND     ${MAKE_EXECUTABLE} install
+            BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} .
+            INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install
             TEST_COMMAND        ""
             USES_TERMINAL_DOWNLOAD  YES
             USES_TERMINAL_UPDATE    YES
@@ -46,8 +47,8 @@ else()
             BUILD_IN_SOURCE     ON
             CONFIGURE_COMMAND   "./autogen.sh"
             COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir}
-            BUILD_COMMAND       ${MAKE_EXECUTABLE} .
-            INSTALL_COMMAND     ${MAKE_EXECUTABLE} install
+            BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} .
+            INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install
             TEST_COMMAND        ""
             USES_TERMINAL_DOWNLOAD  YES
             USES_TERMINAL_UPDATE    YES
