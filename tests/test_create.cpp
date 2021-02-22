@@ -467,6 +467,62 @@ TEST_CASE("test create app argument parsing")
 }
 
 
+TEST_CASE("test create app: target")
+{
+    temporary_directory tmp_dir {};
+
+    SECTION("target is file") {
+        fs::path target = camelyon_torrent;
+        fs::path output = fs::path(tmp_dir) / "test-file-target.torrent";
+
+        create_app_options options { .target = target, .destination = output, };
+        run_create_app(options);
+        auto m = dt::load_metafile(output);
+        const auto& storage = m.storage();
+        CHECK(storage.size() == 1);
+        CHECK(storage.at(0).path().filename() == camelyon_torrent.filename());
+    }
+    SECTION("target is directory") {
+        fs::path target = TEST_RESOURCES_DIR;
+        fs::path output = fs::path(tmp_dir) / "test-directory-target.torrent";
+
+        create_app_options options { .target = target, .destination = output, };
+        run_create_app(options);
+        auto m = dt::load_metafile(output);
+        const auto& storage = m.storage();
+        CHECK(m.name() == target.filename());
+    }
+}
+
+TEST_CASE("test create app: announce-url")
+{
+    temporary_directory tmp_dir {};
+    const auto* db = torrenttools::load_tracker_database();
+    const auto* config = torrenttools::load_config();
+
+    fs::path target = fs::path(TEST_RESOURCES_DIR);
+
+    create_app_options options {
+        .target = target,
+        .destination = tmp_dir.path()
+    };
+
+    SECTION("tracker abbreviation") {
+        fs::path expected_destination = tmp_dir.path() / fmt::format("[HDB]{}.torrent", target.filename().string());
+
+        const auto& db_entry = db->at("hdb");
+        options.announce_list = {{"hdb"}};
+        run_create_app(options);
+
+        REQUIRE(fs::exists(expected_destination));
+        auto m = dt::load_metafile(expected_destination);
+
+        CHECK(m.is_private() == db_entry.is_private);
+        CHECK(m.source() == db_entry.name);
+        CHECK(m.trackers().at(0).url == db_entry.substitute_parameters(*config));
+    }
+}
+
 TEST_CASE("test create app: source tag")
 {
     temporary_directory tmp_dir {};
@@ -591,5 +647,24 @@ TEST_CASE("test create app: comment")
         run_create_app(options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment() == options.comment);
+    }
+}
+
+
+TEST_CASE("test create app: io-block-size")
+{
+    using namespace dottorrent::literals;
+    temporary_directory tmp_dir {};
+
+    fs::path output = fs::path(tmp_dir) / "test-io-block-size.torrent";
+    create_app_options options {
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+    };
+
+    SECTION("io-block-size smaller then piece-size") {
+        options.piece_size = 2_MiB;
+        options.io_block_size = 1_MiB;
+        CHECK_THROWS(run_create_app(options));
     }
 }
