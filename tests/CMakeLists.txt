@@ -36,6 +36,13 @@ target_link_libraries(torrenttools-tests
         ${torrenttools_LINK_LIBRARIES}
 )
 
+if (TORRENTTOOLS_BUILD_TESTS_COVERAGE)
+    message(STATUS "Enabling coverage flags")
+    list(APPEND CMAKE_CXX_FLAGS "--coverage")
+    list(APPEND CMAKE_C_FLAGS "--coverage")
+endif()
+
+
 set(TEST_RESOUCES_DIR)
 target_compile_definitions(torrenttools-tests PRIVATE
         TEST_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"

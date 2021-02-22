@@ -32,10 +32,15 @@ else()
     message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
 endif()
 
-
-option(TORRENTTOOLS_BUILD_TESTS "Build tests" OFF)
-option(TORRENTTOOLS_INSTALL "Generate an install target" ON)
-option(TORRENTTOOLS_BUILD_DOCS "Generate documentation" OFF)
+include(CMakeDependentOption)
+option(TORRENTTOOLS_BUILD_TESTS
+       "Build tests" OFF)
+cmake_dependent_option(TORRENTTOOLS_BUILD_TESTS_COVERAGE
+                       "Build tests with coverage." OFF "TORRENTTOOLS_BUILD_TESTS" OFF)
+option(TORRENTTOOLS_BUILD_DOCS
+        "Generate documentation" OFF)
+option(TORRENTTOOLS_INSTALL
+        "Generate an install target" ON)
 
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../dottorrent dottorrent)
