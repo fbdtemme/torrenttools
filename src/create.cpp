@@ -357,13 +357,18 @@ fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> d
 
     if (destination_path.has_value()) {
         // options is a complete path + filename
-        if (destination_path->has_filename()) {
+        if (destination_path->has_filename() &&
+                !std::filesystem::is_directory(*destination_path))
+        {
             destination = *destination_path;
             return destination;
         }
         // option is only a destination directory and not a filename
-        else {
+        else if (destination_path->filename().empty()) {
             destination_directory = destination_path->parent_path();
+        }
+        else {
+            destination_directory = *destination_path;
         }
     }
     else {
