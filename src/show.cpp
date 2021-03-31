@@ -200,9 +200,8 @@ void configure_show_files_subapp(CLI::App* files_subapp, show_app_options& optio
                "Show padding files in the file tree.")
        ->default_val(false);
 
-    files_subapp->add_flag("--prefix", options.files_prefix,
-                        "Show padding files in the file tree.")
-                ->default_val(false);
+    files_subapp->add_option("--prefix", options.files_prefix,
+               "Custom prefix to prepend to the files.");
 }
 
 void run_show_app(CLI::App* show_app, const show_app_options& options)
@@ -448,6 +447,10 @@ void run_show_files_subapp(const show_app_options& options)
         if (!options.show_padding_files && f.is_padding_file())
             continue;
 
-        std::cout << options.files_prefix / f.path() << std::endl;
+        if (!options.files_prefix.empty()) {
+            fmt::print(std::cout, (options.files_prefix / f.path()).string() + '\n');
+        } else {
+            fmt::print(std::cout, f.path().string() + '\n');
+        }
     }
 }

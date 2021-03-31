@@ -447,21 +447,23 @@ TEST_CASE("test create app argument parsing")
             CHECK_FALSE(create_options.destination);
         }
         SECTION("full path") {
-            auto cmd = fmt::format("create {} --output {}", file, "/home/test/output.torrent");
+            auto output =  fs::path("/home/test/output.torrent");
+            auto cmd = fmt::format("create {} --output {}", file, output.string());
             PARSE_ARGS(cmd);
             CHECK(create_options.destination == "/home/test/output.torrent");
         }
         SECTION("Directory with trailing slash") {
-            auto cmd = fmt::format("create {} --output {}", file,  "/home/test/Downloads/");
+            auto output = fs::path("/home/test/Downloads/");
+            auto cmd = fmt::format("create {} --output {}", file, output.string());
             PARSE_ARGS(cmd);
-            CHECK(create_options.destination->string() == "/home/test/Downloads/");
+            CHECK(create_options.destination == output);
         }
         SECTION("Existing directory -> append trailing slash") {
             temporary_directory tmp_dir {};
 
             auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path());
             PARSE_ARGS(cmd);
-            CHECK(create_options.destination->string() == tmp_dir.path() / "");
+            CHECK(create_options.destination == tmp_dir.path() / "");
         }
     }
 }
