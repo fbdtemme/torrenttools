@@ -191,7 +191,7 @@ std::string tracker_database::build_announce_regex(std::string_view announce_url
 
 tracker_database* load_tracker_database()
 {
-    static std::unique_ptr<tracker_database> tracker_db;
+    static std::unique_ptr<tracker_database> tracker_db {};
     static std::vector<fs::path> data_dirs {
         get_user_data_dir(),
         GLOBAL_DATA_DIR,
@@ -216,8 +216,7 @@ tracker_database* load_tracker_database()
         throw std::invalid_argument("could not find trackers.json file");
     }
 
-    tracker_db = std::make_unique<tracker_database>();
-    *tracker_db = tracker_database(database_location);
+    tracker_db = std::make_unique<tracker_database>(database_location);
     return tracker_db.get();
 }
 

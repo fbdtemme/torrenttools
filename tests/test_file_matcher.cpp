@@ -9,7 +9,6 @@ bool contains(std::vector<fs::path> v, const fs::path& path)
 {
     auto it = std::find(v.begin(), v.end(), path);
     return it != v.end();
-
 }
 
 static const auto main_cpp              = fs::path(TEST_DIR) / "main.cpp";
