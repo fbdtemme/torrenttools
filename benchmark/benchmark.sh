@@ -91,6 +91,17 @@ function benchmark_py3createtorrent()
     return;
 }
 
+function benchmark_torf_cli()
+{
+    target="$1"
+    threads="$2"
+    rm *.torrent
+    out="$(time torf --max-piece-size 1024 --threads "$threads" "$target" 1> /dev/null 2> /dev/null)"
+    echo "$out"
+    return;
+}
+
+
 
 cd "$working_dir"
 
@@ -112,6 +123,8 @@ elif [[ $program_name == "py3createtorrent" ]]; then
     benchmark_py3createtorrent "$target" "$threads"
 elif [[ $program_name == "maketorrent" ]]; then
     benchmark_maketorrent "$target" "$threads"
+elif [[ $program_name == "torf-cli" ]]; then
+    benchmark_torf_cli "$target" "$threads"
 else 
     echo "Error: Invalid program name: $program_name"
 fi
