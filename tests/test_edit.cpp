@@ -292,6 +292,7 @@ TEST_CASE("test edit announce")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-announce.torrent";
 
@@ -306,7 +307,7 @@ TEST_CASE("test edit announce")
         };
         options.list_mode = tt::list_edit_mode::replace;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(dt::as_nested_vector(m.trackers()) == options.announce_list);
     }
@@ -318,7 +319,7 @@ TEST_CASE("test edit announce")
         };
         options.list_mode = tt::list_edit_mode::replace;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(dt::as_nested_vector(m.trackers()) == options.announce_list);
     }
@@ -329,7 +330,7 @@ TEST_CASE("test edit announce")
         };
         options.list_mode = tt::list_edit_mode::append;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.trackers().at(0).url == "http://torrent.fedoraproject.org:6969/announce");
         CHECK(m.trackers().at(1).url == "https://test1.com/announce");
@@ -343,7 +344,7 @@ TEST_CASE("test edit announce")
         };
         options.list_mode = tt::list_edit_mode::prepend;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.trackers().at(0).url == "https://test1.com/announce");
         CHECK(m.trackers().at(1).url == "https://test2.com/announce");
@@ -356,6 +357,7 @@ TEST_CASE("test edit web-seeds", "[edit]")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-webseeds.torrent";
 
@@ -371,7 +373,7 @@ TEST_CASE("test edit web-seeds", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::replace;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.web_seeds() == options.web_seeds);
     }
@@ -382,7 +384,7 @@ TEST_CASE("test edit web-seeds", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::append;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.web_seeds().at(0) == "https://example.com/path:8666");
         CHECK(m.web_seeds().at(1) == "https://seed1.com/path");
@@ -396,7 +398,7 @@ TEST_CASE("test edit web-seeds", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::prepend;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.web_seeds().at(0) == "https://seed1.com/path");
         CHECK(m.web_seeds().at(1) == "https://seed2.com/path");
@@ -409,6 +411,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-dhtnodes.torrent";
 
@@ -424,7 +427,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::replace;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.dht_nodes() == options.dht_nodes);
     }
@@ -436,7 +439,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::append;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.dht_nodes().at(0) == dt::dht_node{"https://node.com/path", 8668});
         CHECK(m.dht_nodes().at(1) == dt::dht_node{"https://node1.com/path", 8887});
@@ -451,7 +454,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
         };
         options.list_mode = tt::list_edit_mode::prepend;
 
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.dht_nodes().at(0) == dt::dht_node{"https://node1.com/path", 8887});
         CHECK(m.dht_nodes().at(1) == dt::dht_node{"https://node2.com/path", 8888});
@@ -463,6 +466,7 @@ TEST_CASE("test edit comment")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-comment.torrent";
     edit_app_options options {
@@ -472,13 +476,13 @@ TEST_CASE("test edit comment")
 
     SECTION("replace comment") {
         options.comment = "new comment";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment() == options.comment);
     }
     SECTION("delete comment") {
         options.comment = "";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment() == "");
     }
@@ -489,6 +493,7 @@ TEST_CASE("test edit private")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-private.torrent";
     edit_app_options options {
@@ -498,14 +503,14 @@ TEST_CASE("test edit private")
     SECTION("set off") {
         options.metafile = private_torrent;
         options.is_private = false;
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK_FALSE(m.is_private());
     }
     SECTION("set on") {
         options.metafile = fedora_torrent;
         options.is_private = true;
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.is_private());
     }
@@ -516,6 +521,7 @@ TEST_CASE("test edit source")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-source.torrent";
     edit_app_options options {
@@ -525,13 +531,13 @@ TEST_CASE("test edit source")
 
     SECTION("edit source") {
         options.source = "torrenttools";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.source() == options.source);
     }
     SECTION("remove source") {
         options.source = "";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.source().empty());
     }
@@ -541,6 +547,7 @@ TEST_CASE("test edit name")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-name.torrent";
     edit_app_options options {
@@ -550,7 +557,7 @@ TEST_CASE("test edit name")
 
     SECTION("set name") {
         options.name = "new-name";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.name() == "new-name");
     }
@@ -561,6 +568,7 @@ TEST_CASE("test edit creation-date")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-creation-date.torrent";
     edit_app_options options {
@@ -571,7 +579,7 @@ TEST_CASE("test edit creation-date")
     SECTION("test update of creation date on edit") {
         auto old_creation_date = dt::load_metafile(fedora_torrent).creation_date();
         options.comment = "new comment";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() > old_creation_date);
     }
@@ -579,13 +587,13 @@ TEST_CASE("test edit creation-date")
         auto old_creation_date = dt::load_metafile(fedora_torrent).creation_date();
         options.comment = "new comment";
         options.set_creation_date = false;
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() == old_creation_date);
     }
     SECTION("test overriding creation date") {
         options.creation_date = std::chrono::system_clock::time_point(std::chrono::seconds(1611339706));
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() == std::chrono::seconds(1611339706));
     }
@@ -595,6 +603,7 @@ TEST_CASE("test edit created-by")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-edit-create-by.torrent";
     edit_app_options options {
@@ -605,7 +614,7 @@ TEST_CASE("test edit created-by")
     SECTION("test update of created by on edit") {
         auto old_creation_date = dt::load_metafile(fedora_torrent).creation_date();
         options.comment = "new comment";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by() == CREATED_BY_STRING);
     }
@@ -613,13 +622,13 @@ TEST_CASE("test edit created-by")
         auto old_created_by = dt::load_metafile(fedora_torrent).created_by();
         options.comment = "new comment";
         options.set_created_by = false;
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by() == old_created_by);
     }
     SECTION("test overriding created_by") {
         options.created_by = "me";
-        run_edit_app(options);
+        run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by() == options.created_by);
     }

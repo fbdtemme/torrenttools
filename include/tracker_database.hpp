@@ -1,4 +1,4 @@
-#include <nlohmann/json.hpp>
+#pragma once
 #include <filesystem>
 
 #include <vector>
@@ -8,6 +8,7 @@
 
 #include <fmt/format.h>
 #include <re2/set.h>
+#include <nlohmann/json.hpp>
 
 #include "app_data.hpp"
 #include "config.hpp"
@@ -17,7 +18,6 @@ namespace torrenttools
 {
 namespace fs = std::filesystem;
 namespace rng = std::ranges;
-
 
 struct tracker
 {
@@ -52,7 +52,6 @@ public:
     const_iterator find_by_abbreviation(std::string_view abbreviation) const;
     const_iterator find_by_url(std::string_view url) const;
 
-
     /// Lookup a tracker by name or abbreviation.
     /// @throws std::out_of_range when no matching tracker is found.
     const_reference at(std::string_view key) const;
@@ -82,7 +81,11 @@ private:
     RE2::Set announces_regex_ ;
 };
 
+inline std::unique_ptr<tracker_database> tracker_db_ptr = nullptr;
+inline std::string_view tracker_db_name = "trackers.json";
 
 tracker_database* load_tracker_database();
+
+tracker_database* load_tracker_database(const fs::path& custom_path);
 
 }

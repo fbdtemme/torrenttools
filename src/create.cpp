@@ -21,6 +21,7 @@
 #include "tracker_database.hpp"
 #include "config_parser.hpp"
 #include "progress.hpp"
+#include "common.hpp"
 
 #ifdef __linux__
 #include <unistd.h>
@@ -52,6 +53,10 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     };
     CLI::callback_t announce_parser =[&](const CLI::results_t& v) -> bool {
         options.announce_list = announce_transformer(v);
+        return true;
+    };
+    CLI::callback_t announce_group_parser =[&](const CLI::results_t& v) -> bool {
+        options.announce_group_list = v;
         return true;
     };
     CLI::callback_t dht_node_parser =[&](const CLI::results_t& v) -> bool {
@@ -128,6 +133,13 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<url>...")
        ->expected(0, max_size);
 
+    app->add_option("-g,--announce-group", announce_group_parser,
+               "Add the announce-urls defined from an announce group specified in the configuration file.\n"
+               "Multiple groups can be passed."
+               " eg. \"--announce-group group1 group2\"")
+       ->type_name("<name>...")
+       ->expected(0, max_size);
+
     app->add_option("-w, --web-seed", options.web_seeds,
                "Add one or multiple HTTP/FTP urls as seeds.")
        ->type_name("<url>...")
@@ -156,7 +168,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
                "When no unit is specified block size will be either 2^<n> bytes,\n"
                "or <n> bytes if n is larger or equal to 16384.\n"
                "Piece size must be a power of two in range [16K, 64M].\n"
-               "Leave empty to determine by total file size. [default: auto]")
+               "Leave empty or set to auto to determine by total file size. [default: auto]")
        ->type_name("<size[K|M]>")
        ->expected(1);
 
@@ -226,13 +238,8 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<size[K|M]>")
        ->expected(1);
 
-#ifdef NDEBUG
-    app->add_option("--simple-progress", options.simple_progress,
-               "The size of blocks read from storage.\n"
-               "[default: max(1 MiB, <piece-size>)].\n"
-               "Must be larger or equal to the piece size.")
-       ->type_name("<size[K|M]>")
-       ->expected(1);
+#if defined(NDEBUG)
+    app->add_flag("--simple-progress", options.simple_progress);
 #endif
 
 }
@@ -283,114 +290,7 @@ void set_files(dottorrent::metafile& m, const create_app_options& options)
 }
 
 
-void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::string>>& announce_list)
-{
-    const auto* config     = torrenttools::load_config();
-    const auto* tracker_db = torrenttools::load_tracker_database();
-
-    // a single tracker
-    if (announce_list.size() == 1 && announce_list.at(0).size() == 1) {
-        const auto& tracker = announce_list.at(0).at(0);
-
-        // Check for tracker name or abbreviation
-        if (tracker_db->contains(tracker)) {
-            const auto& tracker_entry = tracker_db->at(tracker);
-            m.add_tracker(tracker_entry.substitute_parameters(*config));
-            m.set_private(tracker_entry.is_private);
-
-            // set source tag to facilitate cross-seeding
-            if (tracker_entry.is_private) {
-                m.set_source(tracker_entry.name);
-            }
-        }
-        // Check for tracker url -> do not substitute but do set private flag and source tag
-        else if (auto it = tracker_db->find_by_url(tracker); it != tracker_db->end()) {
-            const auto& tracker_entry = *it;
-            m.add_tracker(tracker);
-            m.set_private(tracker_entry.is_private);
-
-            // set source tag to facilitate cross-seeding
-            if (tracker_entry.is_private) {
-                m.set_source(tracker_entry.name);
-            }
-        }
-        else {
-            m.add_tracker(tracker, 0);
-        }
-    }
-    else {
-        std::size_t tier_idx = 0;
-        std::vector<bool> private_flags{};
-
-        for (const auto& tier : announce_list) {
-            for (const auto& tracker : tier) {
-
-                // load data from tracker database
-                if (bool in_db = tracker_db->contains(tracker)) {
-                    const auto& tracker_entry = tracker_db->at(tracker);
-                    m.add_tracker(tracker_entry.substitute_parameters(*config), tier_idx);
-                    private_flags.push_back(tracker_entry.is_private);
-                }
-                else {
-                    m.add_tracker(tracker, tier_idx);
-                }
-            }
-            ++tier_idx;
-        }
-
-        if (rng::any_of(private_flags, std::identity{})) {
-            m.set_private(true);
-        }
-    }
-}
-
-fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> destination_path)
-{
-    const auto* tracker_db = torrenttools::load_tracker_database();
-
-    // complete destination: directory / filename
-    fs::path destination {};
-    // destination directory
-    fs::path destination_directory {};
-    // destination filename
-    std::string destination_name {};
-
-    if (destination_path.has_value()) {
-        // options is a complete path + filename
-        if (destination_path->has_filename() &&
-                !std::filesystem::is_directory(*destination_path))
-        {
-            destination = *destination_path;
-            return destination;
-        }
-        // option is only a destination directory and not a filename
-        else if (destination_path->filename().empty()) {
-            destination_directory = destination_path->parent_path();
-        }
-        else {
-            destination_directory = *destination_path;
-        }
-    }
-    else {
-        destination_directory = fs::current_path();
-    }
-
-    destination_name = fmt::format("{}.torrent", m.name());
-
-    if (m.trackers().size() == 1) {
-        auto it = tracker_db->find_by_url(m.trackers().front());
-        if (it != tracker_db->end()) {
-            destination_name = fmt::format(
-                    "[{}]{}.torrent",
-                    it->abbreviation,
-                    m.name());
-        }
-    }
-    return destination_directory / destination_name;
-};
-
-
-void run_create_app(const create_app_options& options)
+void run_create_app(const main_app_options& main_options, const create_app_options& options)
 {
     namespace dt = dottorrent;
     using namespace dottorrent::literals;
@@ -410,8 +310,13 @@ void run_create_app(const create_app_options& options)
         dottorrent::choose_piece_size(file_storage);
     }
 
+    load_config_and_tracker_db(main_options);
     // announces
-    set_trackers(m, options.announce_list);
+    if (!options.announce_group_list.empty()) {
+        set_tracker_group(m, options.announce_group_list, tt::load_tracker_database(), tt::load_config());
+    } else {
+        set_trackers(m, options.announce_list, tt::load_tracker_database(), tt::load_config());
+    }
 
     // web seeds
     for (const auto& url : options.web_seeds) {
@@ -427,6 +332,8 @@ void run_create_app(const create_app_options& options)
     if (options.comment) {
         m.set_comment(*options.comment);
     }
+    // Make sure we set this after set_tracker to be abe to override or remove the default source tag
+    // when the tracker is in the tracker database.
     if (options.source) {
         m.set_source(*options.source);
     }
@@ -490,6 +397,8 @@ void run_create_app(const create_app_options& options)
 
     auto hasher = dt::storage_hasher(file_storage, hasher_options);
 
+    os << "Hashing files..." << std::endl;
+
     if (simple_progress) {
         run_with_simple_progress(os, hasher, m);
     } else {
@@ -499,7 +408,7 @@ void run_create_app(const create_app_options& options)
     // Join all threads and block until completed.
     if (!options.write_to_stdout) {
         dt::save_metafile(destination_file, m, options.protocol_version);
-        os << fmt::format("Metafile written to:  {}\n", destination_file.string());
+        os << fmt::format("Metafile written to: {}\n", destination_file.string());
     } else {
         os << fmt::format("Metafile written to standard output.");
         dt::write_metafile_to(std::cout, m, options.protocol_version);

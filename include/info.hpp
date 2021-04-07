@@ -3,9 +3,11 @@
 #include <filesystem>
 #include <string>
 #include <chrono>
-#include <dottorrent/metafile.hpp>
 
+#include <dottorrent/metafile.hpp>
 #include <CLI/CLI.hpp>
+
+#include "common.hpp"
 
 namespace fs = std::filesystem;
 
@@ -26,7 +28,7 @@ struct info_app_options
 
 void configure_info_app(CLI::App* app, info_app_options& options);
 
-void run_info_app(info_app_options& options);
+void run_info_app(const main_app_options& main_options, const info_app_options& options);
 
 
 struct formatting_options

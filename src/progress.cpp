@@ -26,8 +26,6 @@ namespace tt = torrenttools;
 namespace tc = termcontrol;
 
 
-
-
 /// The main application class
 /// event_queue
 /// progress_bar spawn thread with
@@ -44,7 +42,6 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
     std::size_t current_file_index = 0;
     auto& storage = m.storage();
 
-    os << "Hashing files..." << std::endl;
     cliprogress::application app(os);
 
 
@@ -99,49 +96,6 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
 }
 
 
-void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
-{
-    auto& storage = m.storage();
-
-    std::string average_hash_rate_str {};
-    using fsecs = std::chrono::duration<double>;
-    auto seconds = std::chrono::duration_cast<fsecs>(duration).count();
-
-    if (seconds != 0) {
-        average_hash_rate_str = tt::format_hash_rate(storage.total_file_size() / seconds);
-    } else {
-        average_hash_rate_str = "∞ B/s";
-    }
-
-    fmt::print(os, "Hashing completed in: {}\n", tt::format_duration(duration));
-    fmt::print(os, "Average hash rate:    {}\n",    average_hash_rate_str);
-
-    // Torrent file is hashed so we can return to infohash
-    std::string info_hash_string {};
-    if (auto protocol = m.storage().protocol(); protocol != dt::protocol::none) {
-        if ((protocol & dt::protocol::hybrid) == dt::protocol::hybrid ) {
-            auto infohash_v1 = dt::info_hash_v1(m).hex_string();
-            auto infohash_v2 = dt::info_hash_v2(m).hex_string();
-            info_hash_string = fmt::format("Infohash:             v1: {}\n"
-                                           "                      v2: {}\n", infohash_v1, infohash_v2);
-        }
-        // v2-only
-        else if ((protocol & dt::protocol::v2) == dt::protocol::v2) {
-            auto infohash_v2 = dt::info_hash_v2(m).hex_string();
-            info_hash_string = fmt::format("Infohash:             {}\n", infohash_v2);
-        }
-            // v1-only
-        else if ((protocol & dt::protocol::v1) == dt::protocol::v1) {
-            auto infohash_v1 = dt::info_hash_v1(m).hex_string();
-            info_hash_string = fmt::format("Infohash:             {}\n", infohash_v1);
-        }
-    }
-    os << info_hash_string;
-}
-
-
-
-
 /// Progress using only carriage return and newline characters.
 void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
 {
@@ -149,9 +103,6 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
 
     std::size_t current_file_index = 0;
     auto& storage = m.storage();
-
-    os << "Hashing files..." << std::endl;
-
 
     // v1 torrents count padding files as regular files in their progress counters
     // v2 and hybrid torrents do not take padding files into account in their progress counters.
@@ -191,4 +142,160 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
     auto stop_time = std::chrono::system_clock::now();
     auto total_duration = stop_time - start_time;
     print_completion_statistics(os, m, total_duration);
+}
+
+
+void run_with_progress(std::ostream& os, dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
+{
+    using namespace std::chrono_literals;
+
+    std::size_t current_file_index = 0;
+    auto& storage = m.storage();
+
+    cliprogress::application app(os);
+
+
+    // v1 torrents count padding files as regular files in their progress counters
+    // v2 and hybrid torrents do not take padding files into account in their progress counters.
+    std::size_t total_file_size = 0;
+    if (verifier.protocol() == dt::protocol::v1) {
+        total_file_size = storage.total_file_size();
+    } else {
+        total_file_size = storage.total_regular_file_size();
+    }
+
+    auto indicator = std::make_shared<progress_indicator>(&app, storage, true);
+    indicator->start();
+
+    auto start_time = std::chrono::system_clock::now();
+    verifier.start();
+
+    std::size_t index = 0;
+
+    while (verifier.bytes_done() < total_file_size) {
+        auto [index, file_bytes_done] = verifier.current_file_progress();
+        auto total_bytes_done = verifier.bytes_done();
+
+        // Current file has been completed, update last entry for the previous file(s) and move to next one
+        if (index != current_file_index && index < storage.file_count()) {
+            for ( ; current_file_index < index; ) {
+                auto complete_size = storage.at(current_file_index).file_size();
+                indicator->set_per_file_value(complete_size);
+                ++current_file_index;
+                indicator->set_current_file(current_file_index);
+            }
+        }
+        indicator->set_per_file_value(file_bytes_done);
+        indicator->set_total_value(total_bytes_done);
+        std::this_thread::sleep_for(250ms);
+    }
+
+    indicator->set_total_value(storage.total_file_size());
+    indicator->set_per_file_value( storage.at(current_file_index).file_size());
+    indicator->stop();
+    verifier.wait();
+
+    tc::format_to(os, tc::ecma48::character_position_absolute);
+    tc::format_to(os, tc::ecma48::erase_in_line);
+    tc::format_to(os, tc::ecma48::cursor_up, 1);
+
+    auto stop_time = std::chrono::system_clock::now();
+    auto total_duration = stop_time - start_time;
+
+    print_completion_statistics(os, m, total_duration);
+}
+
+
+/// Progress using only carriage return and newline characters.
+void run_with_simple_progress(std::ostream& os, dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
+{
+    using namespace std::chrono_literals;
+
+    std::size_t current_file_index = 0;
+    auto& storage = m.storage();
+
+    // v1 torrents count padding files as regular files in their progress counters
+    // v2 and hybrid torrents do not take padding files into account in their progress counters.
+    std::size_t total_file_size;
+    if (verifier.protocol() == dt::protocol::v1) {
+        total_file_size = storage.total_file_size();
+    } else {
+        total_file_size = storage.total_regular_file_size();
+    }
+
+    auto start_time = std::chrono::system_clock::now();
+    verifier.start();
+
+    std::size_t index = 0;
+
+    print_simple_indicator(os, storage, current_file_index, verifier.protocol());
+    std::flush(os);
+
+    while (verifier.bytes_done() < total_file_size) {
+        auto [index, file_bytes_hashed] = verifier.current_file_progress();
+
+        // Current file has been completed, update last entry for the previous file(s) and move to next one
+        if (index != current_file_index && index < storage.file_count()) {
+            for ( ; current_file_index < index; ) {
+                // set to 100%
+                ++current_file_index;
+                print_simple_indicator(os, storage, current_file_index, verifier.protocol());
+            }
+            std::flush(os);
+        }
+        std::this_thread::sleep_for(1s);
+    }
+
+    for ( ; current_file_index < storage.file_count(); ) {
+        // set to 100%
+        ++current_file_index;
+        print_simple_indicator(os, storage, current_file_index, verifier.protocol());
+    }
+    os << std::endl;
+
+    verifier.wait();
+
+    auto stop_time = std::chrono::system_clock::now();
+    auto total_duration = stop_time - start_time;
+    print_completion_statistics(os, m, total_duration);
+}
+
+
+void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
+{
+    auto& storage = m.storage();
+
+    std::string average_hash_rate_str {};
+    using fsecs = std::chrono::duration<double>;
+    auto seconds = std::chrono::duration_cast<fsecs>(duration).count();
+
+    if (seconds != 0) {
+        average_hash_rate_str = tt::format_hash_rate(storage.total_file_size() / seconds);
+    } else {
+        average_hash_rate_str = "∞ B/s";
+    }
+
+    fmt::print(os, "Completed in:        {}\n", tt::format_duration(duration));
+    fmt::print(os, "Average hash rate:   {}\n", average_hash_rate_str);
+    // Torrent file is hashed so we can return to infohash
+    std::string info_hash_string {};
+    if (auto protocol = m.storage().protocol(); protocol != dt::protocol::none) {
+        if ((protocol & dt::protocol::hybrid) == dt::protocol::hybrid ) {
+            auto infohash_v1 = dt::info_hash_v1(m).hex_string();
+            auto infohash_v2 = dt::info_hash_v2(m).hex_string();
+            info_hash_string = fmt::format("Infohash:            v1: {}\n"
+                                           "                     v2: {}\n", infohash_v1, infohash_v2);
+        }
+            // v2-only
+        else if ((protocol & dt::protocol::v2) == dt::protocol::v2) {
+            auto infohash_v2 = dt::info_hash_v2(m).hex_string();
+            info_hash_string = fmt::format("Infohash:            {}\n", infohash_v2);
+        }
+            // v1-only
+        else if ((protocol & dt::protocol::v1) == dt::protocol::v1) {
+            auto infohash_v1 = dt::info_hash_v1(m).hex_string();
+            info_hash_string = fmt::format("Infohash:            {}\n", infohash_v1);
+        }
+    }
+    fmt::print(os, "{}", info_hash_string);
 }

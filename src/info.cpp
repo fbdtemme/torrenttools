@@ -25,7 +25,6 @@
 #include "escape_binary_fields.hpp"
 #include "cli_helpers.hpp"
 
-
 namespace fs = std::filesystem;
 namespace dt = dottorrent;
 namespace bc = bencode;
@@ -40,7 +39,7 @@ constexpr std::string_view program_name = PROJECT_NAME;
 constexpr std::string_view program_version_string = PROJECT_VERSION;
 
 
-void run_info_app(info_app_options& options)
+void run_info_app(const main_app_options& main_options, const info_app_options& options)
 {
     verify_metafile(options.metafile);
 
@@ -202,6 +201,7 @@ void create_general_info(std::ostream& os,
 
     fmt::format_to(out, "Files:\n{}\n{}\n", file_tree, file_stats);
 }
+
 
 void format_announces(std::ostream& os, const dottorrent::metafile& metafile)
 {

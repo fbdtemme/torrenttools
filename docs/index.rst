@@ -14,6 +14,7 @@ Index
 
     why-torrenttools
     named-trackers
+    comparison
 
 
 .. toctree::

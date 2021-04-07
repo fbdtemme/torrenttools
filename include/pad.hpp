@@ -27,4 +27,4 @@ struct pad_app_options
 
 void configure_pad_app(CLI::App* app, pad_app_options& options);
 
-void run_pad_app(const pad_app_options& options);
+void run_pad_app(const main_app_options& main_options, const pad_app_options& options);

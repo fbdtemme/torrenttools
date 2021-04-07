@@ -10,6 +10,7 @@
 #include <CLI/App.hpp>
 #include <dottorrent/general.hpp>
 
+#include "common.hpp"
 #include "config.hpp"
 
 namespace fs = std::filesystem;
@@ -23,4 +24,4 @@ struct magnet_app_options
 
 void configure_magnet_app(CLI::App* app, magnet_app_options& options);
 
-void run_magnet_app(const magnet_app_options& options);
+void run_magnet_app(const main_app_options& main_options, const magnet_app_options& options);

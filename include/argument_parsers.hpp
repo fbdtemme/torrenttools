@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <optional>
@@ -25,6 +26,8 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v,
                                          bool check_exists = true,
                                          bool keep_trailing = true);
 
+std::filesystem::path config_path_transformer(const std::vector<std::string>& v, bool check_exists);
+
 std::filesystem::path metafile_transformer(const std::vector<std::string>& v);
 
 std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v);
@@ -36,6 +39,7 @@ std::optional<bool> parse_commandline_bool(std::string_view option, const std::v
 std::chrono::system_clock::time_point
 creation_date_transformer(std::string_view option, const std::vector<std::string>& v);
 
-torrenttools::list_edit_mode parse_list_edit_mode(std::string_view options, const std::vector<std::string>& v);
+torrenttools::list_edit_mode
+parse_list_edit_mode(std::string_view options, const std::vector<std::string>& v);
 
 bool parse_explicit_flag(std::string_view option, const std::vector<std::string>& v);

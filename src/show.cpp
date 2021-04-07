@@ -19,7 +19,6 @@
 
 
 
-
 namespace dt = dottorrent;
 namespace fs = std::filesystem;
 namespace bc = bencode;
@@ -204,9 +203,9 @@ void configure_show_files_subapp(CLI::App* files_subapp, show_app_options& optio
                "Custom prefix to prepend to the files.");
 }
 
-void run_show_app(CLI::App* show_app, const show_app_options& options)
+void run_show_app(CLI::App* show_app, const main_app_options& main_options, const show_app_options& options)
 {
-    using run_show_app_function_type = void (*)(const show_app_options&);
+    using run_show_app_function_type = void (*)(const main_app_options&, const show_app_options&);
 
     static std::unordered_map<std::string_view, run_show_app_function_type> dispatch_table {
             {"announce",        &run_show_announce_subapp},
@@ -225,7 +224,7 @@ void run_show_app(CLI::App* show_app, const show_app_options& options)
     };
 
     if (!options.subcommand.empty()) {
-        std::invoke(dispatch_table[options.subcommand], options);
+        std::invoke(dispatch_table[options.subcommand], main_options, options);
     }
     else if (show_app->count_all() == 1) {
         std::cout << show_app->help();
@@ -233,7 +232,7 @@ void run_show_app(CLI::App* show_app, const show_app_options& options)
 }
 
 
-void run_show_protocol_subapp(const show_app_options& options)
+void run_show_protocol_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -247,7 +246,7 @@ void run_show_protocol_subapp(const show_app_options& options)
     }
 }
 
-void run_show_announce_subapp(const show_app_options& options)
+void run_show_announce_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -274,7 +273,7 @@ void run_show_announce_subapp(const show_app_options& options)
 }
 
 
-void run_show_piece_size_subapp(const show_app_options& options)
+void run_show_piece_size_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -285,7 +284,7 @@ void run_show_piece_size_subapp(const show_app_options& options)
     }
 }
 
-void run_show_infohash_subapp(const show_app_options& options)
+void run_show_infohash_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -345,14 +344,14 @@ void run_show_infohash_subapp(const show_app_options& options)
     }
 }
 
-void run_show_created_by_subapp(const show_app_options& options)
+void run_show_created_by_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.created_by() << std::endl;
 }
 
-void run_show_creation_date_subapp(const show_app_options& options)
+void run_show_creation_date_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -368,35 +367,35 @@ void run_show_creation_date_subapp(const show_app_options& options)
     }
 }
 
-void run_show_private_subapp(const show_app_options& options)
+void run_show_private_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << int(m.is_private()) << std::endl;
 }
 
-void run_show_name_subapp(const show_app_options& options)
+void run_show_name_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.name() << std::endl;
 }
 
-void run_show_comment_subapp(const show_app_options& options)
+void run_show_comment_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.comment() << std::endl;
 }
 
-void run_show_source_subapp(const show_app_options& options)
+void run_show_source_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.source() << std::endl;
 }
 
-void run_show_file_size_subapp(const show_app_options& options)
+void run_show_file_size_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
@@ -408,7 +407,7 @@ void run_show_file_size_subapp(const show_app_options& options)
 }
 
 
-void run_show_query_subapp(const show_app_options& options)
+void run_show_query_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     std::ifstream ifs (options.metafile);
@@ -438,7 +437,7 @@ void run_show_query_subapp(const show_app_options& options)
 }
 
 
-void run_show_files_subapp(const show_app_options& options)
+void run_show_files_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);

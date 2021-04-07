@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.4.0] - UNRELEASED
+### Added
+* Add named tracker groups.
+* Add `--config` and `--trackers-config` to pass configuration files located at custom locations.
+* Add colored file tree using the same colors as ls command.
+
+### Changed
+* Fix progressbar for edit command.
+* Fix infinite loop on unrecoverable IO error during hashing.
+* Fix threads options ignored when during verifying.
+
 ## [v0.3.2] - 2012-02-20
 ### Changed
 * Fix announce url substitution overriding announce url

@@ -1,6 +1,7 @@
 #include <span>
 #include <ranges>
 #include <vector>
+#include <stdexcept>
 
 #include <nlohmann/json.hpp>
 #include <fmt/format.h>
@@ -31,7 +32,7 @@ std::string tracker::substitute_parameters(const config& config) const
         auto close = rng::find(open, last, '}');
         auto key = std::string(std::next(open), close);
         arg_store.push_back(
-                fmt::arg(key.c_str(), config.get_tracker_parameter(name, key)));
+                fmt::arg(key.c_str(), config.get_announce_parameter(name, key)));
         open = rng::find(close, last, '{');
     }
     return fmt::vformat(announce_url, arg_store);
@@ -191,33 +192,59 @@ std::string tracker_database::build_announce_regex(std::string_view announce_url
 
 tracker_database* load_tracker_database()
 {
-    static std::unique_ptr<tracker_database> tracker_db {};
+
     static std::vector<fs::path> data_dirs {
         get_user_data_dir(),
         GLOBAL_DATA_DIR,
         BUILD_DATA_DIR,
     };
 
-    if (tracker_db) {
-        return tracker_db.get();
+    if (tracker_db_ptr) {
+        return tracker_db_ptr.get();
     }
 
     fs::path database_location;
     for (const auto& path : data_dirs) {
         std::error_code ec {};
-        auto exists = fs::exists(path/"trackers.json", ec);
+        auto exists = fs::exists(path / tracker_db_name, ec);
         if (ec) continue;
         if (exists) {
-            database_location = path/"trackers.json";
+            database_location = path / tracker_db_name;
             break;
         }
     }
     if (database_location.empty()) {
-        throw std::invalid_argument("could not find trackers.json file");
+        return nullptr;
     }
 
-    tracker_db = std::make_unique<tracker_database>(database_location);
-    return tracker_db.get();
+    tracker_db_ptr = std::make_unique<tracker_database>(database_location);
+    return tracker_db_ptr.get();
+}
+
+tracker_database* load_tracker_database(const fs::path& custom_path)
+{
+    fs::path database_location;
+
+    if (!fs::exists(custom_path)) {
+        throw std::runtime_error(
+                fmt::format("Custom tracker database path [{}] does not exists", custom_path.string()));
+    }
+
+    if (fs::is_directory(custom_path)) {
+        database_location = custom_path / tracker_db_name;
+        bool exists = fs::exists(database_location);
+        if (!exists) {
+            throw std::runtime_error(
+                    fmt::format("Custom tracker database path [{}] does not contain \"{}\" file",
+                            custom_path.string(), tracker_db_name));
+        }
+    }
+    else {
+        database_location = custom_path;
+    }
+
+    tracker_db_ptr = std::make_unique<tracker_database>(database_location);
+    return tracker_db_ptr.get();
 }
 
 tracker_database::const_iterator tracker_database::begin() const noexcept
