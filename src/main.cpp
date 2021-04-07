@@ -1,12 +1,5 @@
 #include <iostream>
-#include <locale>
-#include <charconv>
-
 #include <fmt/format.h>
-#include <fmt/color.h>
-#include <CLI/CLI.hpp>
-
-#include <termcontrol/termcontrol.hpp>
 
 #include "config.hpp"
 #include "create.hpp"
@@ -16,54 +9,18 @@
 #include "pad.hpp"
 #include "show.hpp"
 #include "verify.hpp"
-
 #include "help_formatter.hpp"
-
-#ifdef _WIN32
-#define UNICODE
-#define _UNICODE
-#include <windows.h>
-#endif
-
-static void setup_console()
-{
-    std::setlocale(LC_ALL, ".UTF-8");
-    std::ios_base::sync_with_stdio(false);
-
-#ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-
-    if (!termcontrol::enable_virtual_terminal_processing()) {
-        std::cout << "Warning: Could not enable ANSI escape code processing!" << std::endl;
-    }
-#endif
-}
-
-
+#include "main_app.hpp"
 
 const std::string main_description = PROJECT_NAME " v" PROJECT_VERSION R"(
 Tools for inspecting, creating and modifying bittorrent metafiles.
 )";
 
-
-void list_available_checksums()
-{
-    for (auto h : dottorrent::hasher_supported_algorithms()) {
-        std::cout << to_string(h) << '\n';
-    }
-}
-
-void print_version()
-{
-    std::cout << PROJECT_VERSION << std::endl;
-}
-
-
 int main(int argc, char** argv) {
 
     setup_console();
 
+    main_app_options main_options {};
     info_app_options info_options {};
     create_app_options create_options {};
     verify_app_options verify_options {};
@@ -75,23 +32,18 @@ int main(int argc, char** argv) {
     CLI::App app(main_description, PROJECT_NAME);
     app.formatter(std::make_shared<help_formatter>());
     app.get_formatter()->column_width(35);
+    app.require_subcommand(1);
+    app.fallthrough(true);
 
-    auto info_app    = app.add_subcommand("info",   "General information about bittorrent metafiles.");
-    auto create_app  = app.add_subcommand("create", "Create bittorrent metafiles.");
-    auto verify_app  = app.add_subcommand("verify", "Verify local data against bittorrent metafiles.");
-    auto show_app    = app.add_subcommand("show",   "Show specific fields of bittorrent metafiles.");
-    auto edit_app    = app.add_subcommand("edit",   "Edit bittorrent metafiles.");
-    auto magnet_app  = app.add_subcommand("magnet", "Generate a magnet URI for bittorrent metafiles.");
-    auto pad_app     = app.add_subcommand("pad",    "Generate padding files for a metafile.");
+    configure_main_app(&app, main_options);
 
-    /// List available checksums
-    app.add_flag_callback(
-            "--checksum-algorithms", std::function(&list_available_checksums),
-            "List the supported hash functions for per file checksums.");
-
-    app.add_flag_callback(
-            "-V,--version", std::function(&print_version),
-            "Show program version and exit.");
+    auto info_app    = app.add_subcommand("info",   "General information about BitTorrent metafiles.");
+    auto create_app  = app.add_subcommand("create", "Create BitTorrent metafiles.");
+    auto verify_app  = app.add_subcommand("verify", "Verify local data against BitTorrent metafiles.");
+    auto show_app    = app.add_subcommand("show",   "Show specific fields of BitTorrent metafiles.");
+    auto edit_app    = app.add_subcommand("edit",   "Edit BitTorrent metafiles.");
+    auto magnet_app  = app.add_subcommand("magnet", "Generate a magnet URI for BitTorrent metafiles.");
+    auto pad_app     = app.add_subcommand("pad",    "Generate padding files for a BitTorrent metafile.");
 
 
     configure_info_app(info_app, info_options);
@@ -106,35 +58,35 @@ int main(int argc, char** argv) {
         app.parse(argc, argv);
 
         if (app.got_subcommand(create_app)) {
-            run_create_app(create_options);
+            run_create_app(main_options, create_options);
         }
         else if (app.got_subcommand(edit_app)) {
-            run_edit_app(edit_options);
+            run_edit_app(main_options, edit_options);
         }
         else if (app.got_subcommand(info_app)) {
-            run_info_app(info_options);
+            run_info_app(main_options, info_options);
         }
         else if (app.got_subcommand(verify_app)) {
-            run_verify_app(verify_options);
+            run_verify_app(main_options, verify_options);
         }
         else if (app.got_subcommand(show_app)) {
-            run_show_app(app.get_subcommand(show_app), show_options);
+            run_show_app(app.get_subcommand(show_app), main_options, show_options);
         }
         else if (app.got_subcommand(magnet_app)) {
-            run_magnet_app(magnet_options);
+            run_magnet_app(main_options, magnet_options);
         }
         else if (app.got_subcommand(pad_app)) {
-            run_pad_app(pad_options);
+            run_pad_app(main_options, pad_options);
         }
     }
     catch (const CLI::CallForHelp &e) {
         std::cout << app.help() << std::endl;
     }
     catch (const CLI::ParseError &e) {
-        std::cerr << fmt::format(fg(fmt::terminal_color::red), "{}", e.what()) << std::endl;
+        std::cerr << fmt::format("{}", e.what()) << std::endl;
     }
     catch (const std::exception& e) {
-        std::cerr << fmt::format(fg(fmt::terminal_color::red), "Error: {}", e.what()) << std::endl;
+        std::cerr << fmt::format("Error: {}", e.what()) << std::endl;
     }
 
     if (app.count_all() == 1)

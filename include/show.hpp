@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <dottorrent/general.hpp>
 
+#include "common.hpp"
+
 // Forward declarations
 namespace CLI { class App; }
 
@@ -42,18 +44,18 @@ void configure_show_protocol_subapp(CLI::App* protocol_subapp, show_app_options&
 void configure_show_query_subapp(CLI::App* source_subapp, show_app_options& options);
 void configure_show_source_subapp(CLI::App* source_subapp, show_app_options& options);
 
-void run_show_app(CLI::App* show_app, const show_app_options& options);
+void run_show_app(CLI::App* show_app, const main_app_options& main_options, const show_app_options& options);
 
-void run_show_announce_subapp(const show_app_options& options);
-void run_show_comment_subapp(const show_app_options& options);
-void run_show_created_by_subapp(const show_app_options& options);
-void run_show_creation_date_subapp(const show_app_options& options);
-void run_show_file_size_subapp(const show_app_options& options);
-void run_show_files_subapp(const show_app_options& options);
-void run_show_infohash_subapp(const show_app_options& options);
-void run_show_name_subapp(const show_app_options& options);
-void run_show_piece_size_subapp(const show_app_options& options);
-void run_show_private_subapp(const show_app_options& options);
-void run_show_protocol_subapp(const show_app_options& options);
-void run_show_query_subapp(const show_app_options& options);
-void run_show_source_subapp(const show_app_options& options);
+void run_show_announce_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_comment_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_created_by_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_creation_date_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_file_size_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_files_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_infohash_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_name_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_piece_size_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_private_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_protocol_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_query_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_source_subapp(const main_app_options& main_options, const show_app_options& options);

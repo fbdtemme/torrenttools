@@ -5,12 +5,13 @@
 #include <cstdint>
 #include <filesystem>
 #include <chrono>
+
 #include <dottorrent/metafile.hpp>
+#include <dottorrent/storage_hasher.hpp>
+#include <dottorrent/dht_node.hpp>
 
 #include "config.hpp"
-
-#include "dottorrent/storage_hasher.hpp"
-#include "dottorrent/dht_node.hpp"
+#include "tracker_database.hpp"
 #include "info.hpp"
 
 namespace { namespace fs = std::filesystem; }
@@ -29,6 +30,7 @@ struct create_app_options
     std::optional<std::size_t> piece_size;
     std::unordered_set<dottorrent::hash_function> checksums = {};
     std::vector<std::vector<std::string>> announce_list;
+    std::vector<std::string> announce_group_list;
     std::vector<std::string> web_seeds;
     std::vector<dottorrent::dht_node> dht_nodes;
     std::vector<std::string> include_patterns;
@@ -51,12 +53,6 @@ void configure_create_app(CLI::App* app, create_app_options& options);
 
 void configure_matcher(torrenttools::file_matcher& matcher, const create_app_options& options);
 
-void run_create_app(const create_app_options& options);
-
-void print_creation_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration);
+void run_create_app(const main_app_options& main_options, const create_app_options& options);
 
 void set_files(dottorrent::metafile& m, const create_app_options& options);
-
-void set_trackers(dottorrent::metafile& m, const std::vector<std::vector<std::string>>& options);
-
-fs::path get_destination_path(dottorrent::metafile& m, std::optional<fs::path> options);

@@ -23,8 +23,6 @@ else()
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-message(STATUS ${CMAKE_MODULE_PATH})
-
 if(IS_DIRECTORY "${Catch2_SOURCE_DIR}")
     set_property(DIRECTORY ${Catch2_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
     list(APPEND CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/contrib")
@@ -32,8 +30,6 @@ if(IS_DIRECTORY "${Catch2_SOURCE_DIR}")
     get_directory_property(has_parent PARENT_DIRECTORY)
     if(has_parent)
         set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} PARENT_SCOPE)
-    else()
-        set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
     endif()
 endif()
 

@@ -9,13 +9,8 @@
 
 #include <fmt/format.h>
 
-#include <cliprogressbar/application.hpp>
-#include <cliprogressbar/widgets/bar.hpp>
-#include <cliprogressbar/widgets/label.hpp>
-#include <cliprogressbar/progress_indicator.hpp>
-#include <cliprogressbar/formatters.hpp>
-#include <create.hpp>
-
+#include "create.hpp"
+#include "progress.hpp"
 
 
 void configure_verify_app(CLI::App* app, verify_app_options& options)
@@ -58,7 +53,7 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
 }
 
 
-void run_verify_app(verify_app_options& options)
+void run_verify_app(const main_app_options& main_options, const verify_app_options& options)
 {
     verify_metafile(options.metafile);
 
@@ -70,7 +65,8 @@ void run_verify_app(verify_app_options& options)
 
 
     dottorrent::storage_verifier_options verifier_options {
-            .protocol_version = options.protocol_version
+            .protocol_version = options.protocol_version,
+            .threads = options.threads,
     };
 
     // no explicit protocol version given
@@ -78,74 +74,25 @@ void run_verify_app(verify_app_options& options)
         verifier_options.protocol_version = m.storage().protocol();
     }
 
+    bool simple_progress = false;
+#ifdef __unix__
+    bool runs_in_tty = true;
+    runs_in_tty = isatty(STDOUT_FILENO);
+
+    if (!runs_in_tty) {
+        simple_progress = true;
+    }
+#endif
+
     auto verifier = dottorrent::storage_verifier(file_storage, verifier_options);
-    run_with_progress(verifier, m);
-}
 
+    fmt::print(std::cout, "Verifying files...\n");
 
-void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
-{
-    using namespace std::chrono_literals;
-    namespace dt = dottorrent;
-
-    std::size_t current_file_index = 0;
-    auto& storage = m.storage();
-
-    cliprogress::application app;
-
-    std::cout << "Verifying files... " << std::endl;
-
-    app.start();
-
-    auto start_time = std::chrono::system_clock::now();
-    verifier.start();
-//
-//    // v1 torrents count padding files as regular files in their progress counters
-//    // v2 and hybrid torrents do not take padding files into account in their progress counters.
-//    std::size_t total_file_size;
-//    if (verifier.protocol() == dt::protocol::v1) {
-//        total_file_size = storage.total_file_size();
-//    } else {
-//        total_file_size = storage.total_regular_file_size();
-//    }
-//
-//    while (verifier.bytes_done() < total_file_size) {
-//        auto [index, file_bytes_verified] = verifier.current_file_progress();
-//
-//        // Current file has been completed, update last entry for the previous file(s) and move to next one
-//        if (index != current_file_index) {
-//            for ( ; current_file_index < index; ) {
-//                auto complete_size = storage.at(current_file_index).file_size();
-//                indicator->set_value(complete_size);
-//                on_indicator_completion(indicator);
-//                indicator->stop();
-//
-//                indicator = make_indicator(storage, storage.at(++current_file_index));
-//                indicator->start();
-//            }
-//        }
-//        indicator->set_value(file_bytes_verified);
-//        std::this_thread::sleep_for(100ms);
-//    }
-//
-//    auto complete_progress = storage.at(current_file_index).file_size();
-//    indicator->set_value(complete_progress);
-//    on_indicator_completion(indicator);
-//    indicator->stop();
-    app.request_stop();
-    app.wait();
-
-    verifier.wait();
-
-    auto stop_time = std::chrono::system_clock::now();
-    auto total_duration = stop_time - start_time;
-
-    tc::format_to(std::cout, tc::ecma48::character_position_absolute);
-    tc::format_to(std::cout, tc::ecma48::erase_in_line);
-    tc::format_to(std::cout, tc::ecma48::cursor_up, 2);
-
-    print_verify_statistics(m, total_duration);
-    std::cout << "\nFiles:\n";
+    if (simple_progress) {
+        run_with_simple_progress(std::cout, verifier, m);
+    } else {
+        run_with_progress(std::cout, verifier, m);
+    }
 
     tree_options tree_options { .show_file_size = false, .show_directory_size = false};
     auto terminal_size = termcontrol::get_terminal_size();
@@ -154,7 +101,8 @@ void run_with_progress(dottorrent::storage_verifier& verifier, const dottorrent:
             terminal_size.cols,
             tree_options);
 
-    std::cout << verify_file_tree;
+    fmt::print(std::cout, "\nFiles:\n");
+    fmt::print(std::cout, verify_file_tree);
 }
 
 

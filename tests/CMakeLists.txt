@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 add_executable(torrenttools-tests)
 
+message(STATUS ${CMAKE_MODULE_PATH})
 include(Catch)
 
 target_include_directories(torrenttools-tests PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

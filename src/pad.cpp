@@ -3,6 +3,7 @@
 
 #include "pad.hpp"
 #include "argument_parsers.hpp"
+#include "common.hpp"
 
 namespace dt = dottorrent;
 
@@ -26,7 +27,7 @@ void configure_pad_app(CLI::App* app, pad_app_options& options)
        ->required();
 }
 
-void run_pad_app(const pad_app_options& options)
+void run_pad_app(const main_app_options& main_options, const pad_app_options& options)
 {
     auto m = dt::load_metafile(options.metafile);
 

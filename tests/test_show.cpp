@@ -137,30 +137,31 @@ TEST_CASE("test show announce")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
-
+    main_app_options main_options;
 
     SECTION("ubuntu torrent") {
         show_app_options options { .metafile = ubuntu_torrent };
 
         SECTION("flat") {
             options.announce_flatten = true;
-            run_show_announce_subapp(options);
+            run_show_announce_subapp(main_options, options);
             CHECK(buffer.str() == "https://torrent.ubuntu.com/announce\n"
                                   "https://ipv6.torrent.ubuntu.com/announce\n");
         }
 
         SECTION("per tier") {
-            run_show_announce_subapp(options);
+            run_show_announce_subapp(main_options, options);
             CHECK(buffer.str() == "https://torrent.ubuntu.com/announce\n"
                                   "https://ipv6.torrent.ubuntu.com/announce\n");
         }
     }
     SECTION("CAMELYON torrent") {
+
         show_app_options options { .metafile = camelyon_torrent };
 
         SECTION("flat") {
             options.announce_flatten = true;
-            run_show_announce_subapp(options);
+            run_show_announce_subapp(main_options, options);
             CHECK(buffer.str() ==   "https://academictorrents.com/announce.php\n"
                                     "udp://tracker.coppersurfer.tk:6969\n"
                                     "udp://tracker.opentrackr.org:1337/announce\n"
@@ -175,21 +176,22 @@ TEST_CASE("test show protocol")
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
 
+    main_app_options main_options {};
     show_app_options options {};
 
     SECTION("hybrid") {
         options.metafile = bittorrent_hybrid;
-        run_show_protocol_subapp(options);
+        run_show_protocol_subapp(main_options, options);
         CHECK(buffer.str() == "hybrid\n");
     }
     SECTION("v2") {
         options.metafile = bittorrent_v2;
-        run_show_protocol_subapp(options);
+        run_show_protocol_subapp(main_options, options);
         CHECK(buffer.str() == "2\n");
     }
     SECTION("v1") {
         options.metafile = fedora_torrent;
-        run_show_protocol_subapp(options);
+        run_show_protocol_subapp(main_options, options);
         CHECK(buffer.str() == "1\n");
     }
 }
@@ -199,49 +201,51 @@ TEST_CASE("test show infohash")
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
 
+    main_app_options main_options {};
     show_app_options options {};
+
 
     SECTION("hybrid") {
         options.metafile = bittorrent_hybrid;
 
         SECTION("protocol - hybrid") {
         options.infohash_protocol = dt::protocol::hybrid;
-        run_show_infohash_subapp(options);
+        run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "8c9a2f583949c757c32e085413b581067eed47d0\n"
                                   "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb\n");
         }
         SECTION("protocol - v1") {
             options.infohash_protocol = dt::protocol::v1;
-            run_show_infohash_subapp(options);
+            run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "8c9a2f583949c757c32e085413b581067eed47d0\n");
         }
         SECTION("protocol - v2") {
             options.infohash_protocol = dt::protocol::v2;
-            run_show_infohash_subapp(options);
+            run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb\n");
         }
         SECTION("protocol - v2 truncated") {
             options.infohash_truncate = true;
             options.infohash_protocol = dt::protocol::v2;
-            run_show_infohash_subapp(options);
+            run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "d8dd32ac93357c368556af3ac1d95c9d76bd0dff\n");
         }
     }
     SECTION("v1") {
         options.metafile = fedora_torrent;
-        run_show_infohash_subapp(options);
+        run_show_infohash_subapp(main_options, options);
         CHECK(buffer.str() == "aec2e48d6ece459f8358aad4889dc83046746b0b\n");
     }
     SECTION("v2") {
         options.metafile = bittorrent_v2;
 
         SECTION("full") {
-            run_show_infohash_subapp(options);
+            run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e\n");
         }
         SECTION("truncated") {
             options.infohash_truncate = true;
-            run_show_infohash_subapp(options);
+            run_show_infohash_subapp(main_options, options);
             CHECK(buffer.str() == "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa\n");
         }
     }
@@ -252,18 +256,19 @@ TEST_CASE("test show piece-size")
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
 
+    main_app_options main_options {};
     show_app_options options{
         .metafile = fedora_torrent
     };
 
     SECTION("in bytes") {
-        run_show_piece_size_subapp(options);
+        run_show_piece_size_subapp(main_options, options);
         CHECK(buffer.str() == "262144\n");
     }
 
     SECTION("in human readable format") {
         options.piece_size_human_readable = true;
-        run_show_piece_size_subapp(options);
+        run_show_piece_size_subapp(main_options, options);
         CHECK(buffer.str() == "256 KiB\n");
     }
 }
@@ -274,18 +279,19 @@ TEST_CASE("test show size")
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
 
+    main_app_options main_options {};
     show_app_options options{
             .metafile = fedora_torrent
     };
 
     SECTION("in bytes") {
-        run_show_file_size_subapp(options);
+        run_show_file_size_subapp(main_options, options);
         CHECK(buffer.str() == "1934755007\n");
     }
 
     SECTION("in human readable format") {
         options.file_size_human_readable = true;
-        run_show_file_size_subapp(options);
+        run_show_file_size_subapp(main_options, options);
         CHECK(buffer.str() == "1.80 GiB\n");
     }
 }
@@ -295,8 +301,9 @@ TEST_CASE("test show created-by")
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
 
+    main_app_options main_options {};
     show_app_options options{ .metafile = camelyon_torrent };
-    run_show_created_by_subapp(options);
+    run_show_created_by_subapp(main_options, options);
     CHECK(buffer.str() == "Transmission/2.92 (14714)\n");
 }
 
@@ -305,16 +312,18 @@ TEST_CASE("test show creation date")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+
+    main_app_options main_options {};
     show_app_options options{ .metafile = fedora_torrent };
 
     SECTION("POSIX timestamp") {
-        run_show_creation_date_subapp(options);
+        run_show_creation_date_subapp(main_options, options);
         CHECK(buffer.str() == "1556547852\n");
     }
 
     SECTION("ISO 8006 timestamp") {
         options.creation_date_iso_format = true;
-        run_show_creation_date_subapp(options);
+        run_show_creation_date_subapp(main_options, options);
         CHECK(buffer.str() == "2019-04-29T14:24:12Z\n");
     }
 }
@@ -323,17 +332,19 @@ TEST_CASE("test show private")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+
+    main_app_options main_options {};
     show_app_options options {};
 
     SECTION("false") {
         options.metafile = fedora_torrent;
-        run_show_private_subapp(options);
+        run_show_private_subapp(main_options, options);
         CHECK(buffer.str() == "0\n");
     }
 
     SECTION("true") {
         options.metafile = private_torrent;
-        run_show_private_subapp(options);
+        run_show_private_subapp(main_options, options);
         CHECK(buffer.str() == "1\n");
     }
 }
@@ -342,9 +353,10 @@ TEST_CASE("test show name")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
-    show_app_options options {};
-    options.metafile = fedora_torrent;
-    run_show_name_subapp(options);
+    main_app_options main_options {};
+    show_app_options options { .metafile = fedora_torrent };
+
+    run_show_name_subapp(main_options, options);
     CHECK(buffer.str() == "Fedora-Workstation-Live-x86_64-30\n");
 }
 
@@ -352,9 +364,10 @@ TEST_CASE("test show comment")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
     show_app_options options {};
     options.metafile = camelyon_torrent;
-    run_show_comment_subapp(options);
+    run_show_comment_subapp(main_options, options);
     CHECK(buffer.str() == "\n");
 }
 
@@ -362,9 +375,10 @@ TEST_CASE("test show source")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
     show_app_options options {};
     options.metafile = private_torrent;
-    run_show_source_subapp(options);
+    run_show_source_subapp(main_options, options);
     CHECK(buffer.str() == "test\n");
 }
 
@@ -373,9 +387,11 @@ TEST_CASE("test show query")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
     show_app_options options {};
+
     options.metafile = private_torrent;
-    run_show_source_subapp(options);
+    run_show_source_subapp(main_options, options);
     CHECK(buffer.str() == "test\n");
 }
 
@@ -383,6 +399,7 @@ TEST_CASE("test show files")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
     show_app_options options {
         .metafile = bittorrent_hybrid
     };
@@ -400,7 +417,7 @@ tbl-goa.avi
 tbl-tint.mpg
 )");
 
-        run_show_files_subapp(options);
+        run_show_files_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }
 
@@ -426,7 +443,7 @@ tbl-goa.avi
 tbl-tint.mpg
 )");
 
-        run_show_files_subapp(options);
+        run_show_files_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }
 
@@ -443,7 +460,7 @@ R"(/path/to/torrent/data/Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
 /path/to/torrent/data/tbl-goa.avi
 /path/to/torrent/data/tbl-tint.mpg
 )");
-        run_show_files_subapp(options);
+        run_show_files_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }
 }

@@ -188,7 +188,7 @@ void print_simple_indicator_v1(std::ostream& os, const dottorrent::file_storage&
     auto filename = entry.path().filename().string();
     double progress;
 
-    fmt::print(os, "({}/{}) {} ...)\n", file_idx+1, s.file_count(), filename);
+    fmt::print(os, "({}/{}) {} ...\n", file_idx+1, s.file_count(), filename);
 }
 
 
@@ -205,7 +205,6 @@ void print_simple_indicator_v2(std::ostream& os, const dottorrent::file_storage&
     }
     // file index
     auto filename = entry.path().filename().string();
-    double progress;
 
     fmt::print(os, "({}/{}) {} ...\n", regular_file_idx+1, regular_file_count, filename);
 }

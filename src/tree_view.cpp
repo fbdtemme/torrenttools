@@ -1,11 +1,13 @@
 #include "tree_view.hpp"
 
-tree_printer::tree_printer(const dottorrent::file_storage& s, std::string_view prefix, tree_options options)
-        : storage_(s)
+tree_printer::tree_printer(const dottorrent::metafile& m, std::string_view prefix, tree_options options)
+        : metafile_(m)
         , prefix_(prefix)
-        , index_(s, options.list_padding_files)
+        , index_(m.storage(), options.list_padding_files)
         , options_(options)
-{ }
+        , ls_colors_()
+{
+}
 
 const std::vector<std::pair<std::string, const dt::file_entry*>> tree_printer::entries() const noexcept {
     return output_;
@@ -20,7 +22,16 @@ std::string tree_printer::result() const {
     return out;
 }
 
-void tree_printer::walk(const fs::path& root, std::size_t recursion_depth) {
+void tree_printer::walk(const fs::path& root)
+{
+    // Print the name of the torrent as root directory
+    if (options_.use_color) {
+        auto style = ls_colors_.directory_style();
+        output_.emplace_back(tc::format(style, "{}", metafile_.name()), nullptr);
+    } else {
+        output_.emplace_back(fmt::format("{}", metafile_.name()), nullptr);
+    }
+
     auto elements = index_.list_directory_content(root);
 
     std::vector<stack_frame> stack{};
@@ -61,7 +72,8 @@ void tree_printer::walk(const fs::path& root, std::size_t recursion_depth) {
     }
 }
 
-bool tree_printer::print_entry(const fs::path& path, const dt::file_entry* entry_ptr, std::string_view node,
+bool tree_printer::print_entry(
+        const fs::path& path, const dt::file_entry* entry_ptr, std::string_view node,
         const fs::path& root) {
     std::string formatted_name {};
     std::string line {};
@@ -71,7 +83,8 @@ bool tree_printer::print_entry(const fs::path& path, const dt::file_entry* entry
         is_directory =  false;
 
         if (options_.use_color) {
-            formatted_name = tc::format(file_color, "{}", path.string());
+            auto style = ls_colors_.file_style(*entry_ptr);
+            formatted_name = tc::format(style, "{}", path.string());
         } else {
             formatted_name = fmt::format("{}", path.string());
         }
@@ -89,7 +102,8 @@ bool tree_printer::print_entry(const fs::path& path, const dt::file_entry* entry
         auto dir_size = index_.get_directory_size(root / path);
 
         if (options_.use_color) {
-            formatted_name = tc::format(file_color, "{}", path.string());
+            auto style = ls_colors_.directory_style();
+            formatted_name = tc::format(style, "{}", path.string());
         } else {
             formatted_name = fmt::format("{}", path.string());
         }
@@ -113,13 +127,19 @@ std::string format_file_tree(const dottorrent::metafile& m, std::string_view pre
     const auto& storage = m.storage();
 
     if (storage.file_mode() == dottorrent::file_mode::multi) {
-        fmt::format_to(out, "  {}\n", m.name());
-        auto printer = tree_printer(storage, prefix, options);
+        auto printer = tree_printer(m, prefix, options);
         printer.walk();
         fmt::format_to(out, printer.result());
     }
     else  {
-        fmt::format_to(out, "  {}\n", m.name());
+        // Print the name of the torrent as root directory
+        if (options.use_color) {
+            ls_colors ls_colors{};
+            auto style = ls_colors.directory_style();
+            tc::format_to(out, style, "  {}\n", m.name());
+        } else {
+            fmt::format_to(out, "  {}\n", m.name());
+        }
     }
     return result;
 }
@@ -144,10 +164,10 @@ std::string format_verify_file_tree(
     const auto& storage = m.storage();
 
     std::vector<entry_type> entries {};
-    entries.emplace_back(fmt::format("{}{}", prefix, m.name()), nullptr);
+//    entries.emplace_back(fmt::format("{}{}", prefix, m.name()), nullptr);
 
     if (storage.file_mode() == dottorrent::file_mode::multi) {
-        auto printer = tree_printer(m.storage(), prefix, options);
+        auto printer = tree_printer(m, prefix, options);
         printer.walk();
         rng::copy(printer.entries(), std::back_inserter(entries));
     }

@@ -11,7 +11,9 @@ html_theme = "furo"
 html_logo  = "@CMAKE_SOURCE_DIR@/resources/images/torrenttools-icon.svg"
 html_title = "torrenttools - @CMAKE_PROJECT_VERSION@"
 
+
 project = "@PROJECT_NAME@"
 author =  "@PROJECT_AUTHOR@"
 version = "@CMAKE_PROJECT_VERSION@"
 release = "@CMAKE_PROJECT_VERSION@"
+copyright = "© @PROJECT_AUTHOR@"

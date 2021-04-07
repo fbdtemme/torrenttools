@@ -7,7 +7,7 @@ cmake_policy(SET CMP0077 NEW)
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.3.2
+        VERSION 0.4.0
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
@@ -43,7 +43,7 @@ option(TORRENTTOOLS_INSTALL
         "Generate an install target" ON)
 
 #add_subdirectory(../cliprogress cliprogress)
-#add_subdirectory(../dottorrent dottorrent)
+add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
 
@@ -52,8 +52,10 @@ include(external/external.cmake)
 add_executable(torrenttools
         src/app_data.cpp
         src/argument_parsers.cpp
+        src/common.cpp
         src/config_parser.cpp
         src/create.cpp
+        src/main_app.cpp
         src/edit.cpp
         src/escape_binary_fields.cpp
         src/formatters.cpp

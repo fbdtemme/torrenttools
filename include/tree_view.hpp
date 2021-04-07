@@ -20,6 +20,7 @@
 
 #include "natural_sort.hpp"
 #include "formatters.hpp"
+#include "ls_colors.hpp"
 
 
 namespace fs = std::filesystem;
@@ -40,7 +41,6 @@ struct tree_options
     bool show_file_size = true;
     bool show_directory_size = true;
     bool use_color = true;
-    bool use_native_style = true;
     bool list_padding_files = false;
     std::size_t max_entry_size = 100;
 };
@@ -56,13 +56,6 @@ inline bool ellipsize(std::string& line, std::size_t max_size = 100)
     }
     return needs_ellipsis;
 }
-
-
-struct tree_style
-{
-    tc::text_style file = {};
-    tc::text_style directory = fg(tc::terminal_color::red) | tc::emphasis::bold;
-};
 
 
 struct filetree_index
@@ -161,6 +154,7 @@ private:
 
         for (std::size_t meta_index = 0; meta_index < indices_.size(); ++meta_index) {
             auto index = indices_[meta_index];
+            Ensures(index < storage.size());
             const auto& f = storage[index];
             const auto& path = f.path();
 
@@ -227,23 +221,24 @@ class tree_printer
     };
 
 public:
-    tree_printer(const dottorrent::file_storage& s, std::string_view prefix = ""sv, tree_options options = {});;
+    explicit tree_printer(const dottorrent::metafile& m, std::string_view prefix = ""sv, tree_options options = {});
 
     const std::vector<std::pair<std::string, const dt::file_entry*>> entries() const noexcept;
 
     [[nodiscard]]
     std::string result() const;
 
-    void walk(const fs::path& root = "", std::size_t recursion_depth = 0);
+    void walk(const fs::path& root = "");
 
     bool print_entry(const fs::path& path, const dt::file_entry* entry_ptr, std::string_view node, const fs::path& root);
 
 private:
     std::vector<std::pair<std::string, const dt::file_entry*>> output_;
-    const dottorrent::file_storage& storage_;
+    const dottorrent::metafile& metafile_;
     std::string prefix_;
     filetree_index index_;
     tree_options options_;
+    ls_colors ls_colors_;
 };
 
 

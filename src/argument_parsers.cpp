@@ -196,6 +196,25 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v, bool
     }
 }
 
+std::filesystem::path config_path_transformer(const std::vector<std::string>& v, bool check_exists)
+{
+    if (v.size() != 1) {
+        throw std::invalid_argument("Multiple targets given.");
+    }
+
+    auto f = std::filesystem::path(v.front());
+    if (check_exists && !std::filesystem::exists(f)) {
+        throw std::invalid_argument(fmt::format("Path does not exist: {}", f.string()));
+    }
+
+    if (check_exists) {
+        return std::filesystem::canonical(f);
+    }
+    else {
+        return std::filesystem::weakly_canonical(f);
+    }
+}
+
 
 /// Parse the name of a target metafile.
 std::filesystem::path metafile_transformer(const std::vector<std::string>& v)

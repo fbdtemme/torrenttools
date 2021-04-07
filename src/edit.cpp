@@ -6,7 +6,7 @@
 
 #include "argument_parsers.hpp"
 #include "cli_helpers.hpp"
-#include "create.hpp"
+#include "common.hpp"
 #include "edit.hpp"
 
 namespace dt = dottorrent;
@@ -17,12 +17,20 @@ namespace rng = std::ranges;
 
 void configure_edit_app(CLI::App* app, edit_app_options& options)
 {
+    CLI::callback_t  metafile_parser = [&](const CLI::results_t& v) -> bool {
+        options.metafile = metafile_transformer(v);
+        return true;
+    };
     CLI::callback_t list_mode_parser =[&](const CLI::results_t& v) -> bool {
         options.list_mode = parse_list_edit_mode("--list-mode", v);
         return true;
     };
     CLI::callback_t announce_parser =[&](const CLI::results_t& v) -> bool {
         options.announce_list = announce_transformer(v);
+        return true;
+    };
+    CLI::callback_t announce_group_parser =[&](const CLI::results_t& v) -> bool {
+        options.announce_group_list = v;
         return true;
     };
     CLI::callback_t dht_node_parser =[&](const CLI::results_t& v) -> bool {
@@ -45,7 +53,7 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
         return true;
     };
 
-    app->add_option("target", options.metafile, "Target bittorrent metafile.")
+    app->add_option("target", metafile_parser, "Target bittorrent metafile.")
                    ->type_name("<path>")
                    ->required();
 
@@ -71,7 +79,14 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
                "Multiple trackers will be added in seperate tiers by default.\n"
                "Use square brackets to groups urls in a single tier:\n"
                "eg. \"url1 [url1 url2]\"")
-       ->type_name("<url>... ")
+       ->type_name("<url>...")
+       ->expected(0, max_size);
+
+    app->add_option("-g,--announce-group", announce_group_parser,
+               "Add the announce-urls defined from an announce group specified in the configuration file.\n"
+               "Multiple groups can be passed."
+               " eg. \"--announce-group group1 group2\"")
+       ->type_name("<name>...")
        ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
@@ -141,14 +156,13 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
 }
 
 
-void run_edit_app(const edit_app_options& options)
+void run_edit_app(const main_app_options& main_options, const edit_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
 
-    update_announces(m, options);
+    update_announces(m, main_options, options);
     update_web_seeds(m, options);
     update_dht_nodes(m, options);
 
@@ -195,28 +209,74 @@ void run_edit_app(const edit_app_options& options)
 }
 
 
-void update_announces(dt::metafile& m, const edit_app_options& options)
+void update_announces(dt::metafile& m, const main_app_options& main_options, const edit_app_options& options)
 {
     if (!options.announce_list.has_value()) {
         return;
     }
-    auto announce_list = std::move(*options.announce_list);
+
+    auto [config, tracker_db] = load_config_and_tracker_db(main_options);
+    auto announce_list = *options.announce_list;
 
     switch(options.list_mode) {
     case tt::list_edit_mode::replace : {
         m.clear_trackers();
-        set_trackers(m, announce_list);
+        set_trackers(m, announce_list, tracker_db, config);
         return;
     }
     case tt::list_edit_mode::append: {
-        set_trackers(m, announce_list);
+        set_trackers(m, announce_list, tracker_db, config);
         return;
     }
     case tt::list_edit_mode::prepend: {
         auto announces = dt::as_nested_vector(m.trackers());
         rng::copy(announces, std::back_inserter(announce_list));
         m.clear_trackers();
-        set_trackers(m, announce_list);
+        set_trackers(m, announce_list, tracker_db, config);
+        return;
+    }
+    }
+}
+
+void update_announce_group(dt::metafile& m, const main_app_options& main_options, const edit_app_options& options)
+{
+    if (!options.announce_group_list.has_value()) {
+        return;
+    }
+
+    auto [config, tracker_db] = load_config_and_tracker_db(main_options);
+    const auto& announce_group_list = *options.announce_group_list;
+
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_trackers();
+        set_tracker_group(m, announce_group_list, tracker_db, config);
+        return;
+    }
+    case tt::list_edit_mode::append: {
+        auto announces = dt::as_nested_vector(m.trackers());
+
+        for (const auto& group_name : announce_group_list) {
+            const auto& group_announces = config->get_announce_group(group_name);
+            rng::transform(group_announces, std::back_inserter(announces),
+                          [](const auto& s) { return std::vector<std::string>{s}; });
+
+            set_trackers(m, announces, tracker_db, config);
+        }
+        return;
+    }
+    case tt::list_edit_mode::prepend: {
+        auto announces = std::vector<std::vector<std::string>> {};
+
+        for (const auto& group_name : announce_group_list) {
+            const auto& group_announces = config->get_announce_group(group_name);
+            rng::transform(group_announces, std::back_inserter(announces),
+                           [](const auto& s) { return std::vector<std::string>{s}; });
+        }
+        rng::copy(dt::as_nested_vector(m.trackers()), std::back_inserter(announces));
+        m.clear_trackers();
+        set_trackers(m, announces, tracker_db, config);
         return;
     }
     }
@@ -227,7 +287,7 @@ void update_web_seeds(dt::metafile& m, const edit_app_options& options)
     if (!options.web_seeds.has_value()) {
         return;
     }
-    auto web_seeds = std::move(*options.web_seeds);
+    auto web_seeds = *options.web_seeds;
     const auto add_web_seeds = [] (dt::metafile& m, const std::vector<std::string> seeds) {
         for (const auto& url : seeds) { m.add_web_seed(url); }
     };
@@ -257,7 +317,7 @@ void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
     if (!options.dht_nodes.has_value()) {
         return;
     }
-    auto dht_nodes = std::move(*options.dht_nodes);
+    auto dht_nodes = *options.dht_nodes;
     const auto add_dht_nodes = [] (dt::metafile& m, const std::vector<dt::dht_node> nodes) {
         for (const auto& n : nodes) { m.add_dht_node(n); }
     };

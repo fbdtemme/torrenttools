@@ -54,10 +54,11 @@ TEST_CASE("test pad app")
     temporary_directory tmp_dir {};
     fs::path target = fs::path(tmp_dir) / "test-pad";
     pad_app_options options {};
+    main_app_options main_options;
 
     options.metafile = bittorrent_hybrid;
     options.target = target;
-    run_pad_app(options);
+    run_pad_app(main_options, options);
 
     // Test all padding files
     auto m = dt::load_metafile(options.metafile);

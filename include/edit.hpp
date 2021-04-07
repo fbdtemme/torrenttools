@@ -5,8 +5,9 @@
 #include <dottorrent/dht_node.hpp>
 #include <dottorrent/metafile.hpp>
 
-
 #include "list_edit_mode.hpp"
+#include "common.hpp"
+
 
 // Forward declarations
 namespace CLI { class App; }
@@ -20,6 +21,7 @@ struct edit_app_options
     std::optional<std::filesystem::path> destination;
     tt::list_edit_mode list_mode = tt::list_edit_mode::replace;
     std::optional<std::vector<std::vector<std::string>>> announce_list;
+    std::optional<std::vector<std::string>> announce_group_list;
     std::optional<std::vector<dottorrent::dht_node>> dht_nodes;
     std::optional<std::vector<std::string>> web_seeds;
     std::optional<std::string> comment;
@@ -35,9 +37,11 @@ struct edit_app_options
 
 void configure_edit_app(CLI::App* app, edit_app_options& options);
 
-void run_edit_app(const edit_app_options& options);
+void run_edit_app(const main_app_options& main_options, const edit_app_options& options);
 
-void update_announces(dt::metafile& m, const edit_app_options& options);
+void update_announces(dt::metafile& m, const main_app_options& main_options, const edit_app_options& options);
+
+void update_announce_group(dt::metafile& m, const main_app_options& main_options, const edit_app_options& options);
 
 void update_web_seeds(dt::metafile& m, const edit_app_options& options);
 

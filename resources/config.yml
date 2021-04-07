@@ -5,12 +5,20 @@
 
 tracker-parameters:
   AlphaRatio:
-    pid: 01qwqwdlc922_sample_pid_d93fqd6fji9
+    pid: example_pid
   BroadcastTheNet:
-    pid: 01qwqwdlc922_sample_pid_d93fqd6fji9
+    pid: example_pid
   PassThePopcorn:
-    pid: 01qwqwdlc922_sample_pid_d93fqd6fji9
+    pid: example_pid
   TorrentLeech:
-    pid: 01qwqwdlc922_sample_pid_d93fqd6fji9
+    pid: example_pid
   UHDBits:
-    pid: 01qwqwdlc922_sample_pid_d93fqd6fji9
+    pid: example_pid
+
+tracker-groups:
+  example-group1:
+    - AlphaRatio
+    - TorrentLeech
+  example-group2:
+    - udp://tracker.opentrackr.org:1337/announce
+    - udp://www.torrent.eu.org:451/announce

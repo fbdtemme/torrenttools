@@ -68,6 +68,24 @@ TEST_CASE("test create app argument parsing")
         }
     }
 
+    SECTION("announce group") {
+        std::string group1 = "example-group1";
+        std::string group2 = "example-group2";
+
+        SECTION("single group") {
+            auto cmd = fmt::format("create {} --announce-group {}", file, group2);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.announce_group_list.size() == 1);
+        }
+
+        SECTION("multiple groups") {
+            auto cmd = fmt::format("create {} --announce-group {} {}", file, group1, group2);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.announce_group_list.size() == 2);
+        }
+    }
+
+
     SECTION("test dht nodes")
     {
         std::string node1 = "192.169.0.100:6464";
@@ -466,19 +484,47 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.destination == tmp_dir.path() / "");
         }
     }
+    SECTION("protocol") {
+        SECTION("v1") {
+            auto cmd = fmt::format("create {} --protocol {}", file, "v1");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.protocol_version == dt::protocol::v1);
+        }
+        SECTION("v2") {
+            auto cmd = fmt::format("create {} --protocol {}", file, "v2");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.protocol_version == dt::protocol::v2);
+        }
+        SECTION("hybrid") {
+            auto cmd = fmt::format("create {} --protocol {}", file, "hybrid");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.protocol_version == dt::protocol::hybrid);
+        }
+        SECTION("1") {
+            auto cmd = fmt::format("create {} --protocol {}", file, "1");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.protocol_version == dt::protocol::v1);
+        }
+        SECTION("2") {
+            auto cmd = fmt::format("create {} --protocol {}", file, "2");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.protocol_version == dt::protocol::v2);
+        }
+    }
 }
 
 
 TEST_CASE("test create app: target")
 {
     temporary_directory tmp_dir {};
+    main_app_options main_options {};
 
     SECTION("target is file") {
         fs::path target = camelyon_torrent;
         fs::path output = fs::path(tmp_dir) / "test-file-target.torrent";
 
         create_app_options options { .target = target, .destination = output, };
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         const auto& storage = m.storage();
         CHECK(storage.size() == 1);
@@ -489,7 +535,7 @@ TEST_CASE("test create app: target")
         fs::path output = fs::path(tmp_dir) / "test-directory-target.torrent";
 
         create_app_options options { .target = target, .destination = output, };
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         const auto& storage = m.storage();
         CHECK(m.name() == target.filename());
@@ -501,6 +547,7 @@ TEST_CASE("test create app: announce-url")
     temporary_directory tmp_dir {};
     const auto* db = torrenttools::load_tracker_database();
     const auto* config = torrenttools::load_config();
+    main_app_options main_options{};
 
     fs::path target = fs::path(TEST_RESOURCES_DIR);
 
@@ -514,7 +561,7 @@ TEST_CASE("test create app: announce-url")
 
         const auto& db_entry = db->at("hdb");
         options.announce_list = {{"hdb"}};
-        run_create_app(options);
+        run_create_app(main_options, options);
 
         REQUIRE(fs::exists(expected_destination));
         auto m = dt::load_metafile(expected_destination);
@@ -525,9 +572,57 @@ TEST_CASE("test create app: announce-url")
     }
 }
 
+TEST_CASE("test create app: announce-group")
+{
+    temporary_directory tmp_dir {};
+    const auto* db = torrenttools::load_tracker_database();
+    const auto* config = torrenttools::load_config();
+    main_app_options main_options{};
+
+    fs::path target = fs::path(TEST_RESOURCES_DIR);
+
+    create_app_options options {
+            .target = target,
+            .destination = tmp_dir.path()
+    };
+
+    SECTION("announce urls") {
+        fs::path expected_destination = tmp_dir.path() / fmt::format("{}.torrent", target.filename().string());
+
+        options.announce_group_list = {{"example-group2"}};
+        run_create_app(main_options, options);
+
+        REQUIRE(fs::exists(expected_destination));
+        auto m = dt::load_metafile(expected_destination);
+
+        CHECK(m.is_private() == false);
+
+        CHECK(m.trackers().at(0).url == "udp://tracker.opentrackr.org:1337/announce");
+        CHECK(m.trackers().at(1).url == "udp://www.torrent.eu.org:451/announce");
+    }
+
+    SECTION("named trackers") {
+        fs::path expected_destination = tmp_dir.path() / fmt::format("{}.torrent", target.filename().string());
+
+        options.announce_group_list = {{"example-group1"}};
+        run_create_app(main_options, options);
+
+        REQUIRE(fs::exists(expected_destination));
+        auto m = dt::load_metafile(expected_destination);
+
+        auto ar_url = db->at("AlphaRatio").substitute_parameters(*config);
+        auto tl_url = db->at("TorrentLeech").substitute_parameters(*config);
+
+        CHECK(m.trackers().at(0).url == ar_url);
+        CHECK(m.trackers().at(1).url == tl_url);
+        CHECK(m.is_private());
+    }
+}
+
 TEST_CASE("test create app: source tag")
 {
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-create-source.torrent";
 
@@ -536,16 +631,57 @@ TEST_CASE("test create app: source tag")
         .destination = output,
         .source = "test"
     };
-    run_create_app(create_options);
+    run_create_app(main_options, create_options);
     auto m = dt::load_metafile(output);
 
     CHECK(m.source() == create_options.source);
+}
+
+TEST_CASE("test create app: web-seeds")
+{
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-create-webseed.torrent";
+
+    create_app_options create_options {
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+            .web_seeds = {"https://test1.com", "https://test2.com"}
+    };
+    run_create_app(main_options, create_options);
+    auto m = dt::load_metafile(output);
+
+    CHECK(m.web_seeds().size() == 2);
+    CHECK(m.web_seeds().at(0) == "https://test1.com");
+    CHECK(m.web_seeds().at(1) == "https://test2.com");
+}
+
+TEST_CASE("test create app: dht-nodes")
+{
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-create-webseed.torrent";
+
+    create_app_options create_options {
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+            .dht_nodes = {{"127.0.0.1", 6969}, {"https://my-dht-node.de", 8888}}
+    };
+    run_create_app(main_options, create_options);
+    auto m = dt::load_metafile(output);
+
+    CHECK(m.dht_nodes().size() == 2);
+    CHECK(m.dht_nodes().at(0) == dt::dht_node{"127.0.0.1", 6969});
+    CHECK(m.dht_nodes().at(1) == dt::dht_node{"https://my-dht-node.de", 8888});
 }
 
 
 TEST_CASE("test create app: private flag")
 {
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-create-private.torrent";
 
@@ -557,14 +693,14 @@ TEST_CASE("test create app: private flag")
     SECTION("true") {
         auto options = create_options;
         options.is_private = true;
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.is_private() == options.is_private);
     }
     SECTION("false") {
         auto options = create_options;
         options.is_private = true;
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.is_private() == options.is_private);
     }
@@ -575,6 +711,8 @@ TEST_CASE("test create app: creation-date")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
 
     fs::path output = fs::path(tmp_dir) / "test-edit-creation-date.torrent";
     create_app_options create_options {
@@ -585,14 +723,14 @@ TEST_CASE("test create app: creation-date")
     SECTION("--no-creation-date") {
         auto options = create_options;
         options.set_creation_date = false;
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() == std::chrono::seconds(0));
     }
     SECTION("overriding creation date") {
         auto options = create_options;
         options.creation_date = std::chrono::system_clock::time_point(std::chrono::seconds(1611339706));
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.creation_date() == std::chrono::seconds(1611339706));
     }
@@ -602,6 +740,8 @@ TEST_CASE("test create app: created-by")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
 
     fs::path output = fs::path(tmp_dir) / "test-create-created-by.torrent";
     create_app_options create_options {
@@ -612,14 +752,14 @@ TEST_CASE("test create app: created-by")
     SECTION("--no-created-by") {
         auto options = create_options;
         options.set_created_by = false;
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by().empty());
     }
     SECTION("overriding created-by") {
         auto options = create_options;
         options.created_by = "me";
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by() == options.created_by);
     }
@@ -629,6 +769,7 @@ TEST_CASE("test create app: comment")
 {
     std::stringstream buffer {};
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-create-comment.torrent";
     create_app_options create_options {
@@ -639,14 +780,14 @@ TEST_CASE("test create app: comment")
     SECTION("no comment") {
         auto options = create_options;
         options.comment = std::nullopt;
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment().empty());
     }
     SECTION("comment") {
         auto options = create_options;
         options.comment = "comment";
-        run_create_app(options);
+        run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.comment() == options.comment);
     }
@@ -657,6 +798,7 @@ TEST_CASE("test create app: io-block-size")
 {
     using namespace dottorrent::literals;
     temporary_directory tmp_dir {};
+    main_app_options main_options{};
 
     fs::path output = fs::path(tmp_dir) / "test-io-block-size.torrent";
     create_app_options options {
@@ -667,6 +809,41 @@ TEST_CASE("test create app: io-block-size")
     SECTION("io-block-size smaller then piece-size") {
         options.piece_size = 2_MiB;
         options.io_block_size = 1_MiB;
-        CHECK_THROWS(run_create_app(options));
+        CHECK_THROWS(run_create_app(main_options, options));
+    }
+}
+
+TEST_CASE("test create app: protocol")
+{
+    using namespace dottorrent::literals;
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    create_app_options options {
+            .target = fs::path(TEST_DIR) / "resources",
+    };
+
+    SECTION("v1") {
+        options.destination = fs::path(tmp_dir) / "test-protocol-v1.torrent";
+        options.protocol_version = dt::protocol::v1;
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.storage().protocol() == dt::protocol::v1);
+    }
+
+    SECTION("v2") {
+        options.destination = fs::path(tmp_dir) / "test-protocol-v2.torrent";
+        options.protocol_version = dt::protocol::v2;
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.storage().protocol() == dt::protocol::v2);
+    }
+
+    SECTION("hybrid") {
+        options.destination = fs::path(tmp_dir) / "test-protocol-hybrid.torrent";
+        options.protocol_version = dt::protocol::hybrid;
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.storage().protocol() == dt::protocol::hybrid);
     }
 }
