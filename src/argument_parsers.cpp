@@ -217,13 +217,14 @@ std::filesystem::path config_path_transformer(const std::vector<std::string>& v,
 
 
 /// Parse the name of a target metafile.
-std::filesystem::path metafile_transformer(const std::vector<std::string>& v)
+std::filesystem::path metafile_target_transformer(const std::vector<std::string>& v, bool allow_read_from_stdin)
 {
     if (v.size() != 1) {
         throw std::invalid_argument("Multiple targets given.");
     }
-
-    if (v.front() == "-") {
+    auto s = v.at(0);
+    trim(s);
+    if (allow_read_from_stdin && s == "-") {
         return "-";
     }
 

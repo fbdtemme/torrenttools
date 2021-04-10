@@ -18,7 +18,7 @@ namespace rng = std::ranges;
 void configure_edit_app(CLI::App* app, edit_app_options& options)
 {
     CLI::callback_t  metafile_parser = [&](const CLI::results_t& v) -> bool {
-        options.metafile = metafile_transformer(v);
+        options.metafile = metafile_target_transformer(v);
         return true;
     };
     CLI::callback_t list_mode_parser =[&](const CLI::results_t& v) -> bool {

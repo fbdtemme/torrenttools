@@ -78,7 +78,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
 void configure_show_common(CLI::App* subapp, show_app_options& options)
 {
     CLI::callback_t metafile_parser = [&](const CLI::results_t& v) -> bool {
-        options.metafile = metafile_transformer(v);
+        options.metafile = metafile_target_transformer(v);
         return true;
     };
 
