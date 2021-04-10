@@ -2,26 +2,31 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.4.0] - UNRELEASED
+## [v0.4.0] - 2021-04-10
 ### Added
 * Add named tracker groups.
-* Add `--config` and `--trackers-config` to pass configuration files located at custom locations.
-* Add colored file tree using the same colors as ls command.
+* Add `--config` and `--trackers-config` to pass custom configuration files locations.
+* Add colored file tree using LS_COLORS environment variable.
+* Add docker container.
+* Add limited wolfssl support.
 
 ### Changed
-* Fix progressbar for edit command.
+* Fix progressbar for verify command.
+* Fix hybrid torrent issues for both v1 and v2 verification.
 * Fix infinite loop on unrecoverable IO error during hashing.
-* Fix threads options ignored when during verifying.
+* Fix threads options ignored when verifying.
+* Fix progress reporting when there are no files inside the torrent.
+* Fix issue with worker threads exiting due to uninitialized stop state.
 
-## [v0.3.2] - 2012-02-20
+## [v0.3.2] - 2021-02-20
 ### Changed
 * Fix announce url substitution overriding announce url
 
-## [v0.3.1] - 2012-02-19
+## [v0.3.1] - 2021-02-19
 ### Changed
 * Fix regression in create command --output option.
 
-## [v0.3.0] - 2012-02-19
+## [v0.3.0] - 2021-02-19
 ### Added
 * Faster hashing backend using Intel ISA-L Crypto multi-buffer hashing.
 * Read target name from input stream.
