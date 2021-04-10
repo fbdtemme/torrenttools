@@ -43,7 +43,7 @@ option(TORRENTTOOLS_INSTALL
         "Generate an install target" ON)
 
 #add_subdirectory(../cliprogress cliprogress)
-add_subdirectory(../dottorrent dottorrent)
+#add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
 
