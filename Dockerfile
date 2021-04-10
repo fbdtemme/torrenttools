@@ -25,7 +25,7 @@ RUN cmake -S . -B cmake-build-relwithdebinfo \
           -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DTORRENTTOOLS_BUILD_TESTS=OFF \
           -DTORRENTTOOLS_BUILD_DOCS=OFF \
-          -DDOTTORRENT_CRYPTO_MULTIBUFFER=ON
+          -DDOTTORRENT_MB_CRYPTO_LIB=isal
 
 # Build
 RUN cd cmake-build-relwithdebinfo && make -j$(nproc) torrenttools
