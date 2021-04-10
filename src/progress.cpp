@@ -60,29 +60,29 @@ void run_with_progress(std::ostream& os, dottorrent::storage_hasher& hasher, con
     auto start_time = std::chrono::system_clock::now();
     hasher.start();
 
-    std::size_t index = 0;
+    if (storage.file_count() != 0) [[likely]] {
+        while (hasher.bytes_done() < total_file_size) {
+            auto[index, file_bytes_done] = hasher.current_file_progress();
+            auto total_bytes_done = hasher.bytes_done();
 
-    while (hasher.bytes_done() < total_file_size) {
-        auto [index, file_bytes_done] = hasher.current_file_progress();
-        auto total_bytes_done = hasher.bytes_done();
-
-        // Current file has been completed, update last entry for the previous file(s) and move to next one
-        if (index != current_file_index && index < storage.file_count()) {
-            for ( ; current_file_index < index; ) {
-                auto complete_size = storage.at(current_file_index).file_size();
-                indicator->set_per_file_value(complete_size);
-                ++current_file_index;
-                indicator->set_current_file(current_file_index);
+            // Current file has been completed, update last entry for the previous file(s) and move to next one
+            if (index != current_file_index && index < storage.file_count()) {
+                for (; current_file_index < index;) {
+                    auto complete_size = storage.at(current_file_index).file_size();
+                    indicator->set_per_file_value(complete_size);
+                    ++current_file_index;
+                    indicator->set_current_file(current_file_index);
+                }
             }
+            indicator->set_per_file_value(file_bytes_done);
+            indicator->set_total_value(total_bytes_done);
+            std::this_thread::sleep_for(250ms);
         }
-        indicator->set_per_file_value(file_bytes_done);
-        indicator->set_total_value(total_bytes_done);
-        std::this_thread::sleep_for(250ms);
-    }
 
-    indicator->set_total_value(storage.total_file_size());
-    indicator->set_per_file_value( storage.at(current_file_index).file_size());
-    indicator->stop();
+        indicator->set_total_value(storage.total_file_size());
+        indicator->set_per_file_value(storage.at(current_file_index).file_size());
+        indicator->stop();
+    }
     hasher.wait();
 
     tc::format_to(os, tc::ecma48::character_position_absolute);
@@ -118,25 +118,26 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
 
     std::size_t index = 0;
 
-    print_simple_indicator(os, storage, current_file_index, hasher.protocol());
-    std::flush(os);
+    if (storage.file_count() != 0) [[likely]] {
+        print_simple_indicator(os, storage, current_file_index, hasher.protocol());
+        std::flush(os);
 
-    while (hasher.bytes_done() < total_file_size) {
-        auto [index, file_bytes_hashed] = hasher.current_file_progress();
+        while (hasher.bytes_done() < total_file_size) {
+            auto[index, file_bytes_hashed] = hasher.current_file_progress();
 
-        // Current file has been completed, update last entry for the previous file(s) and move to next one
-        if (index != current_file_index && index < storage.file_count()) {
-            for ( ; current_file_index < index; ) {
-                // set to 100%
-                ++current_file_index;
-                print_simple_indicator(os, storage, current_file_index, hasher.protocol());
+            // Current file has been completed, update last entry for the previous file(s) and move to next one
+            if (index != current_file_index && index < storage.file_count()) {
+                for (; current_file_index < index;) {
+                    // set to 100%
+                    ++current_file_index;
+                    print_simple_indicator(os, storage, current_file_index, hasher.protocol());
+                }
+                std::flush(os);
             }
-            std::flush(os);
+            std::this_thread::sleep_for(1s);
         }
-        std::this_thread::sleep_for(1s);
+        os << std::endl;
     }
-
-    os << std::endl;
     hasher.wait();
 
     auto stop_time = std::chrono::system_clock::now();
