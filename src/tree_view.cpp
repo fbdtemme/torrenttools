@@ -24,15 +24,23 @@ std::string tree_printer::result() const {
 
 void tree_printer::walk(const fs::path& root)
 {
-    // Print the name of the torrent as root directory
-    if (options_.use_color) {
-        auto style = ls_colors_.directory_style();
-        output_.emplace_back(tc::format(style, "{}", metafile_.name()), nullptr);
-    } else {
-        output_.emplace_back(fmt::format("{}", metafile_.name()), nullptr);
+    auto elements = index_.list_directory_content(root);
+
+    if (metafile_.storage().file_mode() == dt::file_mode::single) {
+        auto current_element = elements.at(0);
+        print_entry(current_element.path, current_element.entry, "", root);
+        return;
     }
 
-    auto elements = index_.list_directory_content(root);
+    // Print the name of the torrent as root directory if the torrent is a multi-file torrent
+    if (metafile_.storage().file_mode() == dt::file_mode::multi) {
+        if (options_.use_color) {
+            auto style = ls_colors_.directory_style();
+            output_.emplace_back(tc::format(style, "{}", metafile_.name()), nullptr);
+        } else {
+            output_.emplace_back(fmt::format("{}", metafile_.name()), nullptr);
+        }
+    }
 
     std::vector<stack_frame> stack{};
     stack.push_back({.path = root, .content = elements, .index = 0});
@@ -75,46 +83,49 @@ void tree_printer::walk(const fs::path& root)
 bool tree_printer::print_entry(
         const fs::path& path, const dt::file_entry* entry_ptr, std::string_view node,
         const fs::path& root) {
+
     std::string formatted_name {};
-    std::string line {};
+    std::string line_template {};
+    std::size_t entry_size;
     bool is_directory = false;
 
     if (entry_ptr != nullptr) {
-        is_directory =  false;
+        entry_size = entry_ptr->file_size();
+        is_directory = false;
+    } else {
+        entry_size = index_.get_directory_size(root / path);
+        is_directory = true;
+    }
 
+    if (options_.show_file_size) {
+        line_template = fmt::format("{}{}[{}] {{}}", prefix_, node, tt::format_tree_size(entry_size));
+    } else {
+        line_template = fmt::format("{}{}{{}}", prefix_, node);
+    }
+
+    auto used_size = termcontrol::display_width(line_template)-2;
+    auto remaining_size = std::clamp(options_.max_entry_size-used_size, std::size_t(0), options_.max_entry_size);
+    auto path_string = path.string();
+    ellipsize(path_string, remaining_size);
+
+    if (entry_ptr != nullptr) {
         if (options_.use_color) {
             auto style = ls_colors_.file_style(*entry_ptr);
-            formatted_name = tc::format(style, "{}", path.string());
-        } else {
-            formatted_name = fmt::format("{}", path.string());
+            formatted_name = tc::format(style, "{}", path_string);
         }
-
-        if (options_.show_file_size) {
-            line = fmt::format(
-                    "{}{}[{}] {}", prefix_, node, tt::format_tree_size(entry_ptr->file_size()), formatted_name);
-        } else {
-            line = fmt::format("{}{}{}", prefix_, node, formatted_name);
+        else {
+            formatted_name = fmt::format("{}", path_string);
         }
     }
-        // directory
     else {
-        is_directory =  true;
-        auto dir_size = index_.get_directory_size(root / path);
-
         if (options_.use_color) {
             auto style = ls_colors_.directory_style();
-            formatted_name = tc::format(style, "{}", path.string());
+            formatted_name = tc::format(style, "{}", path_string);
         } else {
-            formatted_name = fmt::format("{}", path.string());
-        }
-
-        if (options_.show_directory_size) {
-            line = fmt::format(
-                    "{}{}[{}] {}", prefix_, node, tt::format_tree_size(dir_size), formatted_name);
-        } else {
-            line = fmt::format("{}{}{}", prefix_, node, formatted_name);
+            formatted_name = fmt::format("{}", path_string);
         }
     }
+    auto line = fmt::format(line_template, formatted_name);
 
     output_.emplace_back(std::move(line), entry_ptr);
     return is_directory;
@@ -150,7 +161,6 @@ std::string format_verify_file_tree(
         const dottorrent::metafile& m,
         const dottorrent::storage_verifier& verifier,
         std::string_view prefix,
-        std::size_t max_line_length,
         const tree_options& options)
 {
     std::string result {};
@@ -158,24 +168,23 @@ std::string format_verify_file_tree(
 
     using entry_type = std::pair<std::string, const dt::file_entry*>;
     using table_line_type = std::tuple<std::string, std::string, std::string, std::string>;
-    const std::size_t max_file_line_size = std::max(std::size_t(50), max_line_length) - 24;
+    const std::size_t max_file_line_size = std::max(std::size_t(50), options.max_entry_size) - 24;
     std::vector<table_line_type> table {};
 
     const auto& storage = m.storage();
 
     std::vector<entry_type> entries {};
-//    entries.emplace_back(fmt::format("{}{}", prefix, m.name()), nullptr);
 
-    if (storage.file_mode() == dottorrent::file_mode::multi) {
-        auto printer = tree_printer(m, prefix, options);
-        printer.walk();
-        rng::copy(printer.entries(), std::back_inserter(entries));
-    }
+    auto printer_options = options;
+    printer_options.max_entry_size = max_file_line_size;
+    auto printer = tree_printer(m, prefix, printer_options);
+    printer.walk();
+    rng::copy(printer.entries(), std::back_inserter(entries));
 
     std::size_t largest_file_line_size = std::transform_reduce(
             entries.begin(), entries.end(), 0ul,
             [](const std::size_t& lhs, const std::size_t& rhs) { return std::max(lhs, rhs); },
-            [](const entry_type& e) { return e.first.size(); }
+            [](const entry_type& e) { return termcontrol::display_width(e.first); }
     );
 
     std::size_t file_line_size = std::min(largest_file_line_size, max_file_line_size);
@@ -185,11 +194,8 @@ std::string format_verify_file_tree(
     std::string percentage {};
 
     for (auto [line, file_ptr] : entries) {
-        ellipsize(line, file_line_size);
-        line.resize(max_file_line_size, ' ');
-
         if (file_ptr != nullptr) {
-            file_size = tt::format_size(file_ptr->file_size());
+            file_size = tt::format_tree_size(file_ptr->file_size());
             double pct = verifier.percentage(*file_ptr);
             percentage_bar = clp::draw_progress_bar(pct,
                     { .complete_frames = std::span(clp::bar_frames::horizontal_blocks) }, {}, 10);
@@ -200,10 +206,12 @@ std::string format_verify_file_tree(
             percentage_bar.clear();
             percentage.clear();
         }
+        auto line_display_width = static_cast<int>(tc::display_width(line));
+        line.append(std::max(0, int(file_line_size) - line_display_width), ' ');
 
         table.emplace_back(std::move(line), std::move(file_size), std::move(percentage_bar), std::move(percentage));
     }
-    for (const auto& [file_tree_line, size, bar, perc]: table) {
+    for (auto& [file_tree_line, size, bar, perc]: table) {
         fmt::format_to(out, "{}    {} {} {}\n", file_tree_line, size, bar, perc);
     }
 

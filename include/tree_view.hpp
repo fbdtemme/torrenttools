@@ -14,6 +14,7 @@
 #include <cliprogressbar/functional/progress_bar.hpp>
 #include <termcontrol/detail/format.hpp>
 #include <termcontrol/detail/color.hpp>
+#include <termcontrol/detail/display_width.hpp>
 
 #include <dottorrent/metafile.hpp>
 #include <dottorrent/storage_verifier.hpp>
@@ -42,18 +43,19 @@ struct tree_options
     bool show_directory_size = true;
     bool use_color = true;
     bool list_padding_files = false;
-    std::size_t max_entry_size = 100;
+    std::size_t max_entry_size = -1;
 };
 
 
 inline bool ellipsize(std::string& line, std::size_t max_size = 100)
 {
-    static const std::string_view ellipses = "...";
-    bool needs_ellipsis = line.size() > max_size;
+    auto wline = termcontrol::utf8_decode(line);
+    bool needs_ellipsis = wline.size() > max_size;
+
     if (needs_ellipsis) {
-        line.resize(line.size()-ellipses.size());
-        line.append(ellipses);
+        std::fill(wline.end()-3, wline.end(), '.');
     }
+    line = termcontrol::utf8_encode(wline);
     return needs_ellipsis;
 }
 
@@ -242,8 +244,6 @@ private:
 };
 
 
-
-
 std::string format_file_tree(const dottorrent::metafile& m,
                              std::string_view prefix = ""sv,
                              const tree_options& options = {});
@@ -253,7 +253,6 @@ std::string format_verify_file_tree(
         const dottorrent::metafile& m,
         const dottorrent::storage_verifier& verifier,
         std::string_view prefix = ""sv,
-        std::size_t max_line_length = 100,
         const tree_options& options = {});
 
 
