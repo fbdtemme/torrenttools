@@ -43,9 +43,9 @@ source /opt/rh/gcc-toolset-10/enable
 %endif
 
 %if 0%{?el8}
-%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_CRYPTO_LIB=isal . .
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_MB_CRYPTO_LIB=isal . .
 %else
-%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_CRYPTO_LIB=isal
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_MB_CRYPTO_LIB=isal
 %endif
 
 %if 0%{?el8}
@@ -70,6 +70,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Sat Apr 10 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.4.0-2
+- Fix ISA-L compile switch
+
 * Sat Apr 10 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.4.0-1
 - Update to 0.4.0
 
