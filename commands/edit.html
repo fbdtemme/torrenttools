@@ -2,10 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Info" href="info.html" /><link rel="prev" title="Create" href="create.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Info" href="info.html" /><link rel="prev" title="Create" href="create.html" />
 
     <meta name="generator" content="sphinx-3.5.3, furo 2021.03.20.beta30"/>
-        <title>Edit - torrenttools - 0.3.2</title>
+        <title>Edit - torrenttools - 0.4.0</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -86,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">torrenttools - 0.3.2</div></a>
+      <a href="../index.html"><div class="brand">torrenttools - 0.4.0</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -103,7 +104,7 @@
     <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">torrenttools - 0.3.2</span>
+  <span class="sidebar-brand-text">torrenttools - 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -113,8 +114,9 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Commands</span></p>
+<p><span class="caption-text">Commands</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="create.html">Create</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Edit</a></li>
@@ -122,7 +124,7 @@
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<p><span class="caption-text">Knowledge base</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../topics/bencode.html">Bencode format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topics/bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
@@ -141,11 +143,11 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="edit">
+        <section id="edit">
 <span id="edit-command"></span><h1>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h1>
 <p>The edit commands is used to modify metadata fields in an existing bittorrent file.
 Many of the options are the same as those for the <a class="reference external" href="create_command">create</a> command</p>
-<div class="section" id="overview">
+<section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Edit bittorrent metafiles.
 Usage: torrenttools edit [OPTIONS] target
@@ -190,15 +192,15 @@ Options:
   --stdout                         Write the edited metafile to the standard output
 </pre></div>
 </div>
-</div>
-<div class="section" id="options">
+</section>
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="o-output">
+<section id="o-output">
 <h3><code class="docutils literal notranslate"><span class="pre">-o,--output</span></code><a class="headerlink" href="#o-output" title="Permalink to this headline">¶</a></h3>
 <p>Set the filename and/or output directory of the edited file.
 Use a trailing slash to specify the output directory.</p>
-</div>
-<div class="section" id="m-list-mode">
+</section>
+<section id="m-list-mode">
 <h3><code class="docutils literal notranslate"><span class="pre">-m,--list-mode</span></code><a class="headerlink" href="#m-list-mode" title="Permalink to this headline">¶</a></h3>
 <p>Control how the options <code class="docutils literal notranslate"><span class="pre">--announce</span></code>, <code class="docutils literal notranslate"><span class="pre">--web-seed</span></code> and <code class="docutils literal notranslate"><span class="pre">dht-node</span></code> behave.
 The possible options are: replace, append, prepend or the equivalent r, a, p.
@@ -207,8 +209,8 @@ The default mode for multi-argument options is replace.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools edit --list-mode append test.torrent --announce <span class="s2">"https://new-announce-server.org/announce"</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="a-announce">
+</section>
+<section id="a-announce">
 <h3><code class="docutils literal notranslate"><span class="pre">a,--announce</span></code><a class="headerlink" href="#a-announce" title="Permalink to this headline">¶</a></h3>
 <p>Edit the announces of a bittorrent metafile.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"url1"</span> <span class="s2">"url2"</span>
@@ -218,23 +220,23 @@ The default mode for multi-argument options is replace.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"[url1 url2]"</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="w-web-seed">
+</section>
+<section id="w-web-seed">
 <h3><code class="docutils literal notranslate"><span class="pre">-w,--web-seed</span></code><a class="headerlink" href="#w-web-seed" title="Permalink to this headline">¶</a></h3>
 <p>Edit the web-seeds of a bittorrent metafile.</p>
-</div>
-<div class="section" id="d-dht-node-host-port">
+</section>
+<section id="d-dht-node-host-port">
 <h3><code class="docutils literal notranslate"><span class="pre">-d,--dht-node</span> <span class="pre">&lt;host:port&gt;</span></code><a class="headerlink" href="#d-dht-node-host-port" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="c-comment">
+</section>
+<section id="c-comment">
 <h3><code class="docutils literal notranslate"><span class="pre">-c,--comment</span></code><a class="headerlink" href="#c-comment" title="Permalink to this headline">¶</a></h3>
 <p>Replace or remove a comment from a bittorrent metafile.</p>
 <p>Pass an empty string to remove an existing comment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">edit</span> <span class="n">target</span><span class="o">.</span><span class="n">torrent</span> <span class="o">--</span><span class="n">comment</span> <span class="s2">""</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="p-private">
+</section>
+<section id="p-private">
 <h3><code class="docutils literal notranslate"><span class="pre">-p,--private</span></code><a class="headerlink" href="#p-private" title="Permalink to this headline">¶</a></h3>
 <p>Edit the private flag of a bittorrent metafile.
 Passing the flag without any arguments or with “on” or 1 will enable the flag.
@@ -242,8 +244,8 @@ Passing the flag with “off” or 0 will disable the flag.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">edit</span> <span class="n">public</span><span class="o">.</span><span class="n">torrent</span> <span class="o">--</span><span class="n">private</span> <span class="o">--</span><span class="n">output</span> <span class="n">private</span><span class="o">.</span><span class="n">torrent</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="s-source">
+</section>
+<section id="s-source">
 <h3><code class="docutils literal notranslate"><span class="pre">-s,--source</span></code><a class="headerlink" href="#s-source" title="Permalink to this headline">¶</a></h3>
 <p>Edit the source tag in a bittorrent metafile.
 This field is used by private trackers to avoid the risk of torrents with the same infohash but different announce-urls.
@@ -251,37 +253,37 @@ It is set to the name of the tracker for supported trackers.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">edit</span> <span class="n">test</span><span class="o">.</span><span class="n">torrent</span> <span class="o">--</span><span class="n">source</span> <span class="s2">"my tracker"</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="n-name">
+</section>
+<section id="n-name">
 <h3><code class="docutils literal notranslate"><span class="pre">-n,--name</span></code><a class="headerlink" href="#n-name" title="Permalink to this headline">¶</a></h3>
 <p>Replace the name of the torrent.
 This changes the filename for single file torrents or the root directory name for multi-file torrents.</p>
-</div>
-<div class="section" id="no-creation-date">
+</section>
+<section id="no-creation-date">
 <h3><code class="docutils literal notranslate"><span class="pre">--no-creation-date</span></code><a class="headerlink" href="#no-creation-date" title="Permalink to this headline">¶</a></h3>
 <p>Do not update the creation date when editing other fields.</p>
-</div>
-<div class="section" id="creation-date">
+</section>
+<section id="creation-date">
 <h3><code class="docutils literal notranslate"><span class="pre">--creation-date</span></code><a class="headerlink" href="#creation-date" title="Permalink to this headline">¶</a></h3>
 <p>Override the value of the creation date field as an ISO-8601 time or POSIX time string.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrentools</span> <span class="n">edit</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="s2">"2021-01-22T18:21:46+0100"</span>
 <span class="n">torrentools</span> <span class="n">edit</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">creation</span><span class="o">-</span><span class="n">date</span> <span class="mi">1611339706</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="no-created-by">
+</section>
+<section id="no-created-by">
 <h3><code class="docutils literal notranslate"><span class="pre">--no-created-by</span></code><a class="headerlink" href="#no-created-by" title="Permalink to this headline">¶</a></h3>
 <p>Do not include the name and version of this program.</p>
-</div>
-<div class="section" id="created-by">
+</section>
+<section id="created-by">
 <h3><code class="docutils literal notranslate"><span class="pre">--created-by</span></code><a class="headerlink" href="#created-by" title="Permalink to this headline">¶</a></h3>
 <p>Override the value of the created by field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torrenttools</span> <span class="n">test</span><span class="o">-</span><span class="nb">dir</span> <span class="o">--</span><span class="n">created</span><span class="o">-</span><span class="n">by</span> <span class="s2">"Me"</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
       </article>
       <footer>
@@ -310,7 +312,7 @@ This changes the filename for single file torrents or the root directory name fo
         </div>
 
         <div class="related-information">
-              Copyright &#169; 
+              Copyright &#169; © 
             |
             Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
               and

@@ -2,10 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="BitTorrent metafile v1" href="bittorrent-metafile-v1.html" /><link rel="prev" title="Verify" href="../commands/verify.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="BitTorrent metafile v1" href="bittorrent-metafile-v1.html" /><link rel="prev" title="Verify" href="../commands/verify.html" />
 
     <meta name="generator" content="sphinx-3.5.3, furo 2021.03.20.beta30"/>
-        <title>Bencode format - torrenttools - 0.3.2</title>
+        <title>Bencode format - torrenttools - 0.4.0</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -86,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">torrenttools - 0.3.2</div></a>
+      <a href="../index.html"><div class="brand">torrenttools - 0.4.0</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -103,7 +104,7 @@
     <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">torrenttools - 0.3.2</span>
+  <span class="sidebar-brand-text">torrenttools - 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -113,8 +114,9 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Commands</span></p>
+<p><span class="caption-text">Commands</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../commands/create.html">Create</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/edit.html">Edit</a></li>
@@ -122,7 +124,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../commands/show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/verify.html">Verify</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<p><span class="caption-text">Knowledge base</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Bencode format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
@@ -141,9 +143,9 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="bencode-format">
+        <section id="bencode-format">
 <h1>Bencode format<a class="headerlink" href="#bencode-format" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
+<section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Bencode is a simple encoding developed for BitTorrent.
 It support 4 basic data types:</p>
@@ -157,18 +159,18 @@ It support 4 basic data types:</p>
 which is important for cross-platform applications.
 Another advantage is that their exists a bijection between values and their encoded form.
 As a consequence values can be directly compared in encoded form without decoding first.</p>
-</div>
-<div class="section" id="encoding">
+</section>
+<section id="encoding">
 <h2>Encoding<a class="headerlink" href="#encoding" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="integers">
+<section id="integers">
 <h3>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h3>
 <p>Integers are encoded as: <code class="code docutils literal notranslate"><span class="pre">i&lt;base</span> <span class="pre">ten</span> <span class="pre">ASCII</span> <span class="pre">representation&gt;e</span></code>.
 Leading zeros are not allowed except for the number zero.
 Negative values are encoded by prefixing the number with a hyphen-minus.
 Negative zero is not permitted.
 The number 42 would thus be encoded as <code class="code docutils literal notranslate"><span class="pre">i42e</span></code>, 0 as <code class="code docutils literal notranslate"><span class="pre">i0e</span></code>, and -42 as <code class="code docutils literal notranslate"><span class="pre">i-42e</span></code>.</p>
-</div>
-<div class="section" id="strings">
+</section>
+<section id="strings">
 <h3>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h3>
 <p>Strings are length-prefixed base ten followed by a colon and the string: <code class="code docutils literal notranslate"><span class="pre">&lt;length&gt;:&lt;contents&gt;</span></code>.
 The length is encoded in base 10, like integers and must be positive (zero is allowed).
@@ -176,14 +178,14 @@ The contents are the bytes that make up the string.
 If the content represents text the encoding must be UTF-8,
 but the string datatype can also be used for a sequence of raw bytes.
 For example ‘spam’ is encoded as <code class="code docutils literal notranslate"><span class="pre">4:spam</span></code>.</p>
-</div>
-<div class="section" id="lists">
+</section>
+<section id="lists">
 <h3>Lists<a class="headerlink" href="#lists" title="Permalink to this headline">¶</a></h3>
 <p>A list of values is encoded as an ‘l’ followed by their encoded elements followed by an ‘e’: <code class="code docutils literal notranslate"><span class="pre">l&lt;contents&gt;e</span></code>.
 Elements are in order and concatenated.
 A list consisting of the string “spam” and the number 42 would be encoded as: <code class="code docutils literal notranslate"><span class="pre">l4:spami42ee</span></code>.</p>
-</div>
-<div class="section" id="dictonaries">
+</section>
+<section id="dictonaries">
 <h3>Dictonaries<a class="headerlink" href="#dictonaries" title="Permalink to this headline">¶</a></h3>
 <p>Dictionaries are encoded as a ‘d’ followed by a list of alternating keys and their
 corresponding values followed by an ‘e’: <code class="code docutils literal notranslate"><span class="pre">d&lt;bencoded</span> <span class="pre">key&gt;&lt;bencoded</span> <span class="pre">value&gt;&gt;e</span></code>.
@@ -197,9 +199,9 @@ and <code class="code docutils literal notranslate"><span class="pre">{'spam':</
 </ul>
 </dd>
 </dl>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
       </article>
       <footer>
@@ -228,7 +230,7 @@ and <code class="code docutils literal notranslate"><span class="pre">{'spam':</
         </div>
 
         <div class="related-information">
-              Copyright &#169; 
+              Copyright &#169; © 
             |
             Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
               and

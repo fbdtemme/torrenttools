@@ -2,10 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Show" href="show.html" /><link rel="prev" title="Edit" href="edit.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Show" href="show.html" /><link rel="prev" title="Edit" href="edit.html" />
 
     <meta name="generator" content="sphinx-3.5.3, furo 2021.03.20.beta30"/>
-        <title>Info - torrenttools - 0.3.2</title>
+        <title>Info - torrenttools - 0.4.0</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -86,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">torrenttools - 0.3.2</div></a>
+      <a href="../index.html"><div class="brand">torrenttools - 0.4.0</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -103,7 +104,7 @@
     <img class="sidebar-logo" src="../_static/torrenttools-icon.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">torrenttools - 0.3.2</span>
+  <span class="sidebar-brand-text">torrenttools - 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -113,8 +114,9 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Commands</span></p>
+<p><span class="caption-text">Commands</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="create.html">Create</a></li>
 <li class="toctree-l1"><a class="reference internal" href="edit.html">Edit</a></li>
@@ -122,7 +124,7 @@
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<p><span class="caption-text">Knowledge base</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../topics/bencode.html">Bencode format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topics/bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
@@ -141,7 +143,7 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="info">
+        <section id="info">
 <span id="info-command"></span><h1>Info<a class="headerlink" href="#info" title="Permalink to this headline">¶</a></h1>
 <p>The info command is used to print an overview of BitTorrent metafiles features.</p>
 <p>The basic invocation requires only the target .torrent file.</p>
@@ -149,7 +151,7 @@
 </pre></div>
 </div>
 <p>Either specify all options first or give the target first followed by all options.</p>
-<div class="section" id="overview">
+<section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>General information about bittorrent metafiles.
 Usage: torrenttools info [OPTIONS] target
@@ -195,10 +197,10 @@ Files:
   854.06 MiB in 0 directories, 9 files
 </pre></div>
 </div>
-</div>
-<div class="section" id="options">
+</section>
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="raw">
+<section id="raw">
 <h3><code class="docutils literal notranslate"><span class="pre">--raw</span></code><a class="headerlink" href="#raw" title="Permalink to this headline">¶</a></h3>
 <p>This options will print a JSON representation of the torrent with binary fields replaced by a string descibing the content.
 The torrent from the previous example will output as follows</p>
@@ -406,19 +408,19 @@ The torrent from the previous example will output as follows</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="show-pieces">
+</section>
+<section id="show-pieces">
 <h3><code class="docutils literal notranslate"><span class="pre">--show-pieces</span></code><a class="headerlink" href="#show-pieces" title="Permalink to this headline">¶</a></h3>
 <p>This options must be combined with <code class="docutils literal notranslate"><span class="pre">--raw</span></code>. Instead of a string like &lt;20 piece hashes&gt; a full list with all pieces in
 hexadecimal representation will be printed.</p>
-</div>
-<div class="section" id="show-padding-files">
+</section>
+<section id="show-padding-files">
 <h3><code class="docutils literal notranslate"><span class="pre">--show-padding-files</span></code><a class="headerlink" href="#show-padding-files" title="Permalink to this headline">¶</a></h3>
 <p>This option will include padding files for hybrid torrent in the file tree.
 By default padding files are not listed.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
       </article>
       <footer>
@@ -447,7 +449,7 @@ By default padding files are not listed.</p>
         </div>
 
         <div class="related-information">
-              Copyright &#169; 
+              Copyright &#169; © 
             |
             Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
               and
