@@ -1,0 +1,13 @@
+# This is an example configuration file.
+# It should be copied to the suitable directory for your OS and modified there.
+# Linux : $HOME/.config/torrenttools/config.yml
+# Windows : %AppData%/torrenttools/config.yml
+
+tracker-parameters:
+  AlphaRatio:
+    pid: example_pid
+
+tracker-groups:
+  example-group-custom:
+    - udp://tracker.opentrackr.org:1337/announce
+    - udp://www.torrent.eu.org:451/announce

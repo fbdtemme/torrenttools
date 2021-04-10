@@ -1,0 +1,8 @@
+[
+  {
+    "name": "AlphaRatio",
+    "abbreviation": "AR",
+    "announce_url": "http://tracker.alpharatio.cc:2710/{pid}/announce",
+    "private": true
+  }
+]
