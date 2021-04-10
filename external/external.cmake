@@ -35,7 +35,13 @@ include(${CMAKE_CURRENT_LIST_DIR}/sigslot.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/date.cmake)
 
 # Make sure to call this before dottorrent.cmake to enable offline builds
+# Set a default if not defined so that string(TOLOWER) doesnt complain
+if (NOT DEFINED DOTTORRENT_MB_CRYPTO_LIB)
+    set(DOTTORRENT_MB_CRYPTO_LIB "none")
+endif()
+
 string(TOLOWER ${DOTTORRENT_MB_CRYPTO_LIB} DOTTORRENT_MB_CRYPTO_LIB)
+
 if (DOTTORRENT_MB_CRYPTO_LIB STREQUAL isal)
     include(${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto.cmake)
 endif()
