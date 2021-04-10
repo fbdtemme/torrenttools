@@ -14,7 +14,7 @@ void configure_pad_app(CLI::App* app, pad_app_options& options)
         return true;
     };
     CLI::callback_t metafile_parser = [&](const CLI::results_t v) -> bool {
-        options.metafile = metafile_transformer(v);
+        options.metafile = metafile_target_transformer(v);
         return true;
     };
 

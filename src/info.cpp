@@ -66,7 +66,7 @@ void run_info_app(const main_app_options& main_options, const info_app_options& 
 void configure_info_app(CLI::App* app, info_app_options& options)
 {
     CLI::callback_t metafile_parser = [&](const CLI::results_t& v) -> bool {
-        options.metafile = metafile_transformer(v);
+        options.metafile = metafile_target_transformer(v);
         return true;
     };
 

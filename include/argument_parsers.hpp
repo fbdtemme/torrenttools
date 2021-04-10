@@ -28,7 +28,7 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v,
 
 std::filesystem::path config_path_transformer(const std::vector<std::string>& v, bool check_exists);
 
-std::filesystem::path metafile_transformer(const std::vector<std::string>& v);
+std::filesystem::path metafile_target_transformer(const std::vector<std::string>& v, bool allow_read_from_stdin = false);
 
 std::optional<std::size_t> parse_commandline_size(std::string_view option, const std::string& v);
 

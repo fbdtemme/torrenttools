@@ -20,7 +20,7 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
         return true;
     };
     CLI::callback_t metafile_transformer = [&](const CLI::results_t& v) -> bool {
-        options.metafile = target_transformer(v);
+        options.metafile = metafile_target_transformer(v);
         return true;
     };
     CLI::callback_t files_transformer = [&](const CLI::results_t& v) -> bool {
@@ -39,17 +39,14 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
        ->type_name("<path>");
 
     app->add_option("-v,--protocol", protocol_parser,
-               "Set the bittorrent protocol to use. Options are 1, 2 or hybrid. [default: 1]")
-       ->type_name("<protocol>")
-       ->default_val("v1");
+               "Set the bittorrent protocol to use.\n"
+               "Options are 1, 2 or hybrid. [default: highest available]")
+       ->type_name("<protocol>");
 
     app->add_option("-t, --threads", options.threads,
                "Set the number of threads to use for hashing. [default: 2]")
        ->type_name("<n>")
        ->default_val(2);
-
-
-//    app->callback([&](){ run_verify_app(options); });
 }
 
 
@@ -94,11 +91,15 @@ void run_verify_app(const main_app_options& main_options, const verify_app_optio
         run_with_progress(std::cout, verifier, m);
     }
 
-    tree_options tree_options { .show_file_size = false, .show_directory_size = false};
     auto terminal_size = termcontrol::get_terminal_size();
+    tree_options tree_options {
+        .show_file_size = false,
+        .show_directory_size = false,
+        .max_entry_size = terminal_size.cols,
+    };
+
     auto verify_file_tree = format_verify_file_tree(
             m, verifier, "  ",
-            terminal_size.cols,
             tree_options);
 
     fmt::print(std::cout, "\nFiles:\n");
