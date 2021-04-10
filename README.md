@@ -54,7 +54,7 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
 ## Packages
 
 Binary and source packages for Fedora 32, Fedora 33, Fedora 34,
-Fedora Rawhide and Centos stream are available in a COPR repo.
+Fedora Rawhide and Centos Stream are available in a COPR repo.
 
 ```shell
 sudo dnf copr enable fbdtemme/torrenttools
@@ -69,8 +69,7 @@ sudo apt-get update
 sudo apt install torrenttools
 ```
 
-A windows installer is available as an asset on the [release](https://github.com/fbdtemme/torrenttools/releases) page.
-
+A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools). 
 
 ## Building
 
@@ -97,12 +96,12 @@ OpenSSL has to be installed on the system in advance.
 Ubuntu 20.04
 
 ```shell
-sudo apt install build-essential git cmake g++-10 libtbb2 libtbb-dev libssl-dev 
+sudo apt install build-essential git cmake g++-10 libssl-dev 
 ```
 
 Fedora 33
 ```shell
-sudo dnf install cmake make g++ git openssl-devel libtbb-devel
+sudo dnf install cmake make g++ git openssl-devel
 ```
 
 ### Configuration
@@ -112,12 +111,12 @@ sudo dnf install cmake make g++ git openssl-devel libtbb-devel
 | TORRENTTOOLS_BUILD_TESTS       | Bool     | Build tests.                 |
 | TORRENTTOOLS_BUILD_DOCS        | Bool     | Build documentation.         |
 | TORRENTTOOLS_INSTALL           | Bool     | Generate an install target.  |
-| DOTTORRENT_CRYPTO_MULTIBUFFER  | Bool     | Enable fast multi buffer hashing. |
+| DOTTORRENT_MB_CRYPTO_LIB       | String   | Pass "isal" for fast multibuffer hashing |
 
 ### Building
 
 This project requires C++20.
-Currently only GCC 10 is supported.
+Currently only GCC 10 or later is supported.
 
 This project can be build as every other project which makes use of the CMake build system.
 
