@@ -9,7 +9,7 @@ if (dottorrent_FOUND)
     return()
 endif()
 
-set(DOTTORRENT_BUILD_TESTS OFF)
+set(DOTTORRENT_TESTS OFF)
 set(DOTTORRENT_INSTALL OFF)
 
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/dottorrent)

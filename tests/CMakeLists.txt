@@ -18,6 +18,7 @@ target_sources(torrenttools-tests PRIVATE
         main.cpp
         test_create.cpp
         test_edit.cpp
+        test_verify.cpp
         test_file_matcher.cpp
         test_info.cpp
         test_magnet.cpp
