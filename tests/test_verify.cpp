@@ -85,34 +85,35 @@ TEST_CASE("Test verify app argument parsing")
         }
     }
 }
-//
-//TEST_CASE("test verify app: v1 torrent")
-//{
-//    temporary_directory tmp_dir {};
-//    main_app_options main_options {};
-//    verify_app_options verify_options {};
-//
-//    SECTION("verify ") {
-//        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources.torrent";
-//        verify_options.files_root_directory = fs::path(TEST_RESOURCES_DIR);
-//        verify_options.threads = 2;
-//        verify_options.protocol_version = dt::protocol::v1;
-//        run_verify_app(main_options, verify_options);
-//    }
-//}
-//
-//TEST_CASE("test verify app: v2 torrent")
-//{
-//    temporary_directory tmp_dir {};
-//    main_app_options main_options {};
-//    verify_app_options verify_options {};
-//
-//    SECTION("verify ") {
-//        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources.torrent";
-//        verify_options.files_root_directory = fs::path(TEST_RESOURCES_DIR);
-//        verify_options.threads = 2;
-//        verify_options.protocol_version = dt::protocol::v2;
-//
-//        run_verify_app(main_options, verify_options);
-//    }
-//}
+
+TEST_CASE("test verify app: v1 torrent")
+{
+    temporary_directory tmp_dir {};
+    main_app_options main_options {};
+    verify_app_options verify_options {};
+
+    SECTION("verify ") {
+        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources.torrent";
+        verify_options.files_root_directory = fs::path(TEST_RESOURCES_DIR);
+        verify_options.threads = 1;
+        verify_options.protocol_version = dt::protocol::v1;
+        run_verify_app(main_options, verify_options);
+    }
+}
+
+TEST_CASE("test verify app: v2 torrent")
+{
+    temporary_directory tmp_dir {};
+    main_app_options main_options {};
+
+    SECTION("verify ") {
+        verify_app_options verify_options {};
+
+        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources.torrent";
+        verify_options.files_root_directory = fs::path(TEST_RESOURCES_DIR);
+        verify_options.threads = 1;
+        verify_options.protocol_version = dt::protocol::v2;
+
+        run_verify_app(main_options, verify_options);
+    }
+}
