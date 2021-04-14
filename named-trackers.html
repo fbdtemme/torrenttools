@@ -2,12 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Other metafile utilities" href="comparison.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Other metafile utilities" href="comparison.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.03.20.beta30"/>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
         <title>Named trackers - torrenttools - 0.4.0</title>
-      <link rel="stylesheet" href="_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
+      <link rel="stylesheet" href="_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
     
@@ -116,7 +115,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Named trackers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparison.html">Other metafile utilities</a></li>
 </ul>
-<p><span class="caption-text">Commands</span></p>
+<p class="caption"><span class="caption-text">Commands</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="commands/create.html">Create</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/edit.html">Edit</a></li>
@@ -124,7 +123,7 @@
 <li class="toctree-l1"><a class="reference internal" href="commands/show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/verify.html">Verify</a></li>
 </ul>
-<p><span class="caption-text">Knowledge base</span></p>
+<p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="topics/bencode.html">Bencode format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topics/bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
@@ -143,10 +142,10 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <section id="named-trackers">
+        <div class="section" id="named-trackers">
 <h1>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h1>
 <p>“Named trackers” are trackers which are declared in the trackers.json configuration file.</p>
-<section id="announce-url-substitution">
+<div class="section" id="announce-url-substitution">
 <h2>Announce url substitution<a class="headerlink" href="#announce-url-substitution" title="Permalink to this headline">¶</a></h2>
 <p>When a tracker is defined in the trackers.json file you can specify the full name or abbreviation to
 the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> option in the create or edit command.
@@ -173,21 +172,21 @@ The announce-url parameter will be replaced by the value defined in the config.y
 </pre></div>
 </div>
 </div>
-</section>
-<section id="private-flag-selection">
+</div>
+<div class="section" id="private-flag-selection">
 <h2>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h2>
 <p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter
 the private flag will be set according to the value specified in the tracker database.
 The user can always override this value by explicitly passing a different value to the <code class="docutils literal notranslate"><span class="pre">-p|-private</span></code> option.</p>
-</section>
-<section id="bittorrent-metafile-default-filename">
+</div>
+<div class="section" id="bittorrent-metafile-default-filename">
 <h2>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h2>
 <p>Named trackers will prefix the abbreviation between square brackets to the
 default filename of the generated BitTorrent metafile.
 For a tracker named PrivateTracker and abbreviation PT the default filename for a target directory “content”
 would be: <code class="docutils literal notranslate"><span class="pre">[PT]example.torrent</span></code>.</p>
-</section>
-</section>
+</div>
+</div>
 
       </article>
       <footer>
