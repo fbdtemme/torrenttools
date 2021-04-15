@@ -38,6 +38,7 @@ void configure_show_file_size_subapp(CLI::App* file_size_subapp, show_app_option
 void configure_show_files_subapp(CLI::App* files_subapp, show_app_options& options);
 void configure_show_infohash_subapp(CLI::App* infohash_subapp, show_app_options& options);
 void configure_show_name_subapp(CLI::App* name_subapp, show_app_options& options);
+void configure_show_piece_count_subapp(CLI::App* piece_size_app, show_app_options& options);
 void configure_show_piece_size_subapp(CLI::App* piece_size_subapp, show_app_options& options);
 void configure_show_private_subapp(CLI::App* private_subapp, show_app_options& options);
 void configure_show_protocol_subapp(CLI::App* protocol_subapp, show_app_options& options);
@@ -54,6 +55,7 @@ void run_show_file_size_subapp(const main_app_options& main_options, const show_
 void run_show_files_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_infohash_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_name_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_piece_count_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_piece_size_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_private_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_protocol_subapp(const main_app_options& main_options, const show_app_options& options);

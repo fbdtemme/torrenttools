@@ -31,9 +31,10 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     auto* created_by_subapp = app->add_subcommand("created-by",       "Show the created-by field.");
     auto* creation_date_subapp = app->add_subcommand("creation-date", "Show the creation-date field.");
     auto* file_size_subapp = app->add_subcommand("size",              "Show the total file size.");
-    auto* files_subapp = app->add_subcommand("files",                "Show the files in a metafile.");
+    auto* files_subapp = app->add_subcommand("files",                 "Show the files in a metafile.");
     auto* infohash_subapp = app->add_subcommand("infohash",           "Show the the infohash.");
     auto* name_subapp = app->add_subcommand("name",                   "Show the metafile name.");
+    auto* piece_count_subapp = app->add_subcommand("piece-count",     "Show the piece count.");
     auto* piece_size_subapp = app->add_subcommand("piece-size",       "Show the piece size.");
     auto* private_subapp = app->add_subcommand("private",             "Show the private flag.");
     auto* protocol_subapp = app->add_subcommand("protocol",           "Show the protocol.");
@@ -49,6 +50,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
             files_subapp,
             infohash_subapp,
             name_subapp,
+            piece_count_subapp,
             piece_size_subapp,
             private_subapp,
             protocol_subapp,
@@ -68,6 +70,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     configure_show_files_subapp(files_subapp, options);
     configure_show_infohash_subapp(infohash_subapp, options);
     configure_show_name_subapp(name_subapp, options);
+    configure_show_piece_count_subapp(piece_count_subapp, options);
     configure_show_piece_size_subapp(piece_size_subapp, options);
     configure_show_private_subapp(private_subapp, options);
     configure_show_protocol_subapp(protocol_subapp, options);
@@ -122,6 +125,11 @@ void configure_show_infohash_subapp(CLI::App* infohash_app, show_app_options& op
 
     infohash_app->add_flag("-t,--truncate", options.infohash_truncate,
             "Truncate v2 infohash to 20 bytes");
+}
+
+void configure_show_piece_count_subapp(CLI::App* piece_size_app, show_app_options& options)
+{
+    piece_size_app->parse_complete_callback([&](){ options.subcommand = "piece-count"; });
 }
 
 void configure_show_piece_size_subapp(CLI::App* piece_size_app, show_app_options& options)
@@ -215,6 +223,7 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
             {"files",           &run_show_files_subapp},
             {"infohash",        &run_show_infohash_subapp},
             {"name",            &run_show_name_subapp},
+            {"piece-count",     &run_show_piece_count_subapp},
             {"piece-size",      &run_show_piece_size_subapp},
             {"private",         &run_show_private_subapp},
             {"protocol",        &run_show_protocol_subapp},
@@ -272,6 +281,12 @@ void run_show_announce_subapp(const main_app_options& main_options, const show_a
      }
 }
 
+void run_show_piece_count_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    verify_metafile(options.metafile);
+    auto m = dt::load_metafile(options.metafile);
+    std::cout << m.piece_count() << std::endl;
+}
 
 void run_show_piece_size_subapp(const main_app_options& main_options, const show_app_options& options)
 {
