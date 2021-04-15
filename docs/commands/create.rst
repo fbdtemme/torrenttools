@@ -12,12 +12,13 @@ The basic invocation requires only a target directory or file to create a .torre
     torrenttools create [OPTIONS] <target>
 
 Either specify all options first or give the target first followed by all options.
+
 Overview
 --------
 
 .. code-block:: none
 
-    Create bittorrent metafiles.
+    Create BitTorrent metafiles.
     Usage: torrenttools create [OPTIONS] target
 
     Positionals:
@@ -30,11 +31,12 @@ Overview
       -o,--output <path>               Set the filename and/or output directory of the created file.
                                        [default: <name>.torrent]
                                         Use a path with trailing slash to only set the output directory.
-      --stdout                         Write the metafile to the standard output
       -a,--announce <url>...           Add one or multiple announces urls.
                                        Multiple trackers will be added in seperate tiers by default.
                                        Use square brackets to groups urls in a single tier:
                                         eg. "--announce url1 [url1 url2]"
+      -g,--announce-group <name>...    Add the announce-urls defined from an announce group specified in the configuration file.
+                                       Multiple groups can be passed. eg. "--announce-group group1 group2"
       -w,--web-seed <url>...           Add one or multiple HTTP/FTP urls as seeds.
       -d,--dht-node <host:port>...     Add one or multiple DHT nodes.
       -c,--comment <string>            Add a comment.
@@ -43,7 +45,7 @@ Overview
                                        When no unit is specified block size will be either 2^<n> bytes,
                                        or <n> bytes if n is larger or equal to 16384.
                                        Piece size must be a power of two in range [16K, 64M].
-                                       Leave empty to determine by total file size. [default: auto]
+                                       Leave empty or set to auto to determine by total file size. [default: auto]
       -s,--source <source>             Add a source tag to facilitate cross-seeding.
       -n,--name <name>                 Set the name of the torrent. This changes the filename for single file torrents
                                        or the root directory name for multi-file torrents.
@@ -60,8 +62,8 @@ Overview
       --exclude <regex>...             Do not add files matching given regex to the metafile.
       --include-hidden                 Do not skip hidden files.
       --io-block-size <size[K|M]>      The size of blocks read from storage.
-                                       [default: max(1 MiB, <piece-size>)].
                                        Must be larger or equal to the piece size.
+
 
 Options
 -------
@@ -112,6 +114,14 @@ Multiple trackers will be added in seperate tiers by default. Use square bracket
 .. code-block:: bash
 
     torrenttools create test-dir --announce "[url1 url2]"
+
+`` -g,--announce-group``
++++++++++++++++++++++++++
+Add all announces inside a tracker group to the metafile.
+
+.. code-block:: bash
+
+    torrenttools create test-dir --announce-group "public-trackers"
 
 ``--stdout``
 ++++++++++++

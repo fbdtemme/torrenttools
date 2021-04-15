@@ -13,7 +13,7 @@ Index
     :maxdepth: 1
 
     why-torrenttools
-    named-trackers
+    configuration
     comparison
 
 
@@ -26,7 +26,8 @@ Index
     commands/info
     commands/show
     commands/verify
-
+    commands/pad
+    commands/magnet
 
 .. toctree::
     :maxdepth: 1

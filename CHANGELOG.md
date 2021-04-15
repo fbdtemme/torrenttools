@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.4.1] - 2021-04-15
-### Added
-* Fix undefined behaviour in verifu command when output is piped.
+### Changed
+* Fix undefined behaviour in verify command when output is piped.
 * Fix missing progress lines for create command when output is piped.
 
 ## [v0.4.0] - 2021-04-10

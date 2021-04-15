@@ -30,6 +30,8 @@ Overview
                                        Multiple trackers will be added in seperate tiers by default.
                                        Use square brackets to groups urls in a single tier:
                                        eg. "url1 [url1 url2]"
+      -g,--announce-group <name>...    Add the announce-urls defined from an announce group specified in the configuration file.
+                                       Multiple groups can be passed. eg. "--announce-group group1 group2"
       -w,--web-seed <url>...           Add one or multiple HTTP/FTP urls as seeds.
       -d,--dht-node <host:port>...     Add one or multiple DHT nodes.
       -c,--comment <string>            Replace the comment.
@@ -79,13 +81,22 @@ Edit the announces of a bittorrent metafile.
 
 .. code-block:: bash
 
-    torrenttools create test-dir --announce "url1" "url2"
+    torrenttools edit test-dir --announce "url1" "url2"
 
 Multiple trackers will be added in seperate tiers by default. Use square brackets to groups urls in a single tier.
 
 .. code-block:: bash
 
     torrenttools create test-dir --announce "[url1 url2]"
+
+
+`` -g,--announce-group``
++++++++++++++++++++++++++
+Add all announces inside a tracker group to the metafile. Thes eopt
+
+.. code-block:: bash
+
+    torrenttools edit test-dir --announce-group "public-trackers"
 
 
 ``-w,--web-seed``
