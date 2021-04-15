@@ -34,15 +34,8 @@ The commandline interface can change at any release prior to 1.0.0.
 ## Performance
 
 Following test were performed on a in in-memory filesystem with 1 MiB piece size 
-and as target a folder with a few linux iso's totaling 19.0 GiB:
-
-* 9.0G | CentOS-Stream-8-x86_64-20201211-dvd1.iso
-* 2.0G | Fedora-Workstation-Live-x86_64-33-1.2.iso
-* 4.0G | openSUSE-Leap-15.2-DVD-x86_64.iso
-* 2.6G | ubuntu-20.04.1-desktop-amd64.iso
-* 998M | ubuntu-20.10-live-server-amd64.iso
-
-The CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
+and as target a file filed with random data totalling 15.0 GiB:
+The tested CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
 
 ![Benchmark](benchmark/benchmark.svg)
 
@@ -54,7 +47,7 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
 ## Packages
 
 Binary and source packages for Fedora 32, Fedora 33, Fedora 34,
-Fedora Rawhide and Centos stream are available in a COPR repo.
+Fedora Rawhide and Centos Stream are available in a COPR repo.
 
 ```shell
 sudo dnf copr enable fbdtemme/torrenttools
@@ -69,8 +62,7 @@ sudo apt-get update
 sudo apt install torrenttools
 ```
 
-A windows installer is available as an asset on the [release](https://github.com/fbdtemme/torrenttools/releases) page.
-
+A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools). 
 
 ## Building
 
@@ -97,12 +89,12 @@ OpenSSL has to be installed on the system in advance.
 Ubuntu 20.04
 
 ```shell
-sudo apt install build-essential git cmake g++-10 libtbb2 libtbb-dev libssl-dev 
+sudo apt install build-essential git cmake g++-10 libssl-dev 
 ```
 
 Fedora 33
 ```shell
-sudo dnf install cmake make g++ git openssl-devel libtbb-devel
+sudo dnf install cmake make g++ git openssl-devel
 ```
 
 ### Configuration
@@ -112,12 +104,12 @@ sudo dnf install cmake make g++ git openssl-devel libtbb-devel
 | TORRENTTOOLS_BUILD_TESTS       | Bool     | Build tests.                 |
 | TORRENTTOOLS_BUILD_DOCS        | Bool     | Build documentation.         |
 | TORRENTTOOLS_INSTALL           | Bool     | Generate an install target.  |
-| DOTTORRENT_CRYPTO_MULTIBUFFER  | Bool     | Enable fast multi buffer hashing. |
+| DOTTORRENT_MB_CRYPTO_LIB       | String   | Pass "isal" for fast multibuffer hashing |
 
 ### Building
 
 This project requires C++20.
-Currently only GCC 10 is supported.
+Currently only GCC 10 or later is supported.
 
 This project can be build as every other project which makes use of the CMake build system.
 

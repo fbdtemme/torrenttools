@@ -1,13 +1,14 @@
-name: Build (Linux)
+name: Linux
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -18,6 +19,19 @@ jobs:
           cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
       - name: Build
         run: cmake --build build --target torrenttools
+
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install build dependencies
+        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev
+      - name: Configure
+        run: mkdir build && cd build &&
+          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON .. .
+      - name: Build
+        run: cmake --build build --target torrenttools-tests
       - name: Test
         run: |
           cd build

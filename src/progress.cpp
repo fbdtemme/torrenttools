@@ -136,6 +136,11 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
             }
             std::this_thread::sleep_for(1s);
         }
+        while (current_file_index < storage.file_count()-1) {
+            // set to 100%
+            ++current_file_index;
+            print_simple_indicator(os, storage, current_file_index, hasher.protocol());
+        }
         os << std::endl;
     }
     hasher.wait();
@@ -144,7 +149,6 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
     auto total_duration = stop_time - start_time;
     print_completion_statistics(os, m, total_duration);
 }
-
 
 void run_with_progress(std::ostream& os, dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
 {
@@ -171,29 +175,29 @@ void run_with_progress(std::ostream& os, dottorrent::storage_verifier& verifier,
     auto start_time = std::chrono::system_clock::now();
     verifier.start();
 
-    std::size_t index = 0;
+    if (storage.file_count() != 0) [[likely]] {
+        while (verifier.bytes_done() < total_file_size) {
+            auto[index, file_bytes_done] = verifier.current_file_progress();
+            auto total_bytes_done = verifier.bytes_done();
 
-    while (verifier.bytes_done() < total_file_size) {
-        auto [index, file_bytes_done] = verifier.current_file_progress();
-        auto total_bytes_done = verifier.bytes_done();
-
-        // Current file has been completed, update last entry for the previous file(s) and move to next one
-        if (index != current_file_index && index < storage.file_count()) {
-            for ( ; current_file_index < index; ) {
-                auto complete_size = storage.at(current_file_index).file_size();
-                indicator->set_per_file_value(complete_size);
-                ++current_file_index;
-                indicator->set_current_file(current_file_index);
+            // Current file has been completed, update last entry for the previous file(s) and move to next one
+            if (index != current_file_index && index < storage.file_count()) {
+                for (; current_file_index < index;) {
+                    auto complete_size = storage.at(current_file_index).file_size();
+                    indicator->set_per_file_value(complete_size);
+                    ++current_file_index;
+                    indicator->set_current_file(current_file_index);
+                }
             }
+            indicator->set_per_file_value(file_bytes_done);
+            indicator->set_total_value(total_bytes_done);
+            std::this_thread::sleep_for(250ms);
         }
-        indicator->set_per_file_value(file_bytes_done);
-        indicator->set_total_value(total_bytes_done);
-        std::this_thread::sleep_for(250ms);
-    }
 
-    indicator->set_total_value(storage.total_file_size());
-    indicator->set_per_file_value( storage.at(current_file_index).file_size());
-    indicator->stop();
+        indicator->set_total_value(storage.total_file_size());
+        indicator->set_per_file_value(storage.at(current_file_index).file_size());
+        indicator->stop();
+    }
     verifier.wait();
 
     tc::format_to(os, tc::ecma48::character_position_absolute);
@@ -229,31 +233,31 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_verifier& ve
 
     std::size_t index = 0;
 
-    print_simple_indicator(os, storage, current_file_index, verifier.protocol());
-    std::flush(os);
-
-    while (verifier.bytes_done() < total_file_size) {
-        auto [index, file_bytes_hashed] = verifier.current_file_progress();
-
-        // Current file has been completed, update last entry for the previous file(s) and move to next one
-        if (index != current_file_index && index < storage.file_count()) {
-            for ( ; current_file_index < index; ) {
-                // set to 100%
-                ++current_file_index;
-                print_simple_indicator(os, storage, current_file_index, verifier.protocol());
-            }
-            std::flush(os);
-        }
-        std::this_thread::sleep_for(1s);
-    }
-
-    for ( ; current_file_index < storage.file_count(); ) {
-        // set to 100%
-        ++current_file_index;
+    if (storage.file_count() != 0) [[likely]] {
         print_simple_indicator(os, storage, current_file_index, verifier.protocol());
-    }
-    os << std::endl;
+        std::flush(os);
 
+        while (verifier.bytes_done() < total_file_size) {
+            auto[index, file_bytes_hashed] = verifier.current_file_progress();
+
+            // Current file has been completed, update last entry for the previous file(s) and move to next one
+            if (index != current_file_index && index < storage.file_count()) {
+                for (; current_file_index < index;) {
+                    // set to 100%
+                    ++current_file_index;
+                    print_simple_indicator(os, storage, current_file_index, verifier.protocol());
+                }
+                std::flush(os);
+            }
+            std::this_thread::sleep_for(1s);
+        }
+        while (current_file_index < storage.file_count()-1) {
+            // set to 100%
+            ++current_file_index;
+            print_simple_indicator(os, storage, current_file_index, verifier.protocol());
+        }
+        os << std::endl;
+    }
     verifier.wait();
 
     auto stop_time = std::chrono::system_clock::now();
