@@ -38,3 +38,6 @@ tracker-groups:
     - udp://tracker.edkj.club:6969/announce
     - udp://tracker.dler.org:6969/announce
     - udp://tracker.blacksparrowmedia.net:6969/announce
+  example-group:
+    - AlphaRatio
+    - TorrentLeech

@@ -589,7 +589,7 @@ TEST_CASE("test create app: announce-group")
     SECTION("announce urls") {
         fs::path expected_destination = tmp_dir.path() / fmt::format("{}.torrent", target.filename().string());
 
-        options.announce_group_list = {{"example-group2"}};
+        options.announce_group_list = {{"public-trackers"}};
         run_create_app(main_options, options);
 
         REQUIRE(fs::exists(expected_destination));
@@ -597,14 +597,14 @@ TEST_CASE("test create app: announce-group")
 
         CHECK(m.is_private() == false);
 
-        CHECK(m.trackers().at(0).url == "udp://tracker.opentrackr.org:1337/announce");
-        CHECK(m.trackers().at(1).url == "udp://www.torrent.eu.org:451/announce");
+        CHECK(m.trackers().at(0).url == "http://tracker.opentrackr.org:1337/announce");
+        CHECK(m.trackers().at(1).url == "udp://tracker.openbittorrent.com:6969/announce");
     }
 
     SECTION("named trackers") {
         fs::path expected_destination = tmp_dir.path() / fmt::format("{}.torrent", target.filename().string());
 
-        options.announce_group_list = {{"example-group1"}};
+        options.announce_group_list = {{"example-group"}};
         run_create_app(main_options, options);
 
         REQUIRE(fs::exists(expected_destination));
