@@ -112,7 +112,7 @@
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
@@ -122,6 +122,8 @@
 <li class="toctree-l1"><a class="reference internal" href="info.html">Info</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pad.html">Pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
@@ -167,6 +169,8 @@ Options:
                                    Multiple trackers will be added in seperate tiers by default.
                                    Use square brackets to groups urls in a single tier:
                                    eg. "url1 [url1 url2]"
+  -g,--announce-group &lt;name&gt;...    Add the announce-urls defined from an announce group specified in the configuration file.
+                                   Multiple groups can be passed. eg. "--announce-group group1 group2"
   -w,--web-seed &lt;url&gt;...           Add one or multiple HTTP/FTP urls as seeds.
   -d,--dht-node &lt;host:port&gt;...     Add one or multiple DHT nodes.
   -c,--comment &lt;string&gt;            Replace the comment.
@@ -212,11 +216,18 @@ The default mode for multi-argument options is replace.</p>
 <div class="section" id="a-announce">
 <h3><code class="docutils literal notranslate"><span class="pre">a,--announce</span></code><a class="headerlink" href="#a-announce" title="Permalink to this headline">¶</a></h3>
 <p>Edit the announces of a bittorrent metafile.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"url1"</span> <span class="s2">"url2"</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools edit test-dir --announce <span class="s2">"url1"</span> <span class="s2">"url2"</span>
 </pre></div>
 </div>
 <p>Multiple trackers will be added in seperate tiers by default. Use square brackets to groups urls in a single tier.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"[url1 url2]"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="g-announce-group">
+<h3>`` -g,–announce-group``<a class="headerlink" href="#g-announce-group" title="Permalink to this headline">¶</a></h3>
+<p>Add all announces inside a tracker group to the metafile. Thes eopt</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools edit test-dir --announce-group <span class="s2">"public-trackers"</span>
 </pre></div>
 </div>
 </div>
@@ -344,6 +355,7 @@ This changes the filename for single file torrents or the root directory name fo
 <li><a class="reference internal" href="#o-output"><code class="docutils literal notranslate"><span class="pre">-o,--output</span></code></a></li>
 <li><a class="reference internal" href="#m-list-mode"><code class="docutils literal notranslate"><span class="pre">-m,--list-mode</span></code></a></li>
 <li><a class="reference internal" href="#a-announce"><code class="docutils literal notranslate"><span class="pre">a,--announce</span></code></a></li>
+<li><a class="reference internal" href="#g-announce-group">`` -g,–announce-group``</a></li>
 <li><a class="reference internal" href="#w-web-seed"><code class="docutils literal notranslate"><span class="pre">-w,--web-seed</span></code></a></li>
 <li><a class="reference internal" href="#d-dht-node-host-port"><code class="docutils literal notranslate"><span class="pre">-d,--dht-node</span> <span class="pre">&lt;host:port&gt;</span></code></a></li>
 <li><a class="reference internal" href="#c-comment"><code class="docutils literal notranslate"><span class="pre">-c,--comment</span></code></a></li>

@@ -112,7 +112,7 @@
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
@@ -122,6 +122,8 @@
 <li class="toctree-l1"><a class="reference internal" href="info.html">Info</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pad.html">Pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
@@ -149,10 +151,10 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create <span class="o">[</span>OPTIONS<span class="o">]</span> &lt;target&gt;
 </pre></div>
 </div>
-<p>Either specify all options first or give the target first followed by all options.
-Overview
-——–</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Create bittorrent metafiles.
+<p>Either specify all options first or give the target first followed by all options.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Create BitTorrent metafiles.
 Usage: torrenttools create [OPTIONS] target
 
 Positionals:
@@ -165,11 +167,12 @@ Options:
   -o,--output &lt;path&gt;               Set the filename and/or output directory of the created file.
                                    [default: &lt;name&gt;.torrent]
                                     Use a path with trailing slash to only set the output directory.
-  --stdout                         Write the metafile to the standard output
   -a,--announce &lt;url&gt;...           Add one or multiple announces urls.
                                    Multiple trackers will be added in seperate tiers by default.
                                    Use square brackets to groups urls in a single tier:
                                     eg. "--announce url1 [url1 url2]"
+  -g,--announce-group &lt;name&gt;...    Add the announce-urls defined from an announce group specified in the configuration file.
+                                   Multiple groups can be passed. eg. "--announce-group group1 group2"
   -w,--web-seed &lt;url&gt;...           Add one or multiple HTTP/FTP urls as seeds.
   -d,--dht-node &lt;host:port&gt;...     Add one or multiple DHT nodes.
   -c,--comment &lt;string&gt;            Add a comment.
@@ -178,7 +181,7 @@ Options:
                                    When no unit is specified block size will be either 2^&lt;n&gt; bytes,
                                    or &lt;n&gt; bytes if n is larger or equal to 16384.
                                    Piece size must be a power of two in range [16K, 64M].
-                                   Leave empty to determine by total file size. [default: auto]
+                                   Leave empty or set to auto to determine by total file size. [default: auto]
   -s,--source &lt;source&gt;             Add a source tag to facilitate cross-seeding.
   -n,--name &lt;name&gt;                 Set the name of the torrent. This changes the filename for single file torrents
                                    or the root directory name for multi-file torrents.
@@ -195,9 +198,9 @@ Options:
   --exclude &lt;regex&gt;...             Do not add files matching given regex to the metafile.
   --include-hidden                 Do not skip hidden files.
   --io-block-size &lt;size[K|M]&gt;      The size of blocks read from storage.
-                                   [default: max(1 MiB, &lt;piece-size&gt;)].
                                    Must be larger or equal to the piece size.
 </pre></div>
+</div>
 </div>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
@@ -233,6 +236,13 @@ with name the name of target directory or file.</p>
 </div>
 <p>Multiple trackers will be added in seperate tiers by default. Use square brackets to groups urls in a single tier.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce <span class="s2">"[url1 url2]"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="g-announce-group">
+<h3>`` -g,–announce-group``<a class="headerlink" href="#g-announce-group" title="Permalink to this headline">¶</a></h3>
+<p>Add all announces inside a tracker group to the metafile.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>torrenttools create test-dir --announce-group <span class="s2">"public-trackers"</span>
 </pre></div>
 </div>
 </div>
@@ -429,10 +439,12 @@ This value must be larger or equal to the piece-size.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Create</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#options">Options</a><ul>
 <li><a class="reference internal" href="#v-protocol"><code class="docutils literal notranslate"><span class="pre">-v,--protocol</span></code></a></li>
 <li><a class="reference internal" href="#o-output"><code class="docutils literal notranslate"><span class="pre">-o,--output</span></code></a></li>
 <li><a class="reference internal" href="#a-announce"><code class="docutils literal notranslate"><span class="pre">-a,--announce</span></code></a></li>
+<li><a class="reference internal" href="#g-announce-group">`` -g,–announce-group``</a></li>
 <li><a class="reference internal" href="#stdout"><code class="docutils literal notranslate"><span class="pre">--stdout</span></code></a></li>
 <li><a class="reference internal" href="#w-web-seed"><code class="docutils literal notranslate"><span class="pre">-w,--web-seed</span></code></a></li>
 <li><a class="reference internal" href="#d-dht-node"><code class="docutils literal notranslate"><span class="pre">-d,--dht-node</span></code></a></li>

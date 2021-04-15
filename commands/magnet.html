@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Pad" href="pad.html" /><link rel="prev" title="Show" href="show.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Bencode format" href="../topics/bencode.html" /><link rel="prev" title="Pad" href="pad.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>Verify - torrenttools - 0.4.1</title>
+        <title>Magnet - torrenttools - 0.4.1</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -89,7 +89,7 @@
       <a href="../index.html"><div class="brand">torrenttools - 0.4.1</div></a>
     </div>
     <div class="header-right">
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
     </div>
@@ -121,9 +121,9 @@
 <li class="toctree-l1"><a class="reference internal" href="edit.html">Edit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="info.html">Info</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Verify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pad.html">Pad</a></li>
-<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Magnet</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
@@ -141,26 +141,24 @@
   <main class="main">
     <div class="content">
       <article role="main">
-        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="verify">
-<span id="verify-command"></span><h1>Verify<a class="headerlink" href="#verify" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Verify local data against bittorrent metafiles.
-Usage: torrenttools verify [OPTIONS] metafile target
+        <div class="section" id="magnet">
+<span id="magnet-command"></span><h1>Magnet<a class="headerlink" href="#magnet" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Usage: torrenttools magnet [OPTIONS] metafile
 
 Positionals:
-  metafile &lt;path&gt;                  Metafile path.
-  target &lt;path&gt;                    Target filename or directory to verify pieces for.
+  metafile &lt;path&gt;                  Target bittorrent metafile.
 
 Options:
   -h,--help                        Print this help message and exit
-  -v,--protocol &lt;protocol&gt;         Set the bittorrent protocol to use. Options are 1, 2 or hybrid. [default: 1]
-  -t,--threads &lt;n&gt;                 Set the number of threads to use for hashing. [default: 2]
+  -v,--protocol &lt;protocol&gt;         Include only the infohash of the specified protocol for
+                                   hybrid metafiles. Options are: 1, 2, hybrid [Default: hybrid].
+                                   This option is only used for hybrid metafiles.
+                                   When hybrid is specified, hybrid magnet URI's will
+                                   include both the v1 and v2 infohash.
 </pre></div>
-</div>
 </div>
 </div>
 
@@ -168,23 +166,23 @@ Options:
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="pad.html">
+          <a class="next-page" href="../topics/bencode.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Pad</div>
+                <div class="title">Bencode format</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="show.html">
+          <a class="prev-page" href="pad.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Show</div>
+                <div class="title">Pad</div>
                 
               </div>
             </a>
@@ -198,7 +196,7 @@ Options:
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../_sources/commands/verify.rst.txt"
+            <a class="muted-link" href="../_sources/commands/magnet.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -206,27 +204,8 @@ Options:
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            Contents
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Verify</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

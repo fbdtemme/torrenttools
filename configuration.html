@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Other metafile utilities" href="comparison.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>Named trackers - torrenttools - 0.4.1</title>
+        <title>Configuration - torrenttools - 0.4.1</title>
       <link rel="stylesheet" href="_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
@@ -112,7 +112,7 @@
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="why-torrenttools.html">Features</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Named trackers</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparison.html">Other metafile utilities</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
@@ -122,6 +122,8 @@
 <li class="toctree-l1"><a class="reference internal" href="commands/info.html">Info</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/verify.html">Verify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands/pad.html">Pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands/magnet.html">Magnet</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
@@ -142,11 +144,13 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="named-trackers">
-<h1>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h1>
+        <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="named-trackers">
+<h2>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h2>
 <p>“Named trackers” are trackers which are declared in the trackers.json configuration file.</p>
 <div class="section" id="announce-url-substitution">
-<h2>Announce url substitution<a class="headerlink" href="#announce-url-substitution" title="Permalink to this headline">¶</a></h2>
+<h3>Announce url substitution<a class="headerlink" href="#announce-url-substitution" title="Permalink to this headline">¶</a></h3>
 <p>When a tracker is defined in the trackers.json file you can specify the full name or abbreviation to
 the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> option in the create or edit command.
 The tracker name will be replaced by the announce url in the BitTorrent metafile.
@@ -174,17 +178,36 @@ The announce-url parameter will be replaced by the value defined in the config.y
 </div>
 </div>
 <div class="section" id="private-flag-selection">
-<h2>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h2>
+<h3>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h3>
 <p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter
 the private flag will be set according to the value specified in the tracker database.
 The user can always override this value by explicitly passing a different value to the <code class="docutils literal notranslate"><span class="pre">-p|-private</span></code> option.</p>
 </div>
 <div class="section" id="bittorrent-metafile-default-filename">
-<h2>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h2>
+<h3>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h3>
 <p>Named trackers will prefix the abbreviation between square brackets to the
 default filename of the generated BitTorrent metafile.
 For a tracker named PrivateTracker and abbreviation PT the default filename for a target directory “content”
 would be: <code class="docutils literal notranslate"><span class="pre">[PT]example.torrent</span></code>.</p>
+</div>
+</div>
+<div class="section" id="tracker-groups">
+<h2>Tracker groups<a class="headerlink" href="#tracker-groups" title="Permalink to this headline">¶</a></h2>
+<p>A tracker group is an alias that refers to a group of trackers.
+Instead of having to pass each tracker on the commandline, the name of the alias can be used to add all trackers in
+the group to a BitTorrent metafile.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Definition of “public-trackers” tracker group containing three trackers.</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tracker-groups</span><span class="p">:</span>
+  <span class="nt">public-trackers</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">http://tracker.opentrackr.org:1337/announce</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">udp://tracker.openbittorrent.com:6969/announce</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">udp://exodus.desync.com:6969/announce</span>
+</pre></div>
+</div>
+</div>
+<p>Named trackers can be used inside the definition of the tracker group.
+A list with 20 public trackers named “public-trackers” is included in the default configuration file.</p>
 </div>
 </div>
 
@@ -222,7 +245,7 @@ would be: <code class="docutils literal notranslate"><span class="pre">[PT]examp
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="_sources/named-trackers.rst.txt"
+            <a class="muted-link" href="_sources/configuration.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -242,10 +265,14 @@ would be: <code class="docutils literal notranslate"><span class="pre">[PT]examp
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Named trackers</a><ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#named-trackers">Named trackers</a><ul>
 <li><a class="reference internal" href="#announce-url-substitution">Announce url substitution</a></li>
 <li><a class="reference internal" href="#private-flag-selection">Private flag selection</a></li>
 <li><a class="reference internal" href="#bittorrent-metafile-default-filename">BitTorrent metafile default filename</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tracker-groups">Tracker groups</a></li>
 </ul>
 </li>
 </ul>

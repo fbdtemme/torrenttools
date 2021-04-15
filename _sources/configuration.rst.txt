@@ -1,3 +1,6 @@
+Configuration
++++++++++++++
+
 Named trackers
 ===============
 
@@ -48,5 +51,23 @@ For a tracker named PrivateTracker and abbreviation PT the default filename for 
 would be: ``[PT]example.torrent``.
 
 
+Tracker groups
+=============
+
+A tracker group is an alias that refers to a group of trackers.
+Instead of having to pass each tracker on the commandline, the name of the alias can be used to add all trackers in
+the group to a BitTorrent metafile.
+
+.. code-block:: yaml
+    :caption: Definition of "public-trackers" tracker group containing three trackers.
+
+    tracker-groups:
+      public-trackers:
+        - http://tracker.opentrackr.org:1337/announce
+        - udp://tracker.openbittorrent.com:6969/announce
+        - udp://exodus.desync.com:6969/announce
+
+Named trackers can be used inside the definition of the tracker group.
+A list with 20 public trackers named "public-trackers" is included in the default configuration file.
 
 

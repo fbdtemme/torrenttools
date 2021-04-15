@@ -112,7 +112,7 @@
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../why-torrenttools.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../named-trackers.html">Named trackers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../comparison.html">Other metafile utilities</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Commands</span></p>
@@ -122,6 +122,8 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Info</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show.html">Show</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verify.html">Verify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pad.html">Pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnet.html">Magnet</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Knowledge base</span></p>
 <ul>
@@ -412,6 +414,29 @@ The torrent from the previous example will output as follows</p>
 <h3><code class="docutils literal notranslate"><span class="pre">--show-pieces</span></code><a class="headerlink" href="#show-pieces" title="Permalink to this headline">¶</a></h3>
 <p>This options must be combined with <code class="docutils literal notranslate"><span class="pre">--raw</span></code>. Instead of a string like &lt;20 piece hashes&gt; a full list with all pieces in
 hexadecimal representation will be printed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="s2">"pieces"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"&lt;piece: 0, SHA1: 23fb3eeb2fb05ab3359f6c27ca2d6e6630f31469&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 1, SHA1: f29c9d5fe198834cc67a95c86a14526a7776e916&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 2, SHA1: 6fc9a5304d0206edce9243ac4ab86c442f38d4e4&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 3, SHA1: 00c48068e56dcd8871e2d1056365688dbe67c23e&gt;"</span><span class="p">,</span>
+        <span class="o">...</span>
+        <span class="o">...</span>
+        <span class="s2">"&lt;piece: 1713, SHA1: 46b4d380397c28b8f0f588b3a3069adb4abb4ff9&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 1714, SHA1: 81a78f2ca2bebdfc662722b943736863f342ca3c&gt;"</span>
+   <span class="p">]</span>
+<span class="p">},</span>
+<span class="s2">"piece layers"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"&lt;merkle root 07e3096be336c1383533bba2d01f0a7ca5fbc5c127fb671d0fbe8bfc38ec9972&gt;"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"&lt;piece: 0, SHA256: 0b28e608a4ef66e5da29939d6b39d82a95e68f8a&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 1, SHA256: c917113c2c577995f153eae664166501e973d43a&gt;"</span><span class="p">,</span>
+        <span class="s2">"&lt;piece: 2, SHA256: d72af73e0a219cee3ceea72f7b6630dbf5401642&gt;"</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">],</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="show-padding-files">
 <h3><code class="docutils literal notranslate"><span class="pre">--show-padding-files</span></code><a class="headerlink" href="#show-padding-files" title="Permalink to this headline">¶</a></h3>
