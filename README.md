@@ -34,15 +34,8 @@ The commandline interface can change at any release prior to 1.0.0.
 ## Performance
 
 Following test were performed on a in in-memory filesystem with 1 MiB piece size 
-and as target a folder with a few linux iso's totaling 19.0 GiB:
-
-* 9.0G | CentOS-Stream-8-x86_64-20201211-dvd1.iso
-* 2.0G | Fedora-Workstation-Live-x86_64-33-1.2.iso
-* 4.0G | openSUSE-Leap-15.2-DVD-x86_64.iso
-* 2.6G | ubuntu-20.04.1-desktop-amd64.iso
-* 998M | ubuntu-20.10-live-server-amd64.iso
-
-The CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
+and as target a file filed with random data totalling 15.0 GiB:
+The tested CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
 
 ![Benchmark](benchmark/benchmark.svg)
 
