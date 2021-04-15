@@ -136,6 +136,11 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
             }
             std::this_thread::sleep_for(1s);
         }
+        while (current_file_index < storage.file_count()-1) {
+            // set to 100%
+            ++current_file_index;
+            print_simple_indicator(os, storage, current_file_index, hasher.protocol());
+        }
         os << std::endl;
     }
     hasher.wait();
