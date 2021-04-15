@@ -282,6 +282,7 @@ This options must be combined with ``--raw``. Instead of a string like <20 piece
 hexadecimal representation will be printed.
 
 .. code-block::
+
     {
        "pieces": [
             "<piece: 0, SHA1: 23fb3eeb2fb05ab3359f6c27ca2d6e6630f31469>",
