@@ -1,5 +1,5 @@
 %global forgeurl https://www.github.com/fbdtemme/torrenttools
-%global tag      0.4.0
+%global tag      0.4.1
 Version:         %{tag}
 
 # Verbose processing. Remove -i -v before commit
@@ -70,6 +70,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Thu Apr 15 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.4.1-1
+- Update to 0.4.1
+
 * Sat Apr 10 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.4.0-2
 - Fix ISA-L compile switch
 
