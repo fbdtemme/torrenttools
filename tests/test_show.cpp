@@ -274,6 +274,23 @@ TEST_CASE("test show piece-size")
 }
 
 
+TEST_CASE("test show piece-count")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+
+    main_app_options main_options {};
+    show_app_options options{
+            .metafile = fedora_torrent
+    };
+
+    SECTION("v1") {
+        run_show_piece_count_subapp(main_options, options);
+        CHECK(buffer.str() == "7381\n");
+    }
+}
+
+
 TEST_CASE("test show size")
 {
     std::stringstream buffer {};
