@@ -107,7 +107,6 @@ endif()
 
 if (UNIX)
     set(torrenttools_sysconf_dir        "${SYSCONF_INSTALL_DIR}/torrenttools")
-    set(torrenttools_bin_dir             ${CMAKE_INSTALL_BINDIR_FULL})
     set(torrenttools_install_sysconf_dir ${torrenttools_sysconf_dir})
     set(torrenttools_install_bin_dir     ${CMAKE_INSTALL_BINDIR})
 elseif (WIN32)

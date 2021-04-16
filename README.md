@@ -62,6 +62,14 @@ sudo apt-get update
 sudo apt install torrenttools
 ```
 
+A source package for Arch linux is available on AUR.
+
+```shell
+git clone https://aur.archlinux.org/torrenttools.git
+cd torrenttools
+makepkg -is
+```
+
 A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools). 
 
 ## Building
