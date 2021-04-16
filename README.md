@@ -26,6 +26,10 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 * Support for announce substitution parameters. 
 * Fast multi-buffer hashing with Intel ISA-L.
 
+## Example
+
+![](resources/images/create-demo.gif)
+
 ## Status
 
 This project is under development. 
