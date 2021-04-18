@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Categories=Utility
+Name=torrenttools
+Comment=Commandline tool for inspecting, creating and editing BitTorrent metafiles.
+Exec=torrenttools
+Icon=torrenttools
+Terminal=true
