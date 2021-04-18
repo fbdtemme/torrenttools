@@ -96,7 +96,7 @@ This library depends on following projects:
 *  [fmt](https://github.com/fmtlib/fmt)
 *  [nlohmann/json](https://github.com/nlohmann/json)
 *  [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-*  [bencode](https://github/com/fbdtemme/bencode)
+*  [bencode](https://github.com/fbdtemme/bencode)
 *  [date](https://github.com/HowardHinnant/date)
 *  [OpenSSL](https://github.com/openssl/openssl) 
 *  Optional: [ISA-L Crypto](https://github.com/intel/isa-l_crypto)
