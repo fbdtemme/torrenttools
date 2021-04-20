@@ -176,9 +176,16 @@ The announce-url parameter will be replaced by the value defined in the config.y
 </div>
 <div class="section" id="private-flag-selection">
 <h3>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h3>
-<p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter
+<p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter,
 the private flag will be set according to the value specified in the tracker database.
 The user can always override this value by explicitly passing a different value to the <code class="docutils literal notranslate"><span class="pre">-p|-private</span></code> option.</p>
+</div>
+<div class="section" id="source-field">
+<h3>Source field<a class="headerlink" href="#source-field" title="Permalink to this headline">¶</a></h3>
+<p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter,
+the source field will be set to the full name of the tracker if the tracker is marked as a private tracker.
+The source tag can be overridden on the commandline or removed by passing the <code class="docutils literal notranslate"><span class="pre">-s|--source|-s</span></code>
+option with an empty string.</p>
 </div>
 <div class="section" id="bittorrent-metafile-default-filename">
 <h3>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h3>
@@ -266,6 +273,7 @@ A list with 20 public trackers named “public-trackers” is included in the de
 <li><a class="reference internal" href="#named-trackers">Named trackers</a><ul>
 <li><a class="reference internal" href="#announce-url-substitution">Announce url substitution</a></li>
 <li><a class="reference internal" href="#private-flag-selection">Private flag selection</a></li>
+<li><a class="reference internal" href="#source-field">Source field</a></li>
 <li><a class="reference internal" href="#bittorrent-metafile-default-filename">BitTorrent metafile default filename</a></li>
 </ul>
 </li>
