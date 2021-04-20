@@ -148,6 +148,7 @@ void create_general_info(std::ostream& os,
             "Protocol version: {protocol_version}\n"
             "{infohash_string}"
             "Piece size:       {piece_size}\n"
+            "Piece count:      {piece_count}\n"
             "Created by:       {created_by}\n"
             "Created on:       {creation_date}\n"
             "Private:          {private}\n"
@@ -183,6 +184,7 @@ void create_general_info(std::ostream& os,
             fmt::arg("protocol_version", protocol_version_string),
             fmt::arg("infohash_string",  info_hash_string),
             fmt::arg("piece_size",       piece_size),
+            fmt::arg("piece_count",      m.piece_count()),
             fmt::arg("private",          m.is_private()),
             fmt::arg("created_by",       m.created_by()),
             fmt::arg("creation_date",    creation_date),
