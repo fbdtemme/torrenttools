@@ -38,9 +38,17 @@ The announce-url parameter will be replaced by the value defined in the config.y
 Private flag selection
 ----------------------
 
-When passing the full name or abbreviation to the ``-a|--announce`` parameter
+When passing the full name or abbreviation to the ``-a|--announce`` parameter,
 the private flag will be set according to the value specified in the tracker database.
 The user can always override this value by explicitly passing a different value to the ``-p|-private`` option.
+
+Source field
+-------------
+
+When passing the full name or abbreviation to the ``-a|--announce`` parameter,
+the source field will be set to the full name of the tracker if the tracker is marked as a private tracker.
+The source tag can be overridden on the commandline or removed by passing the ``-s|--source|-s``
+option with an empty string.
 
 BitTorrent metafile default filename
 -------------------------------------
@@ -52,7 +60,7 @@ would be: ``[PT]example.torrent``.
 
 
 Tracker groups
-=============
+===============
 
 A tracker group is an alias that refers to a group of trackers.
 Instead of having to pass each tracker on the commandline, the name of the alias can be used to add all trackers in

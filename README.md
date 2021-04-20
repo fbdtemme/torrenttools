@@ -1,4 +1,4 @@
-![](resources/images/torrenttools.svg)
+![](resources/images/torrenttools-banner.svg)
 
 ![build](https://github.com/fbdtemme/torrenttools/workflows/build/badge.svg)
 [![Copr build status](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/package/torrenttools/)
@@ -26,6 +26,10 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 * Support for announce substitution parameters. 
 * Fast multi-buffer hashing with Intel ISA-L.
 
+## Example
+
+![](resources/images/create-demo.gif)
+
 ## Status
 
 This project is under development. 
@@ -46,15 +50,16 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
 
 ## Packages
 
-Binary and source packages for Fedora 32, Fedora 33, Fedora 34,
-Fedora Rawhide and Centos Stream are available in a COPR repo.
+Binary and source packages for Fedora 32, Fedora 33, Fedora 34 and Fedora Rawhide and CentOS
+stream are available in a [COPR repo](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/).
 
 ```shell
 sudo dnf copr enable fbdtemme/torrenttools
 sudo dnf install torrenttools
 ```
 
-Binary and source packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available in a launchpad repo.
+Binary and source packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available 
+as a PPA via [launchpad](https://launchpad.net/torrenttools).
 
 ```shell
 sudo add-apt-repository ppa:fbdtemme/torrenttools
@@ -62,7 +67,7 @@ sudo apt-get update
 sudo apt install torrenttools
 ```
 
-A source package for Arch linux is available on AUR.
+A source package for Arch linux is available on [AUR](https://aur.archlinux.org/packages/torrenttools/).
 
 ```shell
 git clone https://aur.archlinux.org/torrenttools.git
@@ -71,6 +76,12 @@ makepkg -is
 ```
 
 A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools). 
+
+```shell
+docker pull fbdtemme/torrenttools
+```
+
+An AppImage is available for download as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
 
 ## Building
 
@@ -85,24 +96,26 @@ This library depends on following projects:
 *  [fmt](https://github.com/fmtlib/fmt)
 *  [nlohmann/json](https://github.com/nlohmann/json)
 *  [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-*  [bencode](https://github/com/fbdtemme/bencode)
+*  [bencode](https://github.com/fbdtemme/bencode)
 *  [date](https://github.com/HowardHinnant/date)
-*  [OpenSSL](https://github.com/openssl/openssl) or [ISA-L Crypto](https://github.com/intel/isa-l_crypto)
+*  [OpenSSL](https://github.com/openssl/openssl) 
+*  Optional: [ISA-L Crypto](https://github.com/intel/isa-l_crypto)
 
 Almost all dependencies can be fetched from github during configure time or can be installed manually.
 OpenSSL has to be installed on the system in advance.
 
 ### Installing build dependencies
 
-Ubuntu 20.04
+Ubuntu
 
 ```shell
 sudo apt install build-essential git cmake g++-10 libssl-dev 
 ```
 
-Fedora 33
+Fedora/RHEL/CentOS
+
 ```shell
-sudo dnf install cmake make g++ git openssl-devel
+sudo dnf install cmake make g++ git openssl-devel automake autoconf
 ```
 
 ### Configuration

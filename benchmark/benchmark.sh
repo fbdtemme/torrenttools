@@ -101,6 +101,25 @@ function benchmark_torf_cli()
     return;
 }
 
+function benchmark_buildtorrent()
+{
+    target="$1"
+    threads="$2"
+    rm *.torrent
+    out="$(time buildtorrent --piecesize 20 --announce dummy "$target" output 1> /dev/null 2> /dev/null)"
+    echo "$out"
+    return;
+}
+
+function benchmark_maketorrent()
+{
+    target="$1"
+    threads="$2"
+    rm *.torrent
+    out="$(time maketorrent --piece-length 20 --announce dummy "$target" 1> /dev/null 2> /dev/null)"
+    echo "$out"
+    return;
+}
 
 
 cd "$working_dir"
@@ -125,6 +144,10 @@ elif [[ $program_name == "maketorrent" ]]; then
     benchmark_maketorrent "$target" "$threads"
 elif [[ $program_name == "torf-cli" ]]; then
     benchmark_torf_cli "$target" "$threads"
+elif [[ $program_name == "buildtorrent" ]]; then
+    benchmark_buildtorrent "$target" "$threads"
+elif [[ $program_name == "maketorrent" ]]; then
+    benchmark_buildtorrent "$target" "$threads"
 else 
     echo "Error: Invalid program name: $program_name"
 fi
