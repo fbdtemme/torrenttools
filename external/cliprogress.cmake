@@ -12,7 +12,7 @@ endif()
 set(CLIPROGRESS_BUILD_TESTING OFF)
 
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/cliprogress)
-    message(STATUS "cliprogress source directory found")
+    log_dir_found("cliprogress")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/cliprogress)
     set(cliprogress_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/cliprogress)
 else()
