@@ -2,5 +2,4 @@ venv/*
 **/.idea/*
 **/.vscode/*
 **/cmake-build-*/*
-out/*
 .vs/*
