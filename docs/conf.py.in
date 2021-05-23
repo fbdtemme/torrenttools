@@ -8,7 +8,7 @@ source_encoding = 'utf-8'
 extensions = ["furo"]
 master_doc = "index"
 html_theme = "furo"
-html_logo  = "@CMAKE_SOURCE_DIR@/resources/images/torrenttools-icon.svg"
+html_logo  = "@CMAKE_SOURCE_DIR@/resources/icons/scalable/torrenttools.svg"
 html_title = "torrenttools - @CMAKE_PROJECT_VERSION@"
 
 
