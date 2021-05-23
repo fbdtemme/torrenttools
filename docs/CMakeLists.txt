@@ -17,7 +17,9 @@ set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 # - Our doc files have been updated
 # - The Sphinx config has been updated
 
-file(GLOB_RECURSE SPHINX_DOC_FILES ${CMAKE_CURRENT_LIST_DIR}/**.rst)
+file(GLOB_RECURSE SPHINX_RST_FILES ${CMAKE_CURRENT_LIST_DIR}/**.rst)
+file(GLOB_RECURSE SPHINX_CSV_FILES ${CMAKE_CURRENT_LIST_DIR}/**.csv)
+list(APPEND SPHINX_DOC_FILES ${SPHINX_RST_FILES} ${SPHINX_CSV_FILES})
 
 add_custom_command(
         OUTPUT  ${SPHINX_INDEX_FILE}
