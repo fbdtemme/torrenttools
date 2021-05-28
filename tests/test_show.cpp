@@ -211,13 +211,13 @@ TEST_CASE("test show infohash")
         SECTION("protocol - hybrid") {
         options.infohash_protocol = dt::protocol::hybrid;
         run_show_infohash_subapp(main_options, options);
-            CHECK(buffer.str() == "8c9a2f583949c757c32e085413b581067eed47d0\n"
+            CHECK(buffer.str() == "631a31dd0a46257d5078c0dee4e66e26f73e42ac\n"
                                   "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb\n");
         }
         SECTION("protocol - v1") {
             options.infohash_protocol = dt::protocol::v1;
             run_show_infohash_subapp(main_options, options);
-            CHECK(buffer.str() == "8c9a2f583949c757c32e085413b581067eed47d0\n");
+            CHECK(buffer.str() == "631a31dd0a46257d5078c0dee4e66e26f73e42ac\n");
         }
         SECTION("protocol - v2") {
             options.infohash_protocol = dt::protocol::v2;

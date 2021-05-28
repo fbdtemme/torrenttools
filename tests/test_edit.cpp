@@ -92,7 +92,7 @@ TEST_CASE("test edit app argument parsing")
 
             CHECK(edit_options.dht_nodes.has_value());
             CHECK(edit_options.dht_nodes->size() == 1);
-            CHECK(edit_options.dht_nodes->at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
+            CHECK(edit_options.dht_nodes->at(0) == dt::dht_node{"192.169.0.100", 6464});
         }
 
         SECTION("multiple dht node") {
@@ -101,8 +101,8 @@ TEST_CASE("test edit app argument parsing")
 
             CHECK(edit_options.dht_nodes.has_value());
             CHECK(edit_options.dht_nodes->size() == 2);
-            CHECK(edit_options.dht_nodes->at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
-            CHECK(edit_options.dht_nodes->at(1) == dt::dht_node{.url="8.8.8.8", .port=80});
+            CHECK(edit_options.dht_nodes->at(0) == dt::dht_node("192.169.0.100", 6464));
+            CHECK(edit_options.dht_nodes->at(1) == dt::dht_node("8.8.8.8", 80));
         }
 
         SECTION("bad dht node") {
@@ -608,7 +608,7 @@ TEST_CASE("test edit created-by")
     fs::path output = fs::path(tmp_dir) / "test-edit-create-by.torrent";
     edit_app_options options {
             .metafile = fedora_torrent,
-            .destination = output,
+            .destination = output
     };
 
     SECTION("test update of created by on edit") {

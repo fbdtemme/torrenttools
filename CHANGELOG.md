@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.5.0] - UNRELEASED
+### Changed
+* Fix invalid v1 infohash reporting for hybrid torrents.
+* Add support for BEP 38: Finding Local Data Via Torrent File Hints (#9).
+* Add support for BEP-17: http-seeding (#8).
+
 ## [v0.4.1] - 2021-04-15
 ### Changed
 * Fix undefined behaviour in verify command when output is piped.

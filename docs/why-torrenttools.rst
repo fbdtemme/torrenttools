@@ -1,12 +1,12 @@
 Features
 ========
 
-* **Multiple subcommand**:
+* **Multiple subcommands**:
     Torrenttools has multiple subcommands to satisfy all kinds of BitTorrent metafile task. Not only creating
     torrent files, but also editing and inspecting metafiles is supported.
 
 * **v2 support**:
-    Torrenttools is ready for the new v2 protocol with support for creating hybrid and v2-only metafiles.
+    Torrenttools is ready for the new v2 protocol with support for hybrid and v2-only metafiles.
 
 * **Multi-threaded hashing**:
     Generating hashes of data is fully asynchronous to fully leverage fast storage.
