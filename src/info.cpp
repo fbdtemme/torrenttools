@@ -236,6 +236,8 @@ void create_general_info(std::ostream& os,
     }
     std::vector<std::string> collections(m.collections().begin(), m.collections().end());
 
+    fmt::print(os, format_indented_list("Web seeds:", m.web_seeds(), options));
+    fmt::print(os, format_indented_list("HTTP seeds:", m.http_seeds(), options));
     fmt::print(os, format_indented_list("Similar torrents:", similar_torrents_infohashes, options));
     fmt::print(os, format_indented_list("Collections:", collections, options));
     fmt::print(os, "\n");
