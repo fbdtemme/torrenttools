@@ -112,6 +112,27 @@ auto format_multiline(std::string_view key,
     return result;
 }
 
+std::string format_indented_list(
+        const std::string& key,
+        const std::vector<std::string>& values,
+        const formatting_options& options)
+{
+    std::string result;
+    auto out = std::back_inserter(result);
+
+    if (values.empty()) {
+        fmt::format_to(out, options.entry_format, key, "");
+        return result;
+    }
+
+    fmt::format_to(out, options.entry_format, key, values.at(0));
+    for (std::size_t i = 1; i < values.size(); ++i) {
+        fmt::format_to(out, options.entry_continuation_format, values.at(i));
+    }
+    return result;
+}
+
+
 // Pass protocol_version explicitly since not yet hashed torrent cannot query the protocol from
 // the file_storage.
 void create_general_info(std::ostream& os,
@@ -154,10 +175,10 @@ void create_general_info(std::ostream& os,
             "Private:          {private}\n"
             "Name:             {name}\n"
             "Source:           {source}\n"
-            "Comment:          {comment}\n\n"
+            "Comment:          {comment}\n"
     );
 
-    // Torrent file is hashed so we can return to infohash
+    // Check if torrent file is hashed so we can return to infohash
     std::string info_hash_string {};
     if (auto protocol = metafile.storage().protocol(); protocol != dt::protocol::none) {
         if ((protocol & dt::protocol::hybrid) == dt::protocol::hybrid ) {
@@ -179,6 +200,8 @@ void create_general_info(std::ostream& os,
         }
     }
 
+
+
     fmt::format_to(out, general_template,
             fmt::arg("metafile_path",    metafile_path.string()),
             fmt::arg("protocol_version", protocol_version_string),
@@ -192,6 +215,30 @@ void create_general_info(std::ostream& os,
             fmt::arg("source",           m.source()),
             fmt::arg("comment",          m.comment())
     );
+
+    std::vector<std::string> similar_torrents_infohashes{};
+    for (const auto& k: m.similar_torrents()) {
+        switch (k.version()) {
+        case dt::protocol::v1: {
+            similar_torrents_infohashes.push_back(k.v1().hex_string());
+            break;
+        }
+        case dt::protocol::v2: {
+            similar_torrents_infohashes.push_back(k.v2().hex_string());
+            break;
+        }
+        case dt::protocol::hybrid: {
+            similar_torrents_infohashes.push_back(k.v1().hex_string());
+            similar_torrents_infohashes.push_back(k.v2().hex_string());
+            break;
+        }
+        }
+    }
+    std::vector<std::string> collections(m.collections().begin(), m.collections().end());
+
+    fmt::print(os, format_indented_list("Similar torrents:", similar_torrents_infohashes, options));
+    fmt::print(os, format_indented_list("Collections:", collections, options));
+    fmt::print(os, "\n");
 
     format_announces(os, metafile);
 

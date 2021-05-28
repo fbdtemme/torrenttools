@@ -8,6 +8,9 @@
 #include <date/date.h>
 
 #include "dottorrent/serialization/path.hpp"
+#include "dottorrent/metafile.hpp"
+#include "dottorrent/info_hash.hpp"
+
 
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
@@ -19,7 +22,7 @@
 
 namespace rng = std::ranges;
 namespace dt = dottorrent;
-
+namespace fs = std::filesystem;
 
 using namespace dottorrent::literals;
 static std::string err_msg = "Invalid value {} for option {}: {}.";
@@ -457,4 +460,53 @@ bool parse_explicit_flag(std::string_view option, const std::vector<std::string>
         // set implicit private for flag like behavior.
         return true;
     }
+}
+
+std::vector<dt::info_hash>
+similar_transformer(std::string_view option, const std::vector<std::string>& v)
+{
+    std::vector<dt::info_hash> out {};
+
+    for (const auto& s:  v) {
+        // extract infohash if a metafile is passed:
+        if (fs::exists(s)) {
+            auto m = dt::load_metafile(fs::path(s));
+
+            switch (m.storage().protocol()) {
+            case dt::protocol::v1: {
+                out.emplace_back(dt::info_hash_v1(m));
+                break;
+            }
+            case dt::protocol::hybrid: {
+                out.emplace_back(dt::info_hash_v1(m));
+                out.emplace_back(dt::info_hash_v2(m));
+                break;
+            }
+            case dt::protocol::v2: {
+                out.emplace_back(dt::info_hash_v2(m));
+                break;
+            }
+            default:
+                throw std::invalid_argument("invalid protocol version");
+            }
+        }
+        // otherwise threat as a hexadecimal infohash string
+        else {
+            // check if it is a valid v1 hexadecimal infohash
+            auto size = s.size();
+            if (size == dt::sha1_hash::size_hex) {
+                auto h = dt::make_hash_from_hex<dt::sha1_hash>(s);
+                out.emplace_back(h);
+            }
+            else if (size == dt::sha256_hash::size_hex) {
+                auto h = dt::make_hash_from_hex<dt::sha256_hash>(s);
+                out.emplace_back(h);
+            }
+            else {
+                throw std::invalid_argument("Invalid hexadecimal formatted infohash: invalid size for v1 or v2 metafile");
+            }
+        }
+    }
+
+    return out;
 }
