@@ -162,6 +162,7 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
 
+    update_announce_group(m, main_options, options);
     update_announces(m, main_options, options);
     update_web_seeds(m, options);
     update_dht_nodes(m, options);
