@@ -319,7 +319,7 @@ void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
         return;
     }
     auto dht_nodes = *options.dht_nodes;
-    const auto add_dht_nodes = [] (dt::metafile& m, const std::vector<dt::dht_node> nodes) {
+    const auto add_dht_nodes = [] (dt::metafile& m, const std::vector<dt::dht_node>& nodes) {
         for (const auto& n : nodes) { m.add_dht_node(n); }
     };
 
