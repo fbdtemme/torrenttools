@@ -89,14 +89,14 @@ TEST_CASE("test magnet command")
         SECTION("hybrid magnet url") {
             options.protocol = dt::protocol::hybrid;
             run_magnet_app(main_options, options);
-            CHECK(buffer.str() == "magnet:?xt=urn:btih:8c9a2f583949c757c32e085413b581067eed47d0"
+            CHECK(buffer.str() == "magnet:?xt=urn:btih:631a31dd0a46257d5078c0dee4e66e26f73e42ac"
                                   "&xt=urn:btmh:1220d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb"
                                   "&dn=bittorrent-v1-v2-hybrid-test\n");
         }
         SECTION("v1 magnet url") {
             options.protocol = dt::protocol::v1;
             run_magnet_app(main_options, options);
-            CHECK(buffer.str() == "magnet:?xt=urn:btih:8c9a2f583949c757c32e085413b581067eed47d0"
+            CHECK(buffer.str() == "magnet:?xt=urn:btih:631a31dd0a46257d5078c0dee4e66e26f73e42ac"
                                   "&dn=bittorrent-v1-v2-hybrid-test\n");
         }
         SECTION("v2 magnet url") {

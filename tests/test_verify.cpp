@@ -109,7 +109,7 @@ TEST_CASE("test verify app: v2 torrent")
     SECTION("verify ") {
         verify_app_options verify_options {};
 
-        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources.torrent";
+        verify_options.metafile = fs::path(TEST_RESOURCES_DIR) / "resources-hybrid.torrent";
         verify_options.files_root_directory = fs::path(TEST_RESOURCES_DIR);
         verify_options.threads = 1;
         verify_options.protocol_version = dt::protocol::v2;
