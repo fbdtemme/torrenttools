@@ -97,7 +97,7 @@ TEST_CASE("test create app argument parsing")
             PARSE_ARGS(cmd);
 
             CHECK(create_options.dht_nodes.size() == 1);
-            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
+            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{"192.169.0.100", 6464});
         }
 
         SECTION("multiple dht node") {
@@ -105,8 +105,8 @@ TEST_CASE("test create app argument parsing")
             PARSE_ARGS(cmd);
 
             CHECK(create_options.dht_nodes.size() == 2);
-            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
-            CHECK(create_options.dht_nodes.at(1) == dt::dht_node{.url="8.8.8.8", .port=80});
+            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{"192.169.0.100", 6464});
+            CHECK(create_options.dht_nodes.at(1) == dt::dht_node{"8.8.8.8", 80});
         }
 
         SECTION("bad dht node") {
@@ -511,6 +511,97 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.protocol_version == dt::protocol::v2);
         }
     }
+    SECTION("similar") {
+        SECTION("single infohash") {
+            auto sha1_hex = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents[0]
+                  == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex));
+        }
+        SECTION("multiple infohashes") {
+            auto sha1_hex1 = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto sha1_hex2 = "5829e7a3b4810e5ee9283137e7ad62d0e88dfd3f";
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, sha1_hex2);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0]
+                    == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex1));
+            CHECK(create_options.similar_torrents[1]
+                    == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex2));
+        }
+        SECTION("single torrent") {
+            auto tf =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto m = dt::load_metafile(tf);
+            auto cmd = fmt::format("create {} --similar {}", file, tf.string());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents[0] == dt::info_hash_v1(m));
+        }
+        SECTION("multiple torrents") {
+            auto tf1 =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto tf2 =  fs::path(TEST_DIR) / "resources" / "CAMELYON17.torrent";
+
+            auto m1 = dt::load_metafile(tf1);
+            auto m2 = dt::load_metafile(tf2);
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, tf1.string(), tf2.string());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0] == dt::info_hash_v1(m1));
+            CHECK(create_options.similar_torrents[1] == dt::info_hash_v1(m2));
+        }
+
+        SECTION("invalid infohash length") {
+            auto sha1_hex = "03a23323650e652fab9120db0214e89b4febf66b39a546781b8";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
+        }
+
+        SECTION("invalid hexadecimal string") {
+            auto sha1_hex = "03a2332djovpwomdq";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
+        }
+
+        SECTION("mixed infohash and file") {
+            auto sha1_hex1 = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto tf1 =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto m1 = dt::load_metafile(tf1);
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, tf1);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0] == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex1));
+            CHECK(create_options.similar_torrents[1] == dt::info_hash_v1(m1));
+        }
+
+        SECTION("hybrid torrent") {
+            auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-hybrid-test.torrent";
+            auto m1 = dt::load_metafile(tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1);
+            auto v1_hash = dt::info_hash::from_hex(dt::protocol::v1, "631a31dd0a46257d5078c0dee4e66e26f73e42ac");
+            auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb");
+
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents.at(0) == v1_hash);
+            CHECK(create_options.similar_torrents.at(1) == v2_hash);
+        }
+
+        SECTION("v2 torrent") {
+            auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-test.torrent";
+            auto m1 = dt::load_metafile(tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1);
+            auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e");
+
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents.at(0) == v2_hash);
+        }
+    }
 }
 
 
@@ -845,5 +936,52 @@ TEST_CASE("test create app: protocol")
         run_create_app(main_options, options);
         auto m = dt::load_metafile(*options.destination);
         CHECK(m.storage().protocol() == dt::protocol::hybrid);
+    }
+}
+
+
+TEST_CASE("test create app: similar torrents")
+{
+    using namespace dottorrent::literals;
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    create_app_options options {
+            .target = fs::path(TEST_DIR) / "resources",
+    };
+
+    auto v1_hash = dt::info_hash::from_hex(dt::protocol::v1, "631a31dd0a46257d5078c0dee4e66e26f73e42ac");
+    auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb");
+
+    SECTION("v1") {
+        options.destination = fs::path(tmp_dir) / "test-similar-v1.torrent";
+        options.protocol_version = dt::protocol::v1;
+        options.similar_torrents.emplace_back(v1_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v1_hash));
+    }
+
+    SECTION("v2") {
+        options.destination = fs::path(tmp_dir) / "test-similar-v2.torrent";
+        options.protocol_version = dt::protocol::v2;
+        options.similar_torrents.emplace_back(v2_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v2_hash));
+    }
+
+    SECTION("hybrid") {
+        options.destination = fs::path(tmp_dir) / "test-protocol-hybrid.torrent";
+        options.protocol_version = dt::protocol::hybrid;
+        options.similar_torrents.emplace_back(v1_hash);
+        options.similar_torrents.emplace_back(v2_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v1_hash));
+        CHECK(m.similar_torrents().contains(v2_hash));
     }
 }

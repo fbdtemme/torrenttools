@@ -33,8 +33,8 @@ void run_info_app(const main_app_options& main_options, const info_app_options& 
 
 struct formatting_options
 {
-    std::string_view entry_format = "{:<19}: {}\n"sv;
-    std::string_view entry_continuation_format = "                     {}\n"sv;
+    std::string_view entry_format = "{:<17} {}\n"sv;
+    std::string_view entry_continuation_format = "                  {}\n"sv;
     std::string_view piece_size_format = "{} ({} bytes)"sv;
     std::string_view creation_date_format = "{:%Y-%m-%d %H:%M:%S} UTC"sv;
     bool use_color = true;
@@ -46,6 +46,11 @@ struct formatting_options
 auto format_multiline(std::string_view key, std::string_view value,
                       const formatting_options& options = {}
                      ) -> std::string;
+
+std::string format_indented_list(
+        const std::string& key,
+        const std::vector<std::string>& values,
+        const formatting_options& options);
 
 void format_announces(std::ostream& os, const dottorrent::metafile& metafile);
 

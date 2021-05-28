@@ -8,6 +8,7 @@
 #include "dottorrent/general.hpp"
 #include "dottorrent/dht_node.hpp"
 #include "dottorrent/hash_function.hpp"
+#include "dottorrent/info_hash.hpp"
 #include "list_edit_mode.hpp"
 
 dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, bool allow_hybrid = true);
@@ -43,3 +44,6 @@ torrenttools::list_edit_mode
 parse_list_edit_mode(std::string_view options, const std::vector<std::string>& v);
 
 bool parse_explicit_flag(std::string_view option, const std::vector<std::string>& v);
+
+std::vector<dottorrent::info_hash>
+similar_transformer(std::string_view option, const std::vector<std::string>& v);

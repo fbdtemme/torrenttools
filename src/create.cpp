@@ -105,6 +105,11 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         return true;
     };
 
+    CLI::callback_t similar_parser = [&](const CLI::results_t& v) -> bool {
+        options.similar_torrents = similar_transformer("--similar", v);
+        return true;
+    };
+
     const auto max_size = 1U << 20U;
 
     app->add_option("target", target_parser, "Target filename or directory")
@@ -155,9 +160,6 @@ void configure_create_app(CLI::App* app, create_app_options& options)
                "Add a comment.")
        ->type_name("<string>");
 
-    // TODO: Allow private flag to be overridden for supported trackers that require private flag.
-    //       but generate a warning.
-
     app->add_option("-p, --private", private_flag_parser,
                "Set the private flag to disable DHT and PEX.")
        ->type_name("<[on|off]>")
@@ -176,6 +178,19 @@ void configure_create_app(CLI::App* app, create_app_options& options)
                "Add a source tag to facilitate cross-seeding.")
        ->type_name("<source>")
        ->expected(1);
+
+    app->add_option("--collection", options.collections,
+            "Add a collection name to this metafile.\n"
+            "Other metafiles in the same collection are expected\n"
+            "to share files with this one.")
+       ->type_name("<name>")
+       ->expected(0, max_size);
+
+    app->add_option("--similar", similar_parser,
+               "Add a similar torrent by infohash or metafile.\n"
+               "The similar torrent is expected to share some files with this one")
+       ->type_name("<infohash|metafile>")
+       ->expected(0, max_size);
 
     app->add_option("-n, --name", options.name,
                "Set the name of the torrent. "
@@ -349,6 +364,7 @@ void run_create_app(const main_app_options& main_options, const create_app_optio
             m.set_created_by(CREATED_BY_STRING);
     }
 
+    // Name
     if (options.name) {
         m.set_name(*options.name);
     }
@@ -359,6 +375,20 @@ void run_create_app(const main_app_options& main_options, const create_app_optio
             m.set_creation_date(*options.creation_date);
         else
             m.set_creation_date(std::chrono::system_clock::now());
+    }
+
+    // BEP 38: similar .
+    if (!options.similar_torrents.empty()) {
+        for (const auto& ih : options.similar_torrents) {
+            m.add_similar_torrent(ih);
+        }
+    }
+
+    // BEP 38: collection.
+    if (!options.collections.empty()) {
+        for (const auto& s : options.collections) {
+            m.add_collection(s);
+        }
     }
 
     fs::path destination_file = get_destination_path(m, options.destination);

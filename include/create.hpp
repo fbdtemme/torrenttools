@@ -9,12 +9,17 @@
 #include <dottorrent/metafile.hpp>
 #include <dottorrent/storage_hasher.hpp>
 #include <dottorrent/dht_node.hpp>
+#include <dottorrent/hash.hpp>
+#include <dottorrent/info_hash.hpp>
 
 #include "config.hpp"
 #include "tracker_database.hpp"
 #include "info.hpp"
 
-namespace { namespace fs = std::filesystem; }
+namespace {
+namespace fs = std::filesystem;
+namespace dt = dottorrent;
+}
 
 // forward declarations
 namespace CLI { class App; }
@@ -39,6 +44,8 @@ struct create_app_options
     std::optional<std::string> comment;
     std::optional<std::string> source;
     std::optional<std::string> name;
+    std::vector<std::string> collections;
+    std::vector<dottorrent::info_hash> similar_torrents;
     std::optional<bool> is_private = std::nullopt;
     bool set_created_by = true;
     std::optional<std::string> created_by {};
