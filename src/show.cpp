@@ -26,12 +26,15 @@ namespace tt = torrenttools;
 
 void configure_show_app(CLI::App* app, show_app_options& options)
 {
-    auto* announce_subapp = app->add_subcommand("announce",           "Show the announces.");
+    auto* announce_subapp = app->add_subcommand("announce-urls",      "Show the announce-urls.");
+    auto* collection_subapp = app->add_subcommand("collections",      "Show the collection tags.");
     auto* comment_subapp = app->add_subcommand("comment",             "Show the comment field.");
     auto* created_by_subapp = app->add_subcommand("created-by",       "Show the created-by field.");
     auto* creation_date_subapp = app->add_subcommand("creation-date", "Show the creation-date field.");
+    auto* dht_nodes_subapp = app->add_subcommand("dht-nodes",         "Show the dht nodes.");
     auto* file_size_subapp = app->add_subcommand("size",              "Show the total file size.");
     auto* files_subapp = app->add_subcommand("files",                 "Show the files in a metafile.");
+    auto* http_seeds_subapp = app->add_subcommand("http-seeds",       "Show the http-seeds.");
     auto* infohash_subapp = app->add_subcommand("infohash",           "Show the the infohash.");
     auto* name_subapp = app->add_subcommand("name",                   "Show the metafile name.");
     auto* piece_count_subapp = app->add_subcommand("piece-count",     "Show the piece count.");
@@ -39,7 +42,9 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     auto* private_subapp = app->add_subcommand("private",             "Show the private flag.");
     auto* protocol_subapp = app->add_subcommand("protocol",           "Show the protocol.");
     auto* query_subapp = app->add_subcommand("query",                 "Show data referenced by a bencode pointer.");
+    auto* similar_torrents_subapp = app->add_subcommand("similar",    "Show the similar torrent infohashes.");
     auto* source_subapp = app->add_subcommand("source",               "Show the source field.");
+    auto* web_seeds_subapp = app->add_subcommand("web-seeds",         "Show the web-seeds.");
 
     std::array apps = {
             announce_subapp,
@@ -56,26 +61,36 @@ void configure_show_app(CLI::App* app, show_app_options& options)
             protocol_subapp,
             query_subapp,
             source_subapp,
+            web_seeds_subapp,
+            http_seeds_subapp,
+            dht_nodes_subapp,
+            similar_torrents_subapp,
+            collection_subapp,
     };
 
     for (auto* app: apps) {
         configure_show_common(app, options);
     }
 
-    configure_show_announce_subapp(announce_subapp, options);
-    configure_show_comment_subapp(comment_subapp, options);
-    configure_show_created_by_subapp(created_by_subapp, options);
-    configure_show_creation_date_subapp(creation_date_subapp, options);
-    configure_show_file_size_subapp(file_size_subapp, options);
-    configure_show_files_subapp(files_subapp, options);
-    configure_show_infohash_subapp(infohash_subapp, options);
-    configure_show_name_subapp(name_subapp, options);
-    configure_show_piece_count_subapp(piece_count_subapp, options);
-    configure_show_piece_size_subapp(piece_size_subapp, options);
-    configure_show_private_subapp(private_subapp, options);
-    configure_show_protocol_subapp(protocol_subapp, options);
-    configure_show_query_subapp(query_subapp, options);
-    configure_show_source_subapp(source_subapp, options);
+    configure_show_announce_subapp(       announce_subapp,         options);
+    configure_show_comment_subapp(        comment_subapp,          options);
+    configure_show_created_by_subapp(     created_by_subapp,       options);
+    configure_show_creation_date_subapp(  creation_date_subapp,    options);
+    configure_show_file_size_subapp(      file_size_subapp,        options);
+    configure_show_files_subapp(          files_subapp,            options);
+    configure_show_infohash_subapp(       infohash_subapp,         options);
+    configure_show_name_subapp(           name_subapp,             options);
+    configure_show_piece_count_subapp(    piece_count_subapp,      options);
+    configure_show_piece_size_subapp(     piece_size_subapp,       options);
+    configure_show_private_subapp(        private_subapp,          options);
+    configure_show_protocol_subapp(       protocol_subapp,         options);
+    configure_show_query_subapp(          query_subapp,            options);
+    configure_show_source_subapp(         source_subapp,           options);
+    configure_web_seeds_subapp(           web_seeds_subapp,        options);
+    configure_http_seeds_subapp(          http_seeds_subapp,       options);
+    configure_dht_nodes_subapp(           dht_nodes_subapp,        options);
+    configure_similar_torrents_subapp(    similar_torrents_subapp, options);
+    configure_collection_subapp(          collection_subapp,       options);
 }
 
 void configure_show_common(CLI::App* subapp, show_app_options& options)
@@ -211,6 +226,33 @@ void configure_show_files_subapp(CLI::App* files_subapp, show_app_options& optio
                "Custom prefix to prepend to the files.");
 }
 
+
+void configure_web_seeds_subapp(CLI::App* web_seeds_subapp, show_app_options& options)
+{
+    web_seeds_subapp->parse_complete_callback([&](){ options.subcommand = "web-seeds"; });
+}
+
+void configure_http_seeds_subapp(CLI::App* http_seeds_subapp, show_app_options& options)
+{
+    http_seeds_subapp->parse_complete_callback([&](){ options.subcommand = "http-seeds"; });
+}
+
+void configure_dht_nodes_subapp(CLI::App* dht_nodes_subapp, show_app_options& options)
+{
+    dht_nodes_subapp->parse_complete_callback([&](){ options.subcommand = "http-seeds"; });
+}
+
+void configure_similar_torrents_subapp(CLI::App* similar_torrents_subapp, show_app_options& options)
+{
+    similar_torrents_subapp->parse_complete_callback([&](){ options.subcommand = "similar"; });
+}
+
+void configure_collection_subapp(CLI::App* similar_torrents_subapp, show_app_options& options)
+{
+    similar_torrents_subapp->parse_complete_callback([&](){ options.subcommand = "collection"; });
+}
+
+
 void run_show_app(CLI::App* show_app, const main_app_options& main_options, const show_app_options& options)
 {
     using run_show_app_function_type = void (*)(const main_app_options&, const show_app_options&);
@@ -220,7 +262,9 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
             {"comment",         &run_show_comment_subapp},
             {"created-by",      &run_show_created_by_subapp},
             {"creation-date",   &run_show_creation_date_subapp},
+            {"dht-nodes",       &run_show_dht_nodes_subapp},
             {"files",           &run_show_files_subapp},
+            {"http-seeds",      &run_show_http_seeds_subapp},
             {"infohash",        &run_show_infohash_subapp},
             {"name",            &run_show_name_subapp},
             {"piece-count",     &run_show_piece_count_subapp},
@@ -228,8 +272,12 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
             {"private",         &run_show_private_subapp},
             {"protocol",        &run_show_protocol_subapp},
             {"query",           &run_show_query_subapp},
+            {"similar",         &run_show_similar_torrents_subapp},
             {"size",            &run_show_file_size_subapp},
             {"source",          &run_show_source_subapp},
+            {"web-seeds",       &run_show_web_seeds_subapp},
+            {"collection",      &run_show_collection_subapp},
+
     };
 
     if (!options.subcommand.empty()) {
@@ -243,7 +291,6 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
 
 void run_show_protocol_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
 
     auto protocol = m.storage().protocol();
@@ -257,7 +304,6 @@ void run_show_protocol_subapp(const main_app_options& main_options, const show_a
 
 void run_show_announce_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
 
     if (options.announce_flatten) {
@@ -283,14 +329,12 @@ void run_show_announce_subapp(const main_app_options& main_options, const show_a
 
 void run_show_piece_count_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.piece_count() << std::endl;
 }
 
 void run_show_piece_size_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     if (options.piece_size_human_readable) {
         std::cout << tt::format_size(m.piece_size()) << std::endl;
@@ -301,7 +345,6 @@ void run_show_piece_size_subapp(const main_app_options& main_options, const show
 
 void run_show_infohash_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     const auto& s = m.storage();
 
@@ -361,14 +404,12 @@ void run_show_infohash_subapp(const main_app_options& main_options, const show_a
 
 void run_show_created_by_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.created_by() << std::endl;
 }
 
 void run_show_creation_date_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     if (! options.creation_date_iso_format) {
         std::cout << m.creation_date().count() << std::endl;
@@ -384,35 +425,30 @@ void run_show_creation_date_subapp(const main_app_options& main_options, const s
 
 void run_show_private_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << int(m.is_private()) << std::endl;
 }
 
 void run_show_name_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.name() << std::endl;
 }
 
 void run_show_comment_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.comment() << std::endl;
 }
 
 void run_show_source_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     std::cout << m.source() << std::endl;
 }
 
 void run_show_file_size_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
     if (options.file_size_human_readable) {
         std::cout << tt::format_size(m.total_regular_file_size()) << std::endl;
@@ -424,7 +460,6 @@ void run_show_file_size_subapp(const main_app_options& main_options, const show_
 
 void run_show_query_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     std::ifstream ifs (options.metafile);
     std::string data(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
 
@@ -454,7 +489,6 @@ void run_show_query_subapp(const main_app_options& main_options, const show_app_
 
 void run_show_files_subapp(const main_app_options& main_options, const show_app_options& options)
 {
-    verify_metafile(options.metafile);
     auto m = dt::load_metafile(options.metafile);
 
     for (const auto& f: m.storage()) {
@@ -468,3 +502,52 @@ void run_show_files_subapp(const main_app_options& main_options, const show_app_
         }
     }
 }
+
+void run_show_web_seeds_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);
+    for (const auto& url : m.web_seeds()) {
+        std::cout << url << '\n';
+    }
+}
+
+void run_show_http_seeds_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);
+    for (const auto& url : m.http_seeds()) {
+        std::cout << url << '\n';
+    }
+}
+
+void run_show_dht_nodes_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);
+    for (const auto& node : m.dht_nodes()) {
+        std::cout << std::string(node) << '\n';
+    }
+}
+
+void run_show_similar_torrents_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);
+    for (const auto& s : m.similar_torrents()) {
+        if (s.version() == dt::protocol::v1) {
+            std::cout << s.v1().hex_string() << '\n';
+        }
+        else if (s.version() == dt::protocol::v2) {
+            std::cout << s.v2().hex_string() << '\n';
+        }
+        else if (s.version() == dt::protocol::hybrid) {
+            std::cout << s.v1().hex_string() << " | " << s.v2().hex_string() << '\n';
+        }
+    }
+}
+
+void run_show_collection_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);
+    for (const auto& c : m.collections()) {
+        std::cout << c << '\n';
+    }
+}
+

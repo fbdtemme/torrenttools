@@ -481,3 +481,91 @@ R"(/path/to/torrent/data/Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
         CHECK(buffer.str() == expected);
     }
 }
+
+TEST_CASE("test show dht-nodes")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {
+            .metafile = dht_nodes_torrent
+    };
+
+    std::string expected = (
+            R"(https://node.com/path:8668
+)");
+
+    run_show_dht_nodes_subapp(main_options, options);
+    CHECK(buffer.str() == expected);
+}
+
+TEST_CASE("test show http-seeds")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {
+            .metafile = http_seeds_torrent
+    };
+
+    std::string expected = (
+        R"(http://test.url.com/httpseed
+)");
+
+    run_show_http_seeds_subapp(main_options, options);
+    CHECK(buffer.str() == expected);
+}
+
+TEST_CASE("test show web-seeds")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {
+            .metafile = web_seeds_torrent
+    };
+
+    std::string expected = "https://example.com/path:8666\n";
+    run_show_web_seeds_subapp(main_options, options);
+    CHECK(buffer.str() == expected);
+}
+
+TEST_CASE("test show similar-torrents")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {};
+
+    SECTION("v1 hash") {
+        options.metafile = similar_v1_torrent;
+        std::string expected = "aec2e48d6ece459f8358aad4889dc83046746b0b\n";
+        run_show_similar_torrents_subapp(main_options, options);
+        CHECK(buffer.str() == expected);
+    }
+
+    SECTION("v2 hash") {
+        options.metafile = similar_v2_torrent;
+        std::string expected = "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e\n";
+        run_show_similar_torrents_subapp(main_options, options);
+        CHECK(buffer.str() == expected);
+    }
+}
+
+
+
+TEST_CASE("test show web-seeds")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {
+            .metafile = collection_torrent
+    };
+
+    std::string expected = "test2\ntest1";
+    run_show_web_seeds_subapp(main_options, options);
+    auto result = buffer.str();
+    CHECK(result.find("test1") != result.size());
+    CHECK(result.find("test2") != result.size());
+}
