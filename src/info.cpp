@@ -165,17 +165,17 @@ void create_general_info(std::ostream& os,
     const std::string& comment = format_multiline("Comment"sv,         m.comment(), options);
 
     static const auto general_template = (
-            "Metafile:         {metafile_path}\n"
-            "Protocol version: {protocol_version}\n"
+            "Metafile:          {metafile_path}\n"
+            "Protocol version:  {protocol_version}\n"
             "{infohash_string}"
-            "Piece size:       {piece_size}\n"
-            "Piece count:      {piece_count}\n"
-            "Created by:       {created_by}\n"
-            "Created on:       {creation_date}\n"
-            "Private:          {private}\n"
-            "Name:             {name}\n"
-            "Source:           {source}\n"
-            "Comment:          {comment}\n"
+            "Piece size:        {piece_size}\n"
+            "Piece count:       {piece_count}\n"
+            "Created by:        {created_by}\n"
+            "Created on:        {creation_date}\n"
+            "Private:           {private}\n"
+            "Name:              {name}\n"
+            "Source:            {source}\n"
+            "Comment:           {comment}\n"
     );
 
     // Check if torrent file is hashed so we can return to infohash
@@ -185,18 +185,21 @@ void create_general_info(std::ostream& os,
             auto infohash_v1 = dt::info_hash_v1(metafile).hex_string();
             auto infohash_v2 = dt::info_hash_v2(metafile).hex_string();
 
-            info_hash_string = fmt::format("Infohash:         v1: {}\n"
-                                           "                  v2: {}\n", infohash_v1, infohash_v2);
+            info_hash_string = fmt::format(
+                    "Infohash:            v1: {}\n"
+                    "                   v2: {}\n", infohash_v1, infohash_v2);
         }
         // v2-only
         else if ((protocol & dt::protocol::v2) == dt::protocol::v2) {
             auto infohash_v2 = dt::info_hash_v2(metafile).hex_string();
-            info_hash_string = fmt::format("Infohash:         {}\n", infohash_v2);
+            info_hash_string = fmt::format(
+                    "Infohash:          {}\n", infohash_v2);
         }
         // v1-only
         else if ((protocol & dt::protocol::v1) == dt::protocol::v1) {
             auto infohash_v1 = dt::info_hash_v1(metafile).hex_string();
-            info_hash_string = fmt::format("Infohash:         {}\n", infohash_v1);
+            info_hash_string = fmt::format(
+                    "Infohash:          {}\n", infohash_v1);
         }
     }
 
@@ -234,44 +237,67 @@ void create_general_info(std::ostream& os,
         }
         }
     }
+
+    format_announces(os, metafile, options);
+
+    std::vector<std::string> dht_nodes_strings;
+    rng::transform(m.dht_nodes(), std::back_inserter(dht_nodes_strings), [](auto node){ return std::string(node);});
     std::vector<std::string> collections(m.collections().begin(), m.collections().end());
 
+    fmt::print(os, format_indented_list("DHT nodes:", dht_nodes_strings, options));
     fmt::print(os, format_indented_list("Web seeds:", m.web_seeds(), options));
     fmt::print(os, format_indented_list("HTTP seeds:", m.http_seeds(), options));
+
     fmt::print(os, format_indented_list("Similar torrents:", similar_torrents_infohashes, options));
     fmt::print(os, format_indented_list("Collections:", collections, options));
-    fmt::print(os, "\n");
 
-    format_announces(os, metafile);
-
-    tree_options tree_fmt_options {.use_color = options.use_color,
-                                   .list_padding_files = options.show_padding_files};
+    tree_options tree_fmt_options {
+        .use_color = options.use_color,
+        .list_padding_files = options.show_padding_files
+    };
 
     auto file_tree = format_file_tree(m, "  ", tree_fmt_options);
     auto file_stats = format_file_stats(m, " ", options.show_padding_files);
 
-    fmt::format_to(out, "Files:\n{}\n{}\n", file_tree, file_stats);
+    fmt::format_to(out, "\nFiles:\n{}\n{}\n", file_tree, file_stats);
 }
 
 
-void format_announces(std::ostream& os, const dottorrent::metafile& metafile)
+void format_announces(std::ostream& os, const dottorrent::metafile& metafile, const formatting_options& options)
 {
     std::ostreambuf_iterator out {os};
-    fmt::format_to(out, "Announces:\n");
-    constexpr auto tracker_tier_entry = "tier {}  - {}\n"sv;
-    constexpr auto tracker_entry      = "         - {}\n"sv;
+    constexpr auto tracker_tier_entry = "tier {}  - {}"sv;
+    constexpr auto tracker_entry      = "        - {}"sv;
 
     const auto& announce_urls = metafile.trackers();
 
-    for (auto tier_index = 0; tier_index < announce_urls.tier_count(); ++tier_index) {
-        auto [tier_begin, tier_end] = announce_urls.get_tier(tier_index);
+    if (announce_urls.empty()) {
+        fmt::format_to(out, options.entry_format, "Announce-urls:", "");
+        return;
+    }
 
-        fmt::format_to(out, tracker_tier_entry, tier_index+1, *tier_begin++);
+    std::size_t tier_index = 0;
+    auto [tier_begin, tier_end] = announce_urls.get_tier(tier_index);
+    auto line = fmt::format(tracker_tier_entry, tier_index+1, *tier_begin++);
+    fmt::format_to(out, options.entry_format, "Announce-urls:", line);
+
+    // Finish current tier
+    for ( ; tier_begin != tier_end; ++tier_begin) {
+        line = fmt::format(tracker_entry, *tier_begin);
+        fmt::format_to(out, options.entry_continuation_format, line);
+    }
+
+    // Finish other tiers
+    for (tier_index += 1; tier_index < announce_urls.tier_count(); ++tier_index) {
+        auto [tier_begin, tier_end] = announce_urls.get_tier(tier_index);
+        auto line = fmt::format(tracker_tier_entry, tier_index+1, *tier_begin++);
+        fmt::format_to(out, options.entry_continuation_format, line);
+
         for ( ; tier_begin != tier_end; ++tier_begin) {
-            fmt::format_to(out, tracker_entry, *tier_begin);
+            line = fmt::format(tracker_entry, *tier_begin);
+            fmt::format_to(out, options.entry_continuation_format, line);
         }
     }
-    *out++ = '\n';
 }
 
 

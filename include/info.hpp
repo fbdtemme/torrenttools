@@ -33,8 +33,8 @@ void run_info_app(const main_app_options& main_options, const info_app_options& 
 
 struct formatting_options
 {
-    std::string_view entry_format = "{:<17} {}\n"sv;
-    std::string_view entry_continuation_format = "                  {}\n"sv;
+    std::string_view entry_format = "{:<18} {}\n"sv;
+    std::string_view entry_continuation_format = "                   {}\n"sv;
     std::string_view piece_size_format = "{} ({} bytes)"sv;
     std::string_view creation_date_format = "{:%Y-%m-%d %H:%M:%S} UTC"sv;
     bool use_color = true;
@@ -52,7 +52,7 @@ std::string format_indented_list(
         const std::vector<std::string>& values,
         const formatting_options& options);
 
-void format_announces(std::ostream& os, const dottorrent::metafile& metafile);
+void format_announces(std::ostream& os, const dottorrent::metafile& metafile, const formatting_options& options);
 
 void general_info(std::ostream& os,
         const dottorrent::metafile& metafile,
