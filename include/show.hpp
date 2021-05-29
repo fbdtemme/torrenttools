@@ -44,6 +44,11 @@ void configure_show_private_subapp(CLI::App* private_subapp, show_app_options& o
 void configure_show_protocol_subapp(CLI::App* protocol_subapp, show_app_options& options);
 void configure_show_query_subapp(CLI::App* source_subapp, show_app_options& options);
 void configure_show_source_subapp(CLI::App* source_subapp, show_app_options& options);
+void configure_web_seeds_subapp(CLI::App* web_seeds_subapp, show_app_options& options);
+void configure_http_seeds_subapp(CLI::App* http_seeds_subapp, show_app_options& options);
+void configure_dht_nodes_subapp(CLI::App* dht_nodes_subapp, show_app_options& options);
+void configure_similar_torrents_subapp(CLI::App* similar_torrents_subapp, show_app_options& options);
+void configure_collection_subapp(CLI::App* collection_subapp, show_app_options& options);
 
 void run_show_app(CLI::App* show_app, const main_app_options& main_options, const show_app_options& options);
 
@@ -61,3 +66,8 @@ void run_show_private_subapp(const main_app_options& main_options, const show_ap
 void run_show_protocol_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_query_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_source_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_web_seeds_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_http_seeds_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_dht_nodes_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_similar_torrents_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_collection_subapp(const main_app_options& main_options, const show_app_options& options);
