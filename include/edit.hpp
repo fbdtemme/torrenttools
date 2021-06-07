@@ -23,12 +23,15 @@ struct edit_app_options
     std::optional<std::vector<std::vector<std::string>>> announce_list;
     std::optional<std::vector<std::string>> announce_group_list;
     std::optional<std::vector<dottorrent::dht_node>> dht_nodes;
+    std::optional<std::vector<std::string>> http_seeds;
     std::optional<std::vector<std::string>> web_seeds;
     std::optional<std::string> comment;
     bool set_creation_date = true;
     std::optional<std::chrono::system_clock::time_point> creation_date;
     bool set_created_by = true;
     std::optional<std::string> created_by;
+    std::optional<std::vector<std::string>> collections;
+    std::optional<std::vector<dottorrent::info_hash>> similar_torrents;
     std::optional<bool> is_private;
     std::optional<std::string> source;
     std::optional<std::string> name;
@@ -45,5 +48,10 @@ void update_announce_group(dt::metafile& m, const main_app_options& main_options
 
 void update_web_seeds(dt::metafile& m, const edit_app_options& options);
 
+void update_http_seeds(dt::metafile& m, const edit_app_options& options);
+
 void update_dht_nodes(dt::metafile& m, const edit_app_options& options);
 
+void update_similar_torrents(dt::metafile& m, const edit_app_options& options);
+
+void update_collections(dt::metafile& m, const edit_app_options& options);

@@ -10,7 +10,7 @@ namespace dt = dottorrent;
 void configure_pad_app(CLI::App* app, pad_app_options& options)
 {
     CLI::callback_t target_parser = [&](const CLI::results_t v) -> bool {
-        options.target = target_transformer(v);
+        options.target = path_transformer(v);
         return true;
     };
     CLI::callback_t metafile_parser = [&](const CLI::results_t v) -> bool {

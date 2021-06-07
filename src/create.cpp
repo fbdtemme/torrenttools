@@ -22,6 +22,7 @@
 #include "config_parser.hpp"
 #include "progress.hpp"
 #include "common.hpp"
+#include "exceptions.hpp"
 
 #ifdef __linux__
 #include <unistd.h>
@@ -63,17 +64,27 @@ void configure_create_app(CLI::App* app, create_app_options& options)
         options.dht_nodes = dht_node_transformer(v);
         return true;
     };
+    CLI::callback_t web_seeds_transformer =[&](const CLI::results_t& v) -> bool {
+        options.web_seeds = seed_transformer("--web-seeds", v, /*allow_ftp=*/true);
+        return true;
+    };
+
+    CLI::callback_t http_seeds_transformer =[&](const CLI::results_t& v) -> bool {
+        options.http_seeds = seed_transformer("--http-seeds", v, /*allow_ftp=*/false);
+        return true;
+    };
+
     CLI::callback_t checksum_parser =[&](const CLI::results_t& v) -> bool {
         options.checksums = checksum_transformer(v);
         return true;
     };
     CLI::callback_t target_parser = [&](const CLI::results_t v) -> bool {
-        auto target = target_transformer(v);
+        auto target = path_transformer(v);
         if (target == "-") {
             options.read_from_stdin = true;
             std::string line {};
             std::getline(std::cin, line);
-            options.target = target_transformer(std::vector{line});
+            options.target = path_transformer(std::vector{line});
         } else {
             options.target = target;
         }
@@ -81,7 +92,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     };
 
     CLI::callback_t destination_parser = [&](const CLI::results_t v) -> bool {
-        auto destination = target_transformer(v, /*check_exists=*/false);
+        auto destination = path_transformer(v, /*check_exists=*/false);
         if (destination == "-") {
             options.write_to_stdout = true;
             options.destination = std::nullopt;
@@ -117,9 +128,11 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<path>")
        ->expected(1);
 
+    options.protocol_version = dt::protocol::v1;
     app->add_option("-v,--protocol", protocol_parser,
                "Set the bittorrent protocol to use.\n "
-               "Options are 1, 2 or hybrid. [default: 1]")
+               "Options are 1, 2 or hybrid. [default: 1]",
+               false)
        ->type_name("<protocol>")
        ->expected(1);
 
@@ -145,8 +158,13 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<name>...")
        ->expected(0, max_size);
 
-    app->add_option("-w, --web-seed", options.web_seeds,
-               "Add one or multiple HTTP/FTP urls as seeds.")
+    app->add_option("--http-seed", http_seeds_transformer,
+                    "Add one or multiple HTTP urls as seeds (Hoffman-style).")
+            ->type_name("<url>...")
+            ->expected(0, max_size);
+
+    app->add_option("-w, --web-seed", web_seeds_transformer,
+               "Add one or multiple HTTP/FTP urls as seeds. (GetRight-style)")
        ->type_name("<url>...")
        ->expected(0, max_size);
 
@@ -183,13 +201,13 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             "Add a collection name to this metafile.\n"
             "Other metafiles in the same collection are expected\n"
             "to share files with this one.")
-       ->type_name("<name>")
+       ->type_name("<name>...")
        ->expected(0, max_size);
 
     app->add_option("--similar", similar_parser,
                "Add a similar torrent by infohash or metafile.\n"
                "The similar torrent is expected to share some files with this one")
-       ->type_name("<infohash|metafile>")
+       ->type_name("<infohash|metafile>...")
        ->expected(0, max_size);
 
     app->add_option("-n, --name", options.name,
@@ -200,18 +218,20 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<name>")
        ->expected(1);
 
+    // Set default;
+
+    options.threads = 2;
     app->add_option("-t, --threads", options.threads,
                "Set the number of threads to use for hashing pieces. [default: 2]")
        ->type_name("<n>")
-       ->expected(1)
-       ->default_val(2);
+       ->expected(1);
 
     app->add_option("--checksum", checksum_parser,
                "Include a per file checksum of given algorithm." )
        ->type_name("<algorithm>...")
-       ->expected(0, max_size)
-       ->default_str("");
+       ->expected(0, max_size);
 
+    options.set_creation_date = true;
     auto* no_creation_date_option = app->add_flag_callback("--no-creation-date",
             [&]() { options.set_creation_date = false; },
             "Do not include the creation date.");
@@ -223,6 +243,7 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     no_creation_date_option->excludes(creation_date_option);
 
+    options.set_created_by = true;
     auto* no_created_by_option = app->add_flag_callback("--no-created-by",
             [&]() { options.set_created_by = false; },
             "Do not include the name and version of this program.");
@@ -253,10 +274,10 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<size[K|M]>")
        ->expected(1);
 
-#if defined(NDEBUG)
-    app->add_flag("--simple-progress", options.simple_progress);
-#endif
-
+    app->add_option("--profile,-P", options.profile,
+            "Read options form a config profile.")
+        ->type_name("<profile-name>")
+        ->expected(1);
 }
 
 
@@ -304,20 +325,35 @@ void set_files(dottorrent::metafile& m, const create_app_options& options)
     m.set_name(options.target.filename().string());
 }
 
+void postprocess_create_app(const CLI::App* app, const main_app_options& main_options, create_app_options& options)
+{
+    auto [config_ptr, tracker_db_ptr] = load_config_and_tracker_db(main_options);
 
-void run_create_app(const main_app_options& main_options, const create_app_options& options)
+    if (config_ptr == nullptr || tracker_db_ptr == nullptr) {
+       throw tt::profile_error("configuration is required because profile was passed, but no configuration was found");
+    }
+
+    if (options.profile.has_value()) {
+        merge_create_profile(*config_ptr, *options.profile, app, options);
+    }
+}
+
+void run_create_app(const main_app_options& main_options, create_app_options& options)
 {
     namespace dt = dottorrent;
     using namespace dottorrent::literals;
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
+
     // create a new metafile
-    dt::metafile m {};
+    dt::metafile m{};
 
     // add files to the file_storage
     auto& file_storage = m.storage();
 
     set_files(m, options);
+
+
 
     if (options.piece_size) {
         file_storage.set_piece_size(*options.piece_size);
@@ -325,7 +361,6 @@ void run_create_app(const main_app_options& main_options, const create_app_optio
         dottorrent::choose_piece_size(file_storage);
     }
 
-    load_config_and_tracker_db(main_options);
     // announces
     if (!options.announce_group_list.empty()) {
         set_tracker_group(m, options.announce_group_list, tt::load_tracker_database(), tt::load_config());
@@ -333,9 +368,14 @@ void run_create_app(const main_app_options& main_options, const create_app_optio
         set_trackers(m, options.announce_list, tt::load_tracker_database(), tt::load_config());
     }
 
-    // web seeds
+    // web seeds (GetRight-style)
     for (const auto& url : options.web_seeds) {
         m.add_web_seed(url);
+    }
+
+    // http seeds (hoffman-style)
+    for (const auto& http_url : options.http_seeds) {
+        m.add_http_seed(http_url);
     }
 
     // dht nodes
@@ -443,4 +483,105 @@ void run_create_app(const main_app_options& main_options, const create_app_optio
         os << fmt::format("Metafile written to standard output.");
         dt::write_metafile_to(std::cout, m, options.protocol_version);
     }
-};
+}
+
+
+/// Merge options from the profile with options given on the commandline.
+/// @returns options modified with defaults from the profile.
+void merge_create_profile(const tt::config& cfg, std::string_view profile_name,
+                          const CLI::App* app, create_app_options& options)
+{
+    tt::profile profile;
+
+    try {
+        profile = cfg.get_profile(profile_name);
+    }
+    catch (const std::out_of_range& err) {
+        throw std::invalid_argument("profile name does not exist");
+    }
+
+    if (profile.command != "create") {
+        throw std::invalid_argument("profile is not for create command");
+    }
+
+    const auto& profile_options = std::get<create_app_options>(profile.options);
+
+    // Replace all options that are not set from the commandline with the profile defaults.
+    if (app->get_option("--announce")->empty()) {
+        options.announce_list = profile_options.announce_list;
+    }
+    if (app->get_option("--announce-group")->empty()) {
+        options.announce_group_list = profile_options.announce_group_list;
+    }
+    if (app->get_option("--checksum")->empty()) {
+        options.checksums = profile_options.checksums;
+    }
+    if (app->get_option("--collection")->empty()) {
+        options.collections = profile_options.collections;
+    }
+    if (app->get_option("--comment")->empty()) {
+        options.comment = profile_options.comment;
+    }
+    if (app->get_option("--created-by")->empty()) {
+        options.created_by = profile_options.created_by;
+    }
+    if (app->get_option("--creation-date")->empty()) {
+        options.creation_date = profile_options.creation_date;
+    }
+    if (app->get_option("--output")->empty()) {
+        options.destination = profile_options.destination;
+        options.write_to_stdout = profile_options.write_to_stdout;
+    }
+    if (app->get_option("--dht-node")->empty()) {
+        options.dht_nodes = profile_options.dht_nodes;
+    }
+    if (app->get_option("--exclude")->empty()) {
+        options.exclude_patterns = profile_options.exclude_patterns;
+    }
+    if (app->get_option("--http-seed")->empty()) {
+        options.http_seeds = profile_options.http_seeds;
+    }
+    if (app->get_option("--include")->empty()) {
+        options.include_patterns = profile_options.include_patterns;
+    }
+    if (app->get_option("--include-hidden")->empty()) {
+        options.include_hidden_files = profile_options.include_hidden_files;
+    }
+    if (app->get_option("--io-block-size")->empty()) {
+        options.io_block_size = profile_options.io_block_size;
+    }
+    if (app->get_option("--name")->empty()) {
+        options.name = profile_options.name;
+    }
+    if (app->get_option("--output")->empty()) {
+        options.destination = profile_options.destination;
+    }
+    if (app->get_option("--piece-size")->empty()) {
+        options.piece_size = profile_options.piece_size;
+    }
+    if (app->get_option("--private")->empty()) {
+        options.is_private = profile_options.is_private;
+    }
+    if (app->get_option("--protocol")->empty()) {
+        options.protocol_version = profile_options.protocol_version;
+    }
+    if (app->get_option("--no-created-by")->empty()) {
+        options.set_created_by = profile_options.set_created_by;
+    }
+    if (app->get_option("--no-creation-date")->empty()) {
+        options.set_creation_date = profile_options.set_creation_date;
+    }
+    if (app->get_option("--similar")->empty()) {
+        options.similar_torrents = profile_options.similar_torrents;
+    }
+    if (app->get_option("--source")->empty()) {
+        options.source = profile_options.source;
+    }
+    if (app->get_option("--threads")->empty()) {
+        options.threads = profile_options.threads;
+    }
+    if (app->get_option("--web-seed")->empty()) {
+        options.web_seeds = profile_options.web_seeds;
+    }
+}
+

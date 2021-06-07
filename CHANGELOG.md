@@ -4,9 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.5.0] - UNRELEASED
 ### Changed
-* Fix invalid v1 infohash reporting for hybrid torrents.
+* Add support for create profiles.
+* Add missing show subcommands and info entries for dht-nodes and web-seeds.
 * Add support for BEP 38: Finding Local Data Via Torrent File Hints (#9).
 * Add support for BEP-17: http-seeding (#8).
+* Improve formatting of info command output.
+* Fix invalid v1 infohash reporting for hybrid torrents.
 
 ## [v0.4.1] - 2021-04-15
 ### Changed

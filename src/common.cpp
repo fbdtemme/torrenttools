@@ -2,11 +2,14 @@
 
 #include <gsl-lite/gsl-lite.hpp>
 #include "common.hpp"
+#include "config_parser.hpp"
 
 namespace rng = std::ranges;
 
 
 
+/// Load configuration and tracker database.
+/// Search first in custom locations given in main_options.
 std::pair<const torrenttools::config*, const torrenttools::tracker_database*>
 load_config_and_tracker_db(const main_app_options& main_options)
 {

@@ -11,6 +11,9 @@
 #include "verify.hpp"
 #include "help_formatter.hpp"
 #include "main_app.hpp"
+#include "exceptions.hpp"
+
+namespace tt = torrenttools;
 
 const std::string main_description = PROJECT_NAME " v" PROJECT_VERSION R"(
 Tools for inspecting, creating and modifying bittorrent metafiles.
@@ -58,6 +61,7 @@ int main(int argc, char** argv) {
         app.parse(argc, argv);
 
         if (app.got_subcommand(create_app)) {
+            postprocess_create_app(create_app, main_options, create_options);
             run_create_app(main_options, create_options);
         }
         else if (app.got_subcommand(edit_app)) {
@@ -84,6 +88,9 @@ int main(int argc, char** argv) {
     }
     catch (const CLI::ParseError &e) {
         std::cerr << fmt::format("{}", e.what()) << std::endl;
+    }
+    catch (const tt::config_error& e) {
+        std::cerr << fmt::format("Configuration error: {}", e.what()) << std::endl;
     }
     catch (const std::exception& e) {
         std::cerr << fmt::format("Error: {}", e.what()) << std::endl;

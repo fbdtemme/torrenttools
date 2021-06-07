@@ -107,7 +107,7 @@ void configure_show_common(CLI::App* subapp, show_app_options& options)
 
 void configure_show_announce_subapp(CLI::App* announce_subapp, show_app_options& options)
 {
-    announce_subapp->parse_complete_callback([&](){ options.subcommand = "announce"; });
+    announce_subapp->parse_complete_callback([&](){ options.subcommand = "announce-urls"; });
 
     announce_subapp->add_flag("--flat", options.announce_flatten,
             "Flatten announce tiers.\n"
@@ -258,7 +258,7 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
     using run_show_app_function_type = void (*)(const main_app_options&, const show_app_options&);
 
     static std::unordered_map<std::string_view, run_show_app_function_type> dispatch_table {
-            {"announce",        &run_show_announce_subapp},
+            {"announce-urls",   &run_show_announce_subapp},
             {"comment",         &run_show_comment_subapp},
             {"created-by",      &run_show_created_by_subapp},
             {"creation-date",   &run_show_creation_date_subapp},
@@ -537,6 +537,7 @@ void run_show_similar_torrents_subapp(const main_app_options& main_options, cons
         else if (s.version() == dt::protocol::v2) {
             std::cout << s.v2().hex_string() << '\n';
         }
+        // This branch is never used since we parse hybrid similar-infohashes as seperate v1 and v2 hashes.
         else if (s.version() == dt::protocol::hybrid) {
             std::cout << s.v1().hex_string() << " | " << s.v2().hex_string() << '\n';
         }

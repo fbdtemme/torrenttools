@@ -8,6 +8,7 @@
 #include "cli_helpers.hpp"
 #include "common.hpp"
 #include "edit.hpp"
+#include "config_parser.hpp"
 
 namespace dt = dottorrent;
 namespace fs = std::filesystem;
@@ -53,6 +54,11 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
         return true;
     };
 
+    CLI::callback_t similar_parser = [&](const CLI::results_t& v) -> bool {
+        options.similar_torrents = similar_transformer("--similar", v);
+        return true;
+    };
+
     app->add_option("target", metafile_parser, "Target bittorrent metafile.")
                    ->type_name("<path>")
                    ->required();
@@ -90,9 +96,14 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
        ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
-               "Add one or multiple HTTP/FTP urls as seeds.")
+               "Add one or multiple HTTP/FTP urls as seeds (GetRight-style).")
        ->type_name("<url>...")
        ->expected(0, max_size);
+
+    app->add_option("--http-seed", options.http_seeds,
+                    "Add one or multiple HTTP urls as seeds (Hoffman-style).")
+            ->type_name("<url>...")
+            ->expected(0, max_size);
 
     app->add_option("-d, --dht-node", dht_node_parser,
                "Add one or multiple DHT nodes.")
@@ -152,6 +163,19 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
     app->add_flag_callback("--stdout", [&]() { options.write_to_stdout = true; },
             "Write the edited metafile to the standard output");
 
+    app->add_option("--collection", options.collections,
+                    "Add a collection name to this metafile.\n"
+                    "Other metafiles in the same collection are expected\n"
+                    "to share files with this one.")
+            ->type_name("<name>...")
+            ->expected(0, max_size);
+
+    app->add_option("--similar", similar_parser,
+                    "Add a similar torrent by infohash or metafile.\n"
+                    "The similar torrent is expected to share some files with this one")
+            ->type_name("<infohash|metafile>...")
+            ->expected(0, max_size);
+
     no_created_by_option->excludes(created_by_option);
 }
 
@@ -164,6 +188,7 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
 
     update_announce_group(m, main_options, options);
     update_announces(m, main_options, options);
+    update_http_seeds(m, options);
     update_web_seeds(m, options);
     update_dht_nodes(m, options);
 
@@ -197,6 +222,9 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
     if (options.name) {
         m.set_name(*options.name);
     }
+
+    update_similar_torrents(m, options);
+    update_collections(m, options);
 
     fs::path destination_file = get_destination_path(m, options.destination);
 
@@ -313,6 +341,37 @@ void update_web_seeds(dt::metafile& m, const edit_app_options& options)
     }
 }
 
+
+void update_http_seeds(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.http_seeds.has_value()) {
+        return;
+    }
+    auto http_seeds = *options.http_seeds;
+    const auto add_http_seeds = [] (dt::metafile& m, const std::vector<std::string>& seeds) {
+        for (const auto& url : seeds) { m.add_http_seed(url); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_http_seeds();
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    case tt::list_edit_mode::append: {
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    case tt::list_edit_mode::prepend: {
+        auto existing = m.http_seeds();
+        rng::copy(existing, std::back_inserter(http_seeds));
+        m.clear_http_seeds();
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    }
+}
+
 void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
 {
     if (!options.dht_nodes.has_value()) {
@@ -338,6 +397,60 @@ void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
         rng::copy(existing, std::back_inserter(dht_nodes));
         m.clear_dht_nodes();
         add_dht_nodes(m, dht_nodes);
+        return;
+    }
+    }
+}
+
+void update_similar_torrents(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.similar_torrents.has_value()) {
+        return;
+    }
+    auto similar_torrents = *options.similar_torrents;
+    const auto add_similar_torrent = [] (dt::metafile& m, const std::vector<dt::info_hash>& infohashes) {
+        for (const auto& ih : infohashes) { m.add_similar_torrent(ih); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_similar_torrents();
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    case tt::list_edit_mode::append: {
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    case tt::list_edit_mode::prepend: {
+        auto existing = m.similar_torrents();
+        rng::copy(existing, std::back_inserter(similar_torrents));
+        m.clear_similar_torrents();
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    }
+}
+
+void update_collections(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.collections.has_value()) {
+        return;
+    }
+    auto collections = *options.collections;
+    const auto add_collections = [] (dt::metafile& m, const std::vector<std::string>& collections) {
+        for (const auto& c : collections) { m.add_collection(c); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_collections();
+        add_collections(m, collections);
+        return;
+    }
+    case tt::list_edit_mode::append: [[fallthrough]];
+    case tt::list_edit_mode::prepend: {
+        add_collections(m, collections);
         return;
     }
     }

@@ -41,3 +41,11 @@ tracker-groups:
   example-group:
     - AlphaRatio
     - TorrentLeech
+
+profiles:
+  public:
+    command: "create"
+    options:
+      announce-group: [ public-trackers ]
+      private: false
+      protocol: 1

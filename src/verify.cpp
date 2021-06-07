@@ -24,7 +24,7 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
         return true;
     };
     CLI::callback_t files_transformer = [&](const CLI::results_t& v) -> bool {
-        options.files_root_directory = target_transformer(v);
+        options.files_root_directory = path_transformer(v);
         return true;
     };
 

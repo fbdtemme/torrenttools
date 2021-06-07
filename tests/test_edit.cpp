@@ -1,3 +1,5 @@
+#include <filesystem>
+#include <ranges>
 
 #include <experimental/source_location>
 
@@ -13,6 +15,8 @@
 
 namespace dt = dottorrent;
 namespace tt = torrenttools;
+namespace fs = std::filesystem;
+namespace rng = std::ranges;
 
 #define PARSE_ARGS(cmd) \
 try { app.parse(cmd); } catch (CLI::ParseError& e) { FAIL(e.what()); } \
@@ -352,6 +356,61 @@ TEST_CASE("test edit announce")
     }
 }
 
+TEST_CASE("test edit announce-group")
+{
+    std::stringstream buffer{};
+    temporary_directory tmp_dir{};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-edit-announce-group.torrent";
+
+    main_options.config = fs::path(TEST_RESOURCES_DIR) / "config";
+    main_options.tracker_db = fs::path(TEST_RESOURCES_DIR) / "config";
+
+    edit_app_options options{
+        .metafile = fedora_torrent,
+        .destination = output,
+    };
+
+    SECTION("list mode: replace ") {
+        options.announce_group_list = std::vector<std::string>{ "example-group-custom" };
+        options.list_mode = tt::list_edit_mode::replace;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(dt::as_nested_vector(m.trackers()) == std::vector<std::vector<std::string>>{
+            {"udp://tracker.opentrackr.org:1337/announce"},
+            {"udp://www.torrent.eu.org:451/announce"},
+        });
+    }
+
+    SECTION("list mode: append ") {
+        options.announce_group_list = std::vector<std::string>{ "example-group-custom" };
+        options.list_mode = tt::list_edit_mode::append;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(dt::as_nested_vector(m.trackers()) == std::vector<std::vector<std::string>>{
+                {"http://torrent.fedoraproject.org:6969/announce"},
+                {"udp://tracker.opentrackr.org:1337/announce"},
+                {"udp://www.torrent.eu.org:451/announce"},
+        });
+    }
+
+    SECTION("list mode: prepend ") {
+        options.announce_group_list = std::vector<std::string>{ "example-group-custom" };
+        options.list_mode = tt::list_edit_mode::prepend;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(dt::as_nested_vector(m.trackers()) == std::vector<std::vector<std::string>>{
+                {"udp://tracker.opentrackr.org:1337/announce"},
+                {"udp://www.torrent.eu.org:451/announce"},
+                {"http://torrent.fedoraproject.org:6969/announce"},
+        });
+    }
+}
+
 
 TEST_CASE("test edit web-seeds", "[edit]")
 {
@@ -362,7 +421,7 @@ TEST_CASE("test edit web-seeds", "[edit]")
     fs::path output = fs::path(tmp_dir) / "test-edit-webseeds.torrent";
 
     edit_app_options options {
-        .metafile = web_seed_torrent,
+        .metafile = web_seeds_torrent,
         .destination = output,
     };
 
@@ -407,6 +466,60 @@ TEST_CASE("test edit web-seeds", "[edit]")
 }
 
 
+TEST_CASE("test edit http-seeds", "[edit]")
+{
+    std::stringstream buffer {};
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-edit-http-seeds.torrent";
+
+    edit_app_options options {
+            .metafile = http_seeds_torrent,
+            .destination = output,
+    };
+
+    SECTION("list_mode - reset") {
+        options.http_seeds = std::vector<std::string> {
+                {"https://seed1.com/path"},
+                {"https://seed2.com/path"}
+        };
+        options.list_mode = tt::list_edit_mode::replace;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.http_seeds() == options.http_seeds);
+    }
+    SECTION("list_mode - append") {
+        options.http_seeds = std::vector<std::string> {
+                {"https://seed1.com/path"},
+                {"https://seed2.com/path"}
+        };
+        options.list_mode = tt::list_edit_mode::append;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.http_seeds().at(0) == "http://test.url.com/httpseed");
+        CHECK(m.http_seeds().at(1) == "https://seed1.com/path");
+        CHECK(m.http_seeds().at(2) == "https://seed2.com/path");
+    }
+
+    SECTION("list_mode - prepend") {
+        options.http_seeds = std::vector<std::string> {
+                {"https://seed1.com/path"},
+                {"https://seed2.com/path"}
+        };
+        options.list_mode = tt::list_edit_mode::prepend;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.http_seeds().at(0) == "https://seed1.com/path");
+        CHECK(m.http_seeds().at(1) == "https://seed2.com/path");
+        CHECK(m.http_seeds().at(2) == "http://test.url.com/httpseed");
+    }
+}
+
+
 TEST_CASE("test edit dht-nodes", "[edit]")
 {
     std::stringstream buffer {};
@@ -416,7 +529,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
     fs::path output = fs::path(tmp_dir) / "test-edit-dhtnodes.torrent";
 
     edit_app_options options {
-            .metafile = web_seed_torrent,
+            .metafile = web_seeds_torrent,
             .destination = output,
     };
 
@@ -432,7 +545,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
         CHECK(m.dht_nodes() == options.dht_nodes);
     }
     SECTION("list_mode - append") {
-        options.metafile = dht_node_torrent;
+        options.metafile = dht_nodes_torrent;
         options.dht_nodes = std::vector<dt::dht_node> {
                 dt::dht_node{"https://node1.com/path", 8887},
                 dt::dht_node{"https://node2.com/path", 8888},
@@ -447,7 +560,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
     }
 
     SECTION("list_mode - prepend") {
-        options.metafile = dht_node_torrent;
+        options.metafile = dht_nodes_torrent;
         options.dht_nodes = std::vector<dt::dht_node> {
                 dt::dht_node{"https://node1.com/path", 8887},
                 dt::dht_node{"https://node2.com/path", 8888},
@@ -462,6 +575,7 @@ TEST_CASE("test edit dht-nodes", "[edit]")
     }
 }
 
+
 TEST_CASE("test edit comment")
 {
     std::stringstream buffer {};
@@ -470,7 +584,7 @@ TEST_CASE("test edit comment")
 
     fs::path output = fs::path(tmp_dir) / "test-edit-comment.torrent";
     edit_app_options options {
-            .metafile = web_seed_torrent,
+            .metafile = web_seeds_torrent,
             .destination = output,
     };
 
@@ -631,5 +745,82 @@ TEST_CASE("test edit created-by")
         run_edit_app(main_options, options);
         auto m = dt::load_metafile(output);
         CHECK(m.created_by() == options.created_by);
+    }
+}
+
+
+TEST_CASE("test edit similar torrents", "[edit]")
+{
+    std::stringstream buffer {};
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-edit-similar-v1.torrent";
+
+    edit_app_options options {
+            .metafile = similar_v1_torrent,
+            .destination = output,
+    };
+
+    SECTION("list_mode - reset") {
+        auto hash = dt::info_hash::from_hex(dt::protocol::v1, "7eda978ed7628595bb91c48b947f025bae78cb77");
+        options.similar_torrents = std::vector<dt::info_hash>{hash};
+        options.list_mode = tt::list_edit_mode::replace;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.similar_torrents() == std::unordered_set{hash});
+    }
+    SECTION("list_mode - append/prepend") {
+        auto m = dt::load_metafile(options.metafile);
+        auto contained_similar_hash = *m.similar_torrents().begin();
+
+        auto hash = dt::info_hash::from_hex(dt::protocol::v1, "7eda978ed7628595bb91c48b947f025bae78cb77");
+        options.similar_torrents = std::vector<dt::info_hash>{hash};
+        options.list_mode = tt::list_edit_mode::append;
+
+        run_edit_app(main_options, options);
+        m = dt::load_metafile(output);
+        CHECK(m.similar_torrents() == std::unordered_set{contained_similar_hash, hash});
+    }
+}
+
+
+TEST_CASE("test edit collections", "[edit]")
+{
+    std::stringstream buffer {};
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-edit-collections.torrent";
+
+    edit_app_options options {
+            .metafile = collection_torrent,
+            .destination = output,
+    };
+
+    SECTION("list_mode - reset") {
+        options.collections = {"edit-test1"};
+        options.list_mode = tt::list_edit_mode::replace;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.collections() == std::unordered_set<std::string>{"edit-test1"});
+    }
+    SECTION("list_mode - append/prepend") {
+        auto m = dt::load_metafile(options.metafile);
+        auto original_collections = m.collections();
+
+        options.collections = {"edit-test1"};
+        options.list_mode = tt::list_edit_mode::append;
+
+        run_edit_app(main_options, options);
+        m = dt::load_metafile(output);
+        std::unordered_set<std::string> joined {};
+        rng::set_union(
+                original_collections,
+                std::unordered_set<std::string>({"edit-test1"}),
+                std::inserter(joined, joined.begin()));
+        CHECK(m.collections() == joined);
     }
 }

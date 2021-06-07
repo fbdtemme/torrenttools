@@ -11,13 +11,14 @@
 #include <nlohmann/json.hpp>
 
 #include "app_data.hpp"
-#include "config.hpp"
-#include "config_parser.hpp"
 
 namespace torrenttools
 {
+
 namespace fs = std::filesystem;
 namespace rng = std::ranges;
+
+class config;
 
 struct tracker
 {
