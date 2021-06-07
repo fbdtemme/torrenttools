@@ -19,12 +19,17 @@
 #include <fmt/chrono.h>
 
 #include "argument_parsers.hpp"
+#include "exceptions.hpp"
 
 namespace rng = std::ranges;
 namespace dt = dottorrent;
 namespace fs = std::filesystem;
+namespace tt = torrenttools;
 
 using namespace dottorrent::literals;
+using namespace std::string_view_literals;
+using namespace std::string_literals;
+
 static std::string err_msg = "Invalid value {} for option {}: {}.";
 
 // trim from start (in place)
@@ -119,6 +124,33 @@ std::vector<std::vector<std::string>> announce_transformer(const std::vector<std
     return res;
 }
 
+/// Parse a YAML Node containing a list of announce urls or a list of tiers with announce urls.
+std::vector<std::vector<std::string>> announce_transformer(const YAML::Node& args)
+{
+    std::vector<std::vector<std::string>> res {};
+
+    if (!args.IsSequence()) {
+        throw tt::profile_error("type of value for key announce must be a list");
+    }
+
+    try {
+        for (const auto& v: args) {
+            if (v.IsScalar()) {
+                res.emplace_back().push_back(v.as<std::string>());
+            }
+            else {
+                auto& tier = res.emplace_back();
+                for (const auto& a : v) {
+                    tier.push_back(a.as<std::string>());
+                }
+            }
+        }
+    } catch (const YAML::InvalidNode& err) {
+        throw tt::profile_error(fmt::format("bad value for key \"announce\": {}", err.what()));
+    }
+    return res;
+}
+
 
 /// Parse a string with dht nodes to dht_node instances.
 std::vector<dottorrent::dht_node> dht_node_transformer(const std::vector<std::string>& s)
@@ -170,7 +202,7 @@ dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, boo
     throw std::invalid_argument(fmt::format("Invalid bittorrent protocol: {}", s));
 }
 
-std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists, bool keep_trailing)
+std::filesystem::path path_transformer(const std::vector<std::string>& v, bool check_exists, bool keep_trailing)
 {
     if (v.size() != 1) {
         throw std::invalid_argument("Multiple targets given.");
@@ -198,6 +230,7 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v, bool
         return canonical_f;
     }
 }
+
 
 std::filesystem::path config_path_transformer(const std::vector<std::string>& v, bool check_exists)
 {
@@ -509,4 +542,25 @@ similar_transformer(std::string_view option, const std::vector<std::string>& v)
     }
 
     return out;
+}
+
+std::vector<std::string>
+seed_transformer(std::string_view option, const std::vector<std::string>& v, bool allow_ftp)
+{
+    for (const auto& s:  v) {
+        auto dist = s.find("://");
+        auto protocol = std::string_view(s.begin(), s.begin()+dist);
+
+        if (protocol == "http" || protocol == "https" || protocol == "udp" || protocol == "utp") {
+            continue;
+        }
+        if (allow_ftp) {
+            if (protocol == "ftp" || protocol == "ftps") {
+                continue;
+            }
+        }
+        throw std::invalid_argument(fmt::format("unsupported protocol: {}", protocol));
+    }
+
+    return v;
 }

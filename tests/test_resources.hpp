@@ -14,8 +14,12 @@ inline auto ubuntu_torrent =     fs::path(TEST_RESOURCES_DIR) / "ubuntu-20.04.1-
 inline auto camelyon_torrent =   fs::path(TEST_RESOURCES_DIR) / "CAMELYON17.torrent";
 inline auto private_torrent =    fs::path(TEST_RESOURCES_DIR) / "private.torrent";
 inline auto tree_index_test =    fs::path(TEST_RESOURCES_DIR) / "tree_index_test.torrent";
-inline auto web_seed_torrent =   fs::path(TEST_RESOURCES_DIR) / "web-seed.torrent";
-inline auto dht_node_torrent =   fs::path(TEST_RESOURCES_DIR) / "dht-node.torrent";
+inline auto web_seeds_torrent =  fs::path(TEST_RESOURCES_DIR) / "web-seed.torrent";
+inline auto dht_nodes_torrent =  fs::path(TEST_RESOURCES_DIR) / "dht-node.torrent";
+inline auto http_seeds_torrent = fs::path(TEST_RESOURCES_DIR) / "http-seeds.torrent";
+inline auto similar_v1_torrent = fs::path(TEST_RESOURCES_DIR) / "similar-v1.torrent";
+inline auto similar_v2_torrent = fs::path(TEST_RESOURCES_DIR) / "similar-v2.torrent";
+inline auto collection_torrent = fs::path(TEST_RESOURCES_DIR) / "collection.torrent";
 
 struct cout_redirect {
     cout_redirect( std::streambuf * new_buffer )

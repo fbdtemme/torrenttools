@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-add_executable(torrenttools-tests)
+add_executable(torrenttools-tests test_profile.cpp)
 
 message(STATUS ${CMAKE_MODULE_PATH})
 include(Catch)
@@ -27,6 +27,7 @@ target_sources(torrenttools-tests PRIVATE
         test_tracker_database.cpp
         test_tree_view.cpp
         test_utils.cpp
+        test_profile.cpp
         ${torrenttools_SOURCES}
 )
 

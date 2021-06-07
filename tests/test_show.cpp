@@ -31,12 +31,12 @@ TEST_CASE("test show app argument parsing")
 
     SECTION("announce --flat") {
         SECTION("on") {
-            auto cmd = fmt::format("show announce --flat {}", file);
+            auto cmd = fmt::format("show announce-urls --flat {}", file);
             PARSE_ARGS(cmd);
             CHECK(show_options.announce_flatten);
         }
         SECTION("off") {
-            auto cmd = fmt::format("show announce {}", file);
+            auto cmd = fmt::format("show announce-urls {}", file);
             PARSE_ARGS(cmd);
             CHECK_FALSE(show_options.announce_flatten);
         }
@@ -550,11 +550,18 @@ TEST_CASE("test show similar-torrents")
         run_show_similar_torrents_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }
+
+    SECTION("hybrid torrent") {
+        options.metafile = similar_v2_torrent;
+        std::string expected = "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e\n";
+        run_show_similar_torrents_subapp(main_options, options);
+        CHECK(buffer.str() == expected);
+    }
 }
 
 
 
-TEST_CASE("test show web-seeds")
+TEST_CASE("test show collections")
 {
     std::stringstream buffer {};
     auto redirect_guard = cout_redirect(buffer.rdbuf());
@@ -563,8 +570,7 @@ TEST_CASE("test show web-seeds")
             .metafile = collection_torrent
     };
 
-    std::string expected = "test2\ntest1";
-    run_show_web_seeds_subapp(main_options, options);
+    run_show_collection_subapp(main_options, options);
     auto result = buffer.str();
     CHECK(result.find("test1") != result.size());
     CHECK(result.find("test2") != result.size());
