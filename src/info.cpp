@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <string>
 #include <chrono>
+#include <ranges>
 #include <bencode/bview.hpp>
 #include <bencode/events/encode_json_to.hpp>
 #include "dottorrent/metafile.hpp"
@@ -102,11 +103,11 @@ auto format_multiline(std::string_view key,
     auto out = std::back_inserter(result);
 
     pos = value.find('\n', prev);
-    fmt::format_to(out, options.entry_format, key, value.substr(prev, pos-prev));
+    fmt::format_to(out, fmt::runtime(options.entry_format), key, value.substr(prev, pos-prev));
     prev = pos + 1;
 
     while ((pos = value.find('\n', prev)) != std::string::npos) {
-        fmt::format_to(out, options.entry_continuation_format, value.substr(prev, pos - prev));
+        fmt::format_to(out, fmt::runtime(options.entry_continuation_format), value.substr(prev, pos - prev));
         prev = pos + 1;
     }
     return result;
@@ -121,13 +122,13 @@ std::string format_indented_list(
     auto out = std::back_inserter(result);
 
     if (values.empty()) {
-        fmt::format_to(out, options.entry_format, key, "");
+        fmt::format_to(out, fmt::runtime(options.entry_format), key, "");
         return result;
     }
 
-    fmt::format_to(out, options.entry_format, key, values.at(0));
+    fmt::format_to(out, fmt::runtime(options.entry_format), key, values.at(0));
     for (std::size_t i = 1; i < values.size(); ++i) {
-        fmt::format_to(out, options.entry_continuation_format, values.at(i));
+        fmt::format_to(out, fmt::runtime(options.entry_continuation_format), values.at(i));
     }
     return result;
 }
@@ -145,7 +146,7 @@ void create_general_info(std::ostream& os,
     auto out = std::ostreambuf_iterator<char>(os);
 
     const std::string piece_size = fmt::format(
-            options.piece_size_format,
+            fmt::runtime(options.piece_size_format),
             tt::format_size(m.piece_size()),
             m.piece_size());
 
@@ -155,7 +156,7 @@ void create_general_info(std::ostream& os,
         std::time_t timestamp = m.creation_date().count();
         std::tm* datetime = std::gmtime(&timestamp);
         creation_date = fmt::format(
-                options.creation_date_format, *datetime, timestamp);
+                fmt::runtime(options.creation_date_format), *datetime, timestamp);
     }
     const auto& entry = options.entry_format;
 
@@ -205,7 +206,7 @@ void create_general_info(std::ostream& os,
 
 
 
-    fmt::format_to(out, general_template,
+    fmt::format_to(out, fmt::runtime(general_template),
             fmt::arg("metafile_path",    metafile_path.string()),
             fmt::arg("protocol_version", protocol_version_string),
             fmt::arg("infohash_string",  info_hash_string),
@@ -244,12 +245,11 @@ void create_general_info(std::ostream& os,
     rng::transform(m.dht_nodes(), std::back_inserter(dht_nodes_strings), [](auto node){ return std::string(node);});
     std::vector<std::string> collections(m.collections().begin(), m.collections().end());
 
-    fmt::print(os, format_indented_list("DHT nodes:", dht_nodes_strings, options));
-    fmt::print(os, format_indented_list("Web seeds:", m.web_seeds(), options));
-    fmt::print(os, format_indented_list("HTTP seeds:", m.http_seeds(), options));
-
-    fmt::print(os, format_indented_list("Similar torrents:", similar_torrents_infohashes, options));
-    fmt::print(os, format_indented_list("Collections:", collections, options));
+    rng::copy(format_indented_list("DHT nodes:", dht_nodes_strings, options), out);
+    rng::copy(format_indented_list("Web seeds:", m.web_seeds(), options), out);
+    rng::copy(format_indented_list("HTTP seeds:", m.http_seeds(), options), out);
+    rng::copy(format_indented_list("Similar torrents:", similar_torrents_infohashes, options), out);
+    rng::copy(format_indented_list("Collections:", collections, options), out);
 
     tree_options tree_fmt_options {
         .use_color = options.use_color,
@@ -272,30 +272,30 @@ void format_announces(std::ostream& os, const dottorrent::metafile& metafile, co
     const auto& announce_urls = metafile.trackers();
 
     if (announce_urls.empty()) {
-        fmt::format_to(out, options.entry_format, "Announce-urls:", "");
+        fmt::format_to(out, fmt::runtime(options.entry_format), "Announce-urls:", "");
         return;
     }
 
     std::size_t tier_index = 0;
     auto [tier_begin, tier_end] = announce_urls.get_tier(tier_index);
     auto line = fmt::format(tracker_tier_entry, tier_index+1, *tier_begin++);
-    fmt::format_to(out, options.entry_format, "Announce-urls:", line);
+    fmt::format_to(out, fmt::runtime(options.entry_format), "Announce-urls:", line);
 
     // Finish current tier
     for ( ; tier_begin != tier_end; ++tier_begin) {
         line = fmt::format(tracker_entry, *tier_begin);
-        fmt::format_to(out, options.entry_continuation_format, line);
+        fmt::format_to(out, fmt::runtime(options.entry_continuation_format), line);
     }
 
     // Finish other tiers
     for (tier_index += 1; tier_index < announce_urls.tier_count(); ++tier_index) {
         auto [tier_begin, tier_end] = announce_urls.get_tier(tier_index);
         auto line = fmt::format(tracker_tier_entry, tier_index+1, *tier_begin++);
-        fmt::format_to(out, options.entry_continuation_format, line);
+        fmt::format_to(out, fmt::runtime(options.entry_continuation_format), line);
 
         for ( ; tier_begin != tier_end; ++tier_begin) {
             line = fmt::format(tracker_entry, *tier_begin);
-            fmt::format_to(out, options.entry_continuation_format, line);
+            fmt::format_to(out, fmt::runtime(options.entry_continuation_format), line);
         }
     }
 }
