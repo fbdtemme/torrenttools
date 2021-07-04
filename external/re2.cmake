@@ -23,7 +23,7 @@ else()
     FetchContent_Declare(
             re2
             GIT_REPOSITORY https://github.com/google/re2.git
-            GIT_TAG        master
+            GIT_TAG        main
     )
     FetchContent_MakeAvailable(re2)
 endif()
