@@ -31,7 +31,7 @@ TEST_CASE("test pad app argument parsing")
     configure_pad_app(pad_app, options);
 
     SECTION("target metafile") {
-        auto cmd = fmt::format("pad {} {}", TEST_RESOURCES_DIR, fedora_torrent);
+        auto cmd = fmt::format("pad {} {}", TEST_RESOURCES_DIR, fedora_torrent.string());
         PARSE_ARGS(cmd);
 
         CHECK(options.metafile == fedora_torrent);
@@ -39,12 +39,12 @@ TEST_CASE("test pad app argument parsing")
     }
 
     SECTION("target dir does not exist") {
-        auto cmd = fmt::format("pad {} {}", "blah", fedora_torrent);
+        auto cmd = fmt::format("pad {} {}", "blah", fedora_torrent.string());
         CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
     }
 
     SECTION("target metafile does not exist") {
-        auto cmd = fmt::format("pad {} {}", "blah", fedora_torrent);
+        auto cmd = fmt::format("pad {} {}", "blah", fedora_torrent.string());
         CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
     }
 }

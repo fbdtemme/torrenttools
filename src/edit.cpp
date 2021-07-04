@@ -18,7 +18,7 @@ namespace rng = std::ranges;
 
 void configure_edit_app(CLI::App* app, edit_app_options& options)
 {
-    CLI::callback_t  metafile_parser = [&](const CLI::results_t& v) -> bool {
+    CLI::callback_t metafile_parser = [&](const CLI::results_t& v) -> bool {
         options.metafile = metafile_target_transformer(v);
         return true;
     };
@@ -227,13 +227,14 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
     update_collections(m, options);
 
     fs::path destination_file = get_destination_path(m, options.destination);
+    auto out = std::ostreambuf_iterator(os);
 
     if (!options.write_to_stdout) {
         dt::save_metafile(destination_file, m, m.storage().protocol());
-        fmt::print(os, "Metafile written to:  {}\n", destination_file.string());
+        fmt::format_to(out, "Metafile written to:  {}\n", destination_file.string());
     } else {
         dt::write_metafile_to(std::cout, m, m.storage().protocol());
-        fmt::print(os, "Metafile written to standard output.");
+        fmt::format_to(out, "Metafile written to standard output.");
     }
 }
 

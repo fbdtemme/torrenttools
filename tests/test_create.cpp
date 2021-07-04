@@ -502,7 +502,7 @@ TEST_CASE("test create app argument parsing")
         SECTION("Existing directory -> append trailing slash") {
             temporary_directory tmp_dir {};
 
-            auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path());
+            auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path().string());
             PARSE_ARGS(cmd);
             CHECK(create_options.destination == tmp_dir.path() / "");
         }
@@ -594,7 +594,7 @@ TEST_CASE("test create app argument parsing")
             auto tf1 =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
             auto m1 = dt::load_metafile(tf1);
 
-            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, tf1);
+            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, tf1.string());
             PARSE_ARGS(cmd);
             CHECK(create_options.similar_torrents.size() == 2);
             CHECK(create_options.similar_torrents[0] == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex1));
@@ -604,7 +604,7 @@ TEST_CASE("test create app argument parsing")
         SECTION("hybrid torrent") {
             auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-hybrid-test.torrent";
             auto m1 = dt::load_metafile(tf1);
-            auto cmd = fmt::format("create {} --similar {}", file, tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1.string());
             auto v1_hash = dt::info_hash::from_hex(dt::protocol::v1, "631a31dd0a46257d5078c0dee4e66e26f73e42ac");
             auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb");
 
@@ -617,7 +617,7 @@ TEST_CASE("test create app argument parsing")
         SECTION("v2 torrent") {
             auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-test.torrent";
             auto m1 = dt::load_metafile(tf1);
-            auto cmd = fmt::format("create {} --similar {}", file, tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1.string());
             auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e");
 
             PARSE_ARGS(cmd);

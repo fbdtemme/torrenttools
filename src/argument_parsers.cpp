@@ -30,7 +30,7 @@ using namespace dottorrent::literals;
 using namespace std::string_view_literals;
 using namespace std::string_literals;
 
-static std::string err_msg = "Invalid value {} for option {}: {}.";
+constexpr std::string_view err_msg = "Invalid value {} for option {}: {}.";
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {

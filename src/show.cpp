@@ -496,9 +496,9 @@ void run_show_files_subapp(const main_app_options& main_options, const show_app_
             continue;
 
         if (!options.files_prefix.empty()) {
-            fmt::print(std::cout, (options.files_prefix / f.path()).string() + '\n');
+            std::cout << (options.files_prefix / f.path()).string() << '\n';
         } else {
-            fmt::print(std::cout, f.path().string() + '\n');
+            std::cout << f.path().string() << '\n';
         }
     }
 }
