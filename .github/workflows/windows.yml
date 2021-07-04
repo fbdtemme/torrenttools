@@ -1,0 +1,37 @@
+name: Windows
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+          update: true
+          install: >-
+            git
+            make
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-toolchain
+      - uses: actions/checkout@v2
+      - name: Configure
+        run: |
+          mkdir build;
+          /c/msys64/mingw64/bin/cmake --help
+          /c/msys64/mingw64/bin/cmake -G "MSYS Makefiles" -B build -S . \
+                 -DDOTTORRENT_CRYPTO_LIB=openssl \
+                 -DDOTTORRENT_MB_CRYPTO_LIB=isal \
+                 -DCMAKE_BUILD_TYPE=Debug \
+                 -DTORRENTTOOLS_BUILD_TESTS=OFF \
+                 -DTORRENTTOOLS_BUILD_DOCS=OFF
+      - name: Build
+        run: /c/msys64/mingw64/bin/cmake --build build --target torrenttools
