@@ -41,5 +41,4 @@ jobs:
         run: ls -R
       - name: Test
         run: |
-          cd build
           ctest
