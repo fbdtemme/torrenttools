@@ -17,13 +17,15 @@ jobs:
         with:
           update: true
           install: >-
-            git
+            make
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-yasm
       - uses: actions/checkout@v2
       - name: Configure
         run: |
           mkdir build;
+          cmake --help
           cmake -G "MSYS Makefiles" -B build -S . \
                  -DDOTTORRENT_CRYPTO_LIB=openssl \
                  -DDOTTORRENT_MB_CRYPTO_LIB=isal \
