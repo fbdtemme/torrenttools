@@ -19,12 +19,26 @@ jobs:
           cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
       - name: Build
         run: cmake --build build
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: torrenttools-binaries
+          path: |
+           build/tests/torrenttools-tests
+           build/torrenttools
+
 
   test:
     name: Test
     needs: Build
     runs-on: ubuntu-20.04
     steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: torrenttools-binaries
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Test
         run: |
           cd build
