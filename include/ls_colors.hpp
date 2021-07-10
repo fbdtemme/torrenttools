@@ -119,7 +119,7 @@ struct ls_colors
         }
         else {
             if (entry.path().has_extension()) {
-                const auto& ext = entry.path().extension();
+                const auto& ext = entry.path().extension().string();
 
                 // Prefer an extension
                 if (auto it = extensions_.find(ext); it != extensions_.end()) {
