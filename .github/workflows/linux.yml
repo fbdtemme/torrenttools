@@ -18,7 +18,7 @@ jobs:
         run: |
           cmake -S . -B cmake-build-debug -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON
       - name: Build
-        run: cmake --build build
+        run: cmake --build cmake-build-debug
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -36,7 +36,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: torrenttools-binaries
-          path: build
+          path: cmake-build-debug
       - name: Display structure of downloaded files
         run: ls -R
       - name: Test
