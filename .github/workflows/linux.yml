@@ -15,15 +15,15 @@ jobs:
       - name: Install build dependencies
         run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev
       - name: Configure
-        run: mkdir build && cd build &&
-          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON .. .
+        run: |
+          cmake -S . -B cmake-build-debug -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON
       - name: Build
         run: cmake --build build
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: torrenttools-binaries
-          path: build
+          path: cmake-build-debug
           retention-days: 1
 
   test:
@@ -31,12 +31,14 @@ jobs:
     needs: Build
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@v2
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
           name: torrenttools-binaries
+          path: build
       - name: Display structure of downloaded files
         run: ls -R
       - name: Test
         run: |
-          ctest
+          cd cmake-build-debug && ctest
