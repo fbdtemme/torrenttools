@@ -23,10 +23,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: torrenttools-binaries
-          path: |
-           build/tests/torrenttools-tests
-           build/torrenttools
-
+          path: build
+          retention-days: 1
 
   test:
     name: Test
