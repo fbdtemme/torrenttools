@@ -41,4 +41,5 @@ jobs:
         run: ls -R
       - name: Test
         run: |
+          chmod +x cmake-build-debug/tests/torrenttools-tests
           cd cmake-build-debug && ctest
