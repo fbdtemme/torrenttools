@@ -120,6 +120,19 @@ endif ()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
 if (TORRENTTOOLS_INSTALL)
+    if (UNIX)
+        # install trackers to system config dir since it is global data.
+        install(FILES resources/trackers.json
+                resources/config.yml
+                COMPONENT torrenttools
+                DESTINATION ${torrenttools_install_sysconf_dir})
+
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+    endif()
+
     if (MINGW OR WIN32)
         # Set the install prefix to Program Files instead of Program Files (x86)
         message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
@@ -128,20 +141,18 @@ if (TORRENTTOOLS_INSTALL)
             SET(CMAKE_INSTALL_PREFIX  "C:/Program Files/${PROJECT_NAME}" CACHE PATH
                 "Install path prefix, prepended onto install directories."  FORCE)
         endif()
-    endif()
 
-    # install trackers to system config dir since it is global data.
-    install(FILES resources/trackers.json
-                  resources/config.yml
-            COMPONENT torrenttools
-            DESTINATION ${torrenttools_install_sysconf_dir})
+        # install trackers to system config dir since it is global data.
+        install(FILES resources/trackers.json
+                resources/config.yml
+                COMPONENT torrenttools
+                DESTINATION ${torrenttools_install_sysconf_dir})
 
-    # install executable
-    install(TARGETS torrenttools
-            COMPONENT torrenttools
-            RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
 
-    if (MINGW)
         # Install mingw shared libraries to the project dir
         # Filter out core windows libraries with regex
         install(CODE [[
@@ -165,6 +176,13 @@ if (TORRENTTOOLS_INSTALL)
             endif()
         ]]
         COMPONENT torrenttools)
+    endif()
+
+    if (APPLE)
+        install(CODE [[
+          include(BundleUtilities)
+          fixup_bundle("${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app" "" "")
+        ]] COMPONENT torrenttools)
     endif()
 endif()
 
