@@ -41,7 +41,7 @@ if (NOT MINGW)
         file(MAKE_DIRECTORY ${isal_source_dir}/include)
 
         ExternalProject_Add(build-isa-l_crypto
-                GIT_REPOSITORY "https://www.github.com/intel/isa-l_crypto.git"
+                GIT_REPOSITORY "https://github.com/intel/isa-l_crypto.git"
                 GIT_TAG "master"
                 SOURCE_DIR          ${isal_source_dir}
                 BUILD_IN_SOURCE     ON
@@ -86,7 +86,7 @@ else()
         file(MAKE_DIRECTORY ${isal_source_dir}/include)
 
         ExternalProject_Add(build-isa-l_crypto
-                GIT_REPOSITORY "https://www.github.com/intel/isa-l_crypto.git"
+                GIT_REPOSITORY "https://github.com/intel/isa-l_crypto.git"
                 GIT_TAG            "master"
                 SOURCE_DIR          ${isal_source_dir}
                 BUILD_IN_SOURCE     ON
