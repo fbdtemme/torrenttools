@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0077 NEW)
 
+if (UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
+
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
@@ -12,6 +16,10 @@ project(torrenttools
 
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+if (APPLE)
+    set(CMAKE_INSTALL_NAME_DIR "@executable_path/../lib")
+endif()
 
 if (TORRENTTOOLS_PACKAGES_ONLY)
     include(packages/packages.cmake)
@@ -49,7 +57,7 @@ option(TORRENTTOOLS_INSTALL
 
 include(external/external.cmake)
 
-add_executable(torrenttools
+add_executable(torrenttools 
         src/app_data.cpp
         src/argument_parsers.cpp
         src/common.cpp
@@ -85,7 +93,7 @@ target_link_libraries(torrenttools PUBLIC
         re2::re2
         yaml-cpp
         nlohmann_json::nlohmann_json
-        )
+    )
 
 # Set the linker to lld to get decent link times on MinGW
 if (MINGW)
@@ -119,8 +127,9 @@ endif ()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
+
 if (TORRENTTOOLS_INSTALL)
-    if (UNIX)
+    if (LINUX)
         # install trackers to system config dir since it is global data.
         install(FILES resources/trackers.json
                 resources/config.yml
@@ -169,6 +178,7 @@ if (TORRENTTOOLS_INSTALL)
                      DESTINATION "${CMAKE_INSTALL_PREFIX}"
                      FOLLOW_SYMLINK_CHAIN)
             endforeach()
+
             list(LENGTH _u_deps _u_length)
             if("${_u_length}" GREATER 0)
                 message(STATUS "${_u_deps}")
@@ -179,10 +189,43 @@ if (TORRENTTOOLS_INSTALL)
     endif()
 
     if (APPLE)
+        # Set the install prefix to /usr/local/bin/torrenttools
+        message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
+        if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+            message(DEBUG "Changing default install prefix")
+            set(CMAKE_INSTALL_PREFIX  "/Library/${PROJECT_NAME}" CACHE PATH
+                "Install path prefix, prepended onto install directories."  FORCE)
+        endif()
+
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                DESTINATION "bin")
+                
         install(CODE [[
-          include(BundleUtilities)
-          fixup_bundle("${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app" "" "")
-        ]] COMPONENT torrenttools)
+            file(GET_RUNTIME_DEPENDENCIES
+                EXECUTABLES $<TARGET_FILE:torrenttools>
+                DIRECTORIES "/usr/bin/local/Cellar" "/usr/bin/local"
+                RESOLVED_DEPENDENCIES_VAR _r_deps
+                UNRESOLVED_DEPENDENCIES_VAR _u_deps
+            )
+
+            foreach(_file ${_r_deps})
+                file(INSTALL ${_file}
+                    DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+                    FOLLOW_SYMLINK_CHAIN)
+                get_filename_component(_file_name "${_file}" NAME) 
+                execute_process(COMMAND install_name_tool -change "${_file}" "@executable_path/../lib/${_file_name}" "${CMAKE_INSTALL_PREFIX}/bin/torrenttools" )
+            endforeach()
+
+            list(LENGTH _u_deps _u_length)
+            if("${_u_length}" GREATER 0)
+                message(STATUS "${_u_deps}")
+                message(WARNING "Unresolved dependencies detected!")
+            endif()
+        ]]
+        COMPONENT torrenttools)
+
     endif()
 endif()
 
