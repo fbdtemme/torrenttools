@@ -32,6 +32,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: Install runtime dependencies
+        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 libssl-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
