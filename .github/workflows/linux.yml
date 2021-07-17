@@ -23,7 +23,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: torrenttools-binaries
-          path: cmake-build-debug
+          path: |
+            cmake-build-debug
+            !cmake-build-debug/_deps
           retention-days: 1
 
   test:
