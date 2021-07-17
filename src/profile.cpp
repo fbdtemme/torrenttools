@@ -251,7 +251,7 @@ profile parse_create_profile(const YAML::Node& profile_data)
         try {
             options.threads = n.as<std::size_t>();
         } catch (const YAML::BadConversion& err) {
-            throw profile_error("value type for key source must be an integer");
+            throw profile_error("value type for key threads must be an integer");
         }
     }
 
