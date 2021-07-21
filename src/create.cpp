@@ -303,8 +303,6 @@ void set_files(dottorrent::metafile& m, const create_app_options& options)
 {
     dottorrent::file_storage& storage = m.storage();
 
-    // todo: filter out hidden files
-
     // scan files and m
     if (fs::is_directory(options.target)) {
         torrenttools::file_matcher matcher{};

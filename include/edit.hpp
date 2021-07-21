@@ -36,9 +36,14 @@ struct edit_app_options
     std::optional<std::string> source;
     std::optional<std::string> name;
     bool write_to_stdout = false;
+    std::optional<std::string> profile;
 };
 
 void configure_edit_app(CLI::App* app, edit_app_options& options);
+
+void postprocess_edit_app(const CLI::App* app, const main_app_options& main_options, edit_app_options& options);
+
+void merge_edit_profile(const tt::config& cfg, std::string_view profile_name, const CLI::App* app, edit_app_options& options);
 
 void run_edit_app(const main_app_options& main_options, const edit_app_options& options);
 

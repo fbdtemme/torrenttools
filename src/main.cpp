@@ -65,6 +65,7 @@ int main(int argc, char** argv) {
             run_create_app(main_options, create_options);
         }
         else if (app.got_subcommand(edit_app)) {
+            postprocess_edit_app(edit_app, main_options, edit_options);
             run_edit_app(main_options, edit_options);
         }
         else if (app.got_subcommand(info_app)) {
