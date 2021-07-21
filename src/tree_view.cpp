@@ -222,7 +222,7 @@ std::string format_verify_file_tree(
 std::string format_file_stats(const dottorrent::metafile& m, std::string_view prefix, bool include_pad_files)
 {
     const auto& storage = m.storage();
-    fmt::memory_buffer out {};
+    std::string s {};
 
     constexpr auto size_template =
             "{prefix} {total_file_size} in {directory_count} directories, {file_count} files\n";
@@ -245,13 +245,13 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
         total_file_size = tt::format_size(file_size_counter);
     }
 
-    fmt::format_to(out, size_template,
+    fmt::format_to(std::back_inserter(s), size_template,
             fmt::arg("prefix", prefix),
             fmt::arg("total_file_size", total_file_size),
             fmt::arg("directory_count", directory_count(storage, "", include_pad_files)),
             fmt::arg("file_count", total_file_count));
 
-    return fmt::to_string(out);
+    return s;
 }
 
 
