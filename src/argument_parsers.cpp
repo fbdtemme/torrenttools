@@ -465,16 +465,18 @@ torrenttools::list_edit_mode parse_list_edit_mode(std::string_view options, cons
     if (v.size() != 1)
         throw std::invalid_argument("multiple options given.");
 
-    auto value = v.at(0);
-    rng::transform(value, std::back_inserter(value), [](const char c) { return std::tolower(c); });
+    std::string value = v.at(0);
+    std::string cleaned_value {};
+    trim(value);
+    rng::transform(value, std::back_inserter(cleaned_value), [](const char c) { return std::tolower(c); });
 
-    if (value == "a" | value == "append") {
+    if (cleaned_value == "a" | cleaned_value == "append") {
         return list_edit_mode::append;
     }
-    else if (value == "p" | value == "prepend") {
+    else if (cleaned_value == "p" | cleaned_value == "prepend") {
         return list_edit_mode::prepend;
     }
-    else if (value == "r" | value == "replace") {
+    else if (cleaned_value == "r" | cleaned_value == "replace") {
         return list_edit_mode::replace;
     }
     else {
