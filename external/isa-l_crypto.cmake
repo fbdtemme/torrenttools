@@ -27,7 +27,7 @@ if (NOT MINGW)
                 BUILD_IN_SOURCE     ON
                 UPDATE_DISCONNECTED ON
                 CONFIGURE_COMMAND   "./autogen.sh"
-                COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir}
+                COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir} CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
                 BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} .
                 INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install
                 TEST_COMMAND        ""
@@ -46,7 +46,7 @@ if (NOT MINGW)
                 SOURCE_DIR          ${isal_source_dir}
                 BUILD_IN_SOURCE     ON
                 CONFIGURE_COMMAND   "./autogen.sh"
-                COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir}
+                COMMAND             ./configure --prefix=${isal_crypto_install_dir} --libdir=${isal_crypto_install_libdir} CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
                 BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} .
                 INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install
                 TEST_COMMAND        ""
