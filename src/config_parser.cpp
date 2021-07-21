@@ -123,8 +123,12 @@ void config::parse_profiles(const YAML::Node& data)
             current_profile.command = "create";
             current_profile = parse_create_profile(profile_options_node);
         }
+        else if (command == "edit") {
+            current_profile.command = "edit";
+            current_profile = parse_edit_profile(profile_options_node);
+        }
         else {
-            throw profile_error("invalid command: only \"create\" supports profiles");
+            throw profile_error("invalid command: only \"create\" and \"edit\" supports profiles");
         }
 
         auto [it, success] = profiles_.insert({std::move(current_profile_name), std::move(current_profile)});
