@@ -297,7 +297,7 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
             {"source",          &run_show_source_subapp},
             {"web-seeds",       &run_show_web_seeds_subapp},
             {"collection",      &run_show_collection_subapp},
-            {"checksum",        &run_checksum_subapp},
+            {"checksum",        &run_show_checksum_subapp},
     };
 
     if (!options.subcommand.empty()) {
@@ -572,7 +572,7 @@ void run_show_collection_subapp(const main_app_options& main_options, const show
     }
 }
 
-void run_checksum_subapp(const main_app_options& main_options, const show_app_options& options)
+void run_show_checksum_subapp(const main_app_options& main_options, const show_app_options& options)
 {
     auto m = dt::load_metafile(options.metafile);\
     const auto& storage = m.storage();

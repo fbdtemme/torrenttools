@@ -20,6 +20,7 @@ inline auto http_seeds_torrent = fs::path(TEST_RESOURCES_DIR) / "http-seeds.torr
 inline auto similar_v1_torrent = fs::path(TEST_RESOURCES_DIR) / "similar-v1.torrent";
 inline auto similar_v2_torrent = fs::path(TEST_RESOURCES_DIR) / "similar-v2.torrent";
 inline auto collection_torrent = fs::path(TEST_RESOURCES_DIR) / "collection.torrent";
+inline auto checksum_torrent   = fs::path(TEST_RESOURCES_DIR) / "checksums.torrent";
 
 struct cout_redirect {
     cout_redirect( std::streambuf * new_buffer )
