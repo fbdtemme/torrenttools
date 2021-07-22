@@ -235,7 +235,7 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
         total_file_count = storage.file_count();
     }
     else {
-       std::size_t file_size_counter = 0;
+        std::size_t file_size_counter = 0;
         for (const auto& entry: storage) {
             if (!entry.is_padding_file()) {
                 file_size_counter += entry.file_size();
