@@ -7,11 +7,16 @@
 #include <optional>
 #include <iostream>
 
+#if defined(TORRENTTOOLS_USE_TBB)
+#include <execution>
+#endif
+
 #include <fmt/format.h>
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
 
 #include <dottorrent/literals.hpp>
+#include <termcontrol/termcontrol.hpp>
 
 #include "create.hpp"
 #include "file_matcher.hpp"
@@ -30,6 +35,7 @@
 
 namespace tt = torrenttools;
 namespace rng = std::ranges;
+namespace tc = termcontrol;
 
 // TODO: Try to handle too many levels of symbolic links.
 
@@ -299,22 +305,58 @@ void configure_matcher(torrenttools::file_matcher& matcher, const create_app_opt
 
 
 /// Select files and add the to the metafile
-void set_files(dottorrent::metafile& m, const create_app_options& options)
+void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os)
 {
+    auto out = std::ostreambuf_iterator(os);
     dottorrent::file_storage& storage = m.storage();
 
     // scan files and m
     if (fs::is_directory(options.target)) {
         torrenttools::file_matcher matcher{};
         configure_matcher(matcher, options);
-        auto files = matcher.run(options.target);
-        std::sort(files.begin(), files.end(),
-                [](const fs::path& lhs, const fs::path& rhs) {
-                    return rng::lexicographical_compare(lhs.string(), rhs.string()); }
-        );
+
+        matcher.set_search_root(options.target);
+        matcher.start();
+
+        while (matcher.is_running()) {
+            fmt::format_to(out, "\rScanning target directory: {} files processed", matcher.files_processed());
+            std::flush(os);
+            std::this_thread::sleep_for(50ms);
+        }
+        // wait for the thread to close and results to become available
+        matcher.wait();
+        std::cout << std::endl;
+
+        auto files = matcher.results();
+
+        fmt::format_to(out, "Sorting file list...");
+        std::flush(os);
+
+        #if defined(TORRENTTOOLS_USE_TBB)
+            std::sort(std::execution::par_unseq, files.begin(), files.end(),
+                    [](const fs::path& lhs, const fs::path& rhs) {
+                        return rng::lexicographical_compare(lhs.string(), rhs.string());
+                    }
+            );
+        #else
+            std::sort(files.begin(), files.end(),
+                    [](const fs::path& lhs, const fs::path& rhs) {
+                        return rng::lexicographical_compare(lhs.string(), rhs.string());
+                    }
+            );
+        #endif
+
+        fmt::format_to(out, "\rSorting file list... Done.\n");
+        std::flush(os);
 
         storage.set_root_directory(options.target);
+
+        fmt::format_to(out, "Adding files to metafile...");
+        std::flush(os);
+
         storage.add_files(files.begin(), files.end());
+        fmt::format_to(out, "\rAdding files to metafile... Done.\n");
+        std::flush(os);
     }
     else {
         storage.set_root_directory(options.target.parent_path());
@@ -349,9 +391,7 @@ void run_create_app(const main_app_options& main_options, create_app_options& op
     // add files to the file_storage
     auto& file_storage = m.storage();
 
-    set_files(m, options);
-
-
+    set_files_with_progress(m, options, os);
 
     if (options.piece_size) {
         file_storage.set_piece_size(*options.piece_size);

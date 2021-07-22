@@ -69,4 +69,4 @@ void postprocess_create_app(const CLI::App* app, const main_app_options& main_op
 
 void run_create_app(const main_app_options& main_options, create_app_options& options);
 
-void set_files(dottorrent::metafile& m, const create_app_options& options);
+void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os);
