@@ -594,7 +594,7 @@ profiles:
     options:
       web-seed: [ "http://seed1.com:1234", "http://seed2.com:5678"]
 )";
-            GET_TEST_OPTIONS_EDIT(p);
+            GET_TEST_OPTIONS_CREATE(p);
             CHECK(options.web_seeds == std::vector{ "http://seed1.com:1234"s, "http://seed2.com:5678"s});
         }
         SECTION("bad type") {
