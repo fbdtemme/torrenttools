@@ -1,8 +1,7 @@
-venv/*
-**/.idea/*
-**/.vscode/*
-**/cmake-build-*/*
+venv/**
+**/.idea/**
+**/.vscode/**
+**/cmake-build-*/**
 **/.DS_Store
 build/**
-out/*
-.vs/*
+out/**
