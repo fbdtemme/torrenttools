@@ -1,5 +1,13 @@
-set(CPACK_SOURCE_GENERATOR                   TGZ RPM)
-set(CPACK_GENERATOR                          WIX productbuild)
+set(CPACK_SOURCE_GENERATOR                       TGZ RPM)
+
+if (APPLE)
+    set(CPACK_GENERATOR                          productbuild)
+elseif (WIN32 OR MINGW)
+    set(CPACK_GENERATOR                          WIX)
+else()
+    set(CPACK_GENERATOR                          "")
+endif()
+
 set(CPACK_PACKAGE_DESCRIPTION_FILE           "${CMAKE_CURRENT_LIST_DIR}/package_summary.txt")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY        "${CMAKE_PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
@@ -66,16 +74,7 @@ file(READ ${CMAKE_SOURCE_DIR}/LICENSE PACKAGE_LICENSE_STATEMENT)
 string(REGEX REPLACE "[ \t]*\n" "\n" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 string(REGEX REPLACE "\n+$" "" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 
-
-include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
-
-if (CPACK_GENERATOR MATCHES "WIX")
-    include(${CMAKE_CURRENT_LIST_DIR}/windows-wix.cmake)
-endif()
-if (CPACK_GENERATOR MATCHES "productbuild")
-    include(${CMAKE_CURRENT_LIST_DIR}/macos-productbuild.cmake)
-endif()
-
+set(CPACK_PROJECT_CONFIG_FILE cpack_dispatch.cmake)
 include(CPack)
 
 cpack_add_component(torrenttools
