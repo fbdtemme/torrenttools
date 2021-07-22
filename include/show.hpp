@@ -73,4 +73,4 @@ void run_show_http_seeds_subapp(const main_app_options& main_options, const show
 void run_show_dht_nodes_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_similar_torrents_subapp(const main_app_options& main_options, const show_app_options& options);
 void run_show_collection_subapp(const main_app_options& main_options, const show_app_options& options);
-void run_checksum_subapp(const main_app_options& main_options, const show_app_options& options);
+void run_show_checksum_subapp(const main_app_options& main_options, const show_app_options& options);

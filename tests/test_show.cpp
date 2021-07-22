@@ -575,3 +575,39 @@ TEST_CASE("test show collections")
     CHECK(result.find("test1") != result.size());
     CHECK(result.find("test2") != result.size());
 }
+
+TEST_CASE("test show checksums")
+{
+    std::stringstream buffer {};
+    auto redirect_guard = cout_redirect(buffer.rdbuf());
+    main_app_options main_options {};
+    show_app_options options {};
+
+    SECTION("contained checksums") {
+        options.metafile = checksum_torrent;
+        run_show_checksum_subapp(main_options, options);
+        auto result = buffer.str();
+        CHECK(result.find("sha1") != result.size());
+        CHECK(result.find("sha256") != result.size());
+    }
+    SECTION("contained checksums - empty") {
+        options.metafile = fedora_torrent;
+        run_show_checksum_subapp(main_options, options);
+        auto result = buffer.str();
+        CHECK(result.find("sha1") == -1);
+        CHECK(result.find("sha256") == -1);
+    }
+
+    SECTION("sha1sum view") {
+        options.metafile = checksum_torrent;
+        options.checksum_algorithm = dt::hash_function::sha1;
+        run_show_checksum_subapp(main_options, options);
+        auto result = buffer.str();
+        CHECK(result.starts_with("456fc272a053207574f75fbfedb919aee40dbb0c *config.yml\n"));
+    }
+    SECTION("sha1sum view - no such algorithm") {
+        options.metafile = fedora_torrent;
+        options.checksum_algorithm = dt::hash_function::sha1;
+        CHECK_THROWS(run_show_checksum_subapp(main_options, options));
+    }
+}
