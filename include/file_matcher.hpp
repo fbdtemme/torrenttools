@@ -139,8 +139,8 @@ public:
 
     void start()
     {
-        fs_thread_ = std::jthread(std::bind_front(&file_matcher::run, this));
         is_running_ = true;
+        fs_thread_ = std::jthread(std::bind_front(&file_matcher::run, this));
     }
 
     bool is_running() const noexcept
@@ -177,8 +177,8 @@ public:
 
         for (auto it = fs::recursive_directory_iterator(search_root_); it != fs::end(it); ++it) {
             if (stop_token.stop_possible() && stop_token.stop_requested()) {
-                is_running_ = false;
-                break;
+                is_running_.store(false, std::memory_order_relaxed);
+                return;
             }
 
             if (it->is_directory()) {
@@ -207,7 +207,7 @@ public:
         }
 
         results_ = std::move(results);
-        is_running_ = false;
+        is_running_.store(false, std::memory_order_relaxed);
     };
 
 private:
