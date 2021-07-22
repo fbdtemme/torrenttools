@@ -11,6 +11,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Improve formatting of info command output.
 * Fix invalid v1 infohash reporting for hybrid torrents.
 * Fix rare race condition in progress bar causing deadlocks.
+* Report progress when scanning filesystem and preparing metafile.
+* Optionally accelerate sorting when linked to Intel TBB.
+* Skip file tree for metafiles with more than 1000 files.
 
 ## [v0.4.1] - 2021-04-15
 ### Changed
