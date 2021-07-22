@@ -11,19 +11,19 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
 [**Documentation**](#Documentation) |
-[**Packages**](#Packages) |
+[**Binary releases**](#Binary releases) |
 [**Building**](#Building) |
 [**License**](#License)
 
 ## Features
 
-* Creating bittorrent metafiles. 
+* Creating bittorrent metafiles.
 * Inspecting bittorrent metafiles.
 * Verifying bittorrent metafiles against local data.
 * Editing existing bittorrent metafiles.
 * Support for the new [v2 and hybrid protocols](https://blog.libtorrent.org/2020/09/bittorrent-v2/) .
 * Support for tracker abbreviations.
-* Support for announce substitution parameters. 
+* Support for announce substitution parameters.
 * Fast multi-buffer hashing with Intel ISA-L.
 
 ## Example
@@ -32,12 +32,12 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 ## Status
 
-This project is under development. 
+This project is under development.
 The commandline interface can change at any release prior to 1.0.0.
 
 ## Performance
 
-Following test were performed on a in in-memory filesystem with 1 MiB piece size 
+Following test were performed on a in in-memory filesystem with 1 MiB piece size
 and as target a file filed with random data totalling 15.0 GiB:
 The tested CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
 
@@ -48,7 +48,36 @@ The tested CPU is an Intel i7-7700HQ in a Dell XPS 15-9560 machine.
 Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttools/).
 
 
-## Packages
+## Binary releases
+
+### Contents
+
+* [Windows](#Windows)
+* [macOS](#macOS)
+* [Linux](#Linux)
+    * [Fedora](#Fedora)
+    * [CentOS](#CentOS/RHEL)
+    * [Ubuntu](#Ubuntu)
+    * [Debian](#Debian)
+    * [Ubuntu](#Ubuntu)
+    * [OpenSUSE](#OpenSUSE)
+    * [SUSE](#SUSE Linux Enterprise Server)
+    * [Arch](#Arch)
+    * [AppImage](#AppImage)
+* [Docker](#inux)
+
+    
+### Windows
+
+An .msi installer is available as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
+
+### macOS
+
+A .pkg installer is available as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
+
+### Linux
+
+#### Fedora
 
 Binary and source packages for Fedora 32, Fedora 33, Fedora 34 and Fedora Rawhide and CentOS
 stream are available in a [COPR repo](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/).
@@ -58,7 +87,18 @@ sudo dnf copr enable fbdtemme/torrenttools
 sudo dnf install torrenttools
 ```
 
-Binary and source packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available 
+#### CentOS/RHEL
+
+Binary and source packages for CentOS8/RHEL8 and CentOS stream are available
+in a [COPR repo](https://copr.fedorainfracloud.org/coprs/fbdtemme/torrenttools/).
+
+```shell
+sudo dnf copr enable fbdtemme/torrenttools
+sudo dnf install torrenttools
+```
+#### Ubuntu
+
+Binary and source packages for Ubuntu 20.04, Ubuntu 20.10, Ubuntu 21.04 are available
 as a PPA via [launchpad](https://launchpad.net/torrenttools).
 
 ```shell
@@ -66,6 +106,55 @@ sudo add-apt-repository ppa:fbdtemme/torrenttools
 sudo apt-get update
 sudo apt install torrenttools
 ```
+#### Debian
+
+A binary package is available for Debian Sid.
+Older debian distributions should use the AppImage.
+
+```shell
+echo 'deb http://download.opensuse.org/repositories/home:/fbdtemme/Debian_Unstable/ /' | sudo tee /etc/apt/sources.list.d/home:fbdtemme.list
+curl -fsSL https://download.opensuse.org/repositories/home:fbdtemme/Debian_Unstable/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_fbdtemme.gpg > /dev/null
+sudo apt update
+sudo apt install torrenttools
+```
+
+#### openSUSE
+
+For openSUSE Tumbleweed run the following as root:
+
+```shell
+zypper addrepo https://download.opensuse.org/repositories/home:fbdtemme/openSUSE_Tumbleweed/home:fbdtemme.repo
+zypper refresh
+zypper install torrenttools
+```
+For openSUSE Leap 15.2 run the following as root:
+```shell
+zypper addrepo https://download.opensuse.org/repositories/home:fbdtemme/openSUSE_Leap_15.2/home:fbdtemme.repo
+zypper refresh
+zypper install torrenttools
+```
+For openSUSE Leap 15.3 run the following as root:
+```shell
+zypper addrepo https://download.opensuse.org/repositories/home:fbdtemme/openSUSE_Leap_15.3/home:fbdtemme.repo
+zypper refresh
+zypper install torrenttools
+```
+
+#### SUSE Linux Enterprise Server 15
+For SLE 15 SP2 run the following as root:
+```shell
+zypper addrepo https://download.opensuse.org/repositories/home:fbdtemme/SLE_15_SP2/home:fbdtemme.repo
+zypper refresh
+zypper install torrenttools
+```
+For SLE 15 SP3 run the following as root:
+```shell
+zypper addrepo https://download.opensuse.org/repositories/home:fbdtemme/SLE_15_SP3/home:fbdtemme.repo
+zypper refresh
+zypper install torrenttools
+```
+
+#### Arch
 
 A source package for Arch linux is available on [AUR](https://aur.archlinux.org/packages/torrenttools/).
 
@@ -75,13 +164,19 @@ cd torrenttools
 makepkg -is
 ```
 
-A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools). 
+#### AppImage
+
+Distributions that have no package yet can use the AppImage that is available for download as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
+
+
+### Docker
+
+A docker image is available on [dockerhub](https://hub.docker.com/repository/docker/fbdtemme/torrenttools).
 
 ```shell
 docker pull fbdtemme/torrenttools
 ```
 
-An AppImage is available for download as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
 
 ## Building
 
@@ -98,7 +193,7 @@ This library depends on following projects:
 *  [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 *  [bencode](https://github.com/fbdtemme/bencode)
 *  [date](https://github.com/HowardHinnant/date)
-*  [OpenSSL](https://github.com/openssl/openssl) 
+*  [OpenSSL](https://github.com/openssl/openssl)
 *  Optional: [ISA-L Crypto](https://github.com/intel/isa-l_crypto)
 
 Almost all dependencies can be fetched from github during configure time or can be installed manually.
