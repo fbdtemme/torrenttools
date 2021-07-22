@@ -45,6 +45,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     auto* similar_torrents_subapp = app->add_subcommand("similar",    "Show the similar torrent infohashes.");
     auto* source_subapp = app->add_subcommand("source",               "Show the source field.");
     auto* web_seeds_subapp = app->add_subcommand("web-seeds",         "Show the web-seeds.");
+    auto* checksums_subapp = app->add_subcommand("checksums",         "Show the per-file checksums.");
 
     std::array apps = {
             announce_subapp,
@@ -66,6 +67,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
             dht_nodes_subapp,
             similar_torrents_subapp,
             collection_subapp,
+            checksums_subapp
     };
 
     for (auto* app: apps) {
@@ -91,6 +93,7 @@ void configure_show_app(CLI::App* app, show_app_options& options)
     configure_dht_nodes_subapp(           dht_nodes_subapp,        options);
     configure_similar_torrents_subapp(    similar_torrents_subapp, options);
     configure_collection_subapp(          collection_subapp,       options);
+    configure_checksum_subapp(            checksums_subapp,       options);
 }
 
 void configure_show_common(CLI::App* subapp, show_app_options& options)
@@ -252,6 +255,23 @@ void configure_collection_subapp(CLI::App* similar_torrents_subapp, show_app_opt
     similar_torrents_subapp->parse_complete_callback([&](){ options.subcommand = "collection"; });
 }
 
+void configure_checksum_subapp(CLI::App* checksum_subapp, show_app_options& options)
+{
+    checksum_subapp->parse_complete_callback([&](){ options.subcommand = "checksum"; });
+
+    CLI::callback_t checksum_parser =[&](const CLI::results_t& v) -> bool {
+        auto r = checksum_transformer(v);
+        options.checksum_algorithm = std::move(*r.begin());
+        return true;
+    };
+
+    checksum_subapp->add_option("--checksum", checksum_parser,
+                    "The checksums algorithm to show checksums for." )
+            ->type_name("<algorithm>")
+            ->expected(0, 1);
+}
+
+
 
 void run_show_app(CLI::App* show_app, const main_app_options& main_options, const show_app_options& options)
 {
@@ -277,7 +297,7 @@ void run_show_app(CLI::App* show_app, const main_app_options& main_options, cons
             {"source",          &run_show_source_subapp},
             {"web-seeds",       &run_show_web_seeds_subapp},
             {"collection",      &run_show_collection_subapp},
-
+            {"checksum",        &run_checksum_subapp},
     };
 
     if (!options.subcommand.empty()) {
@@ -549,6 +569,48 @@ void run_show_collection_subapp(const main_app_options& main_options, const show
     auto m = dt::load_metafile(options.metafile);
     for (const auto& c : m.collections()) {
         std::cout << c << '\n';
+    }
+}
+
+void run_checksum_subapp(const main_app_options& main_options, const show_app_options& options)
+{
+    auto m = dt::load_metafile(options.metafile);\
+    const auto& storage = m.storage();
+
+    // check the available checksum functions
+    std::set<dt::hash_function> available_checksums;
+
+    for (const auto& f: storage) {
+        for (const auto& [key, value] : f.checksums()) {
+            available_checksums.emplace(value->algorithm());
+        }
+    }
+
+    std::vector<dt::hash_function> out;
+    rng::copy(available_checksums, std::back_inserter(out));
+    rng::sort(out);
+
+    if (!options.checksum_algorithm) {
+        for (const auto& algo : out) {
+            std::cout << dt::to_string(algo) << '\n';
+        }
+
+        return;
+    }
+
+    // first check if the metafile contains checksums of this algorithm
+    if (!available_checksums.contains(*options.checksum_algorithm)) {
+        auto s = fmt::format( "no {} checksums contained in metafile",
+                             dt::to_string(*options.checksum_algorithm));
+        throw std::invalid_argument(s);
+    }
+
+    // otherwise we print all files and their checksums in <algorithm_name>sum format
+    auto checksum_key = std::string(dt::to_string(*options.checksum_algorithm));
+    for (const auto& file : m.storage()) {
+        auto checksum = file.checksums().at(checksum_key)->value();
+        auto line = fmt::format("{} *{}", dt::to_hexadecimal_string(checksum), file.path().string());
+        std::cout << line << std::endl;
     }
 }
 
