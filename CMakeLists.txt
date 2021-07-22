@@ -50,12 +50,17 @@ option(TORRENTTOOLS_BUILD_DOCS
 option(TORRENTTOOLS_INSTALL
         "Generate an install target" ON)
 
+option(TORRENTTOOLS_TBB "Accelerate using Intel TBB library." ON)
+
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
 
 include(external/external.cmake)
+if (TORRENTTOOLS_TBB)
+    find_package(TBB REQUIRED)
+endif()
 
 add_executable(torrenttools 
         src/app_data.cpp
@@ -82,7 +87,7 @@ add_executable(torrenttools
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(torrenttools PUBLIC cxx_std_20)
 
-target_link_libraries(torrenttools PUBLIC
+target_link_libraries(torrenttools PRIVATE
         dottorrent::dottorrent
         termcontrol::termcontrol
         cliprogress::cliprogress
@@ -94,6 +99,11 @@ target_link_libraries(torrenttools PUBLIC
         yaml-cpp
         nlohmann_json::nlohmann_json
     )
+
+if (TORRENTTOOLS_TBB)
+    target_link_libraries(torrenttools PRIVATE TBB::tbb)
+    target_compile_definitions(torrenttools PRIVATE TORRENTTOOLS_USE_TBB)
+endif()
 
 # Set the linker to lld to get decent link times on MinGW
 if (MINGW)
