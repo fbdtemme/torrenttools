@@ -256,7 +256,12 @@ void create_general_info(std::ostream& os,
         .list_padding_files = options.show_padding_files
     };
 
-    auto file_tree = format_file_tree(m, "  ", tree_fmt_options);
+    std::string file_tree;
+    if (m.storage().file_count() < 1000) {
+        file_tree = format_file_tree(m, "  ", tree_fmt_options);
+    } else {
+        file_tree = "\nMetafile contains more than 1000 files: skipping file tree ...\n";
+    }
     auto file_stats = format_file_stats(m, " ", options.show_padding_files);
 
     fmt::format_to(out, "\nFiles:\n{}\n{}\n", file_tree, file_stats);
