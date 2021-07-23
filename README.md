@@ -11,7 +11,7 @@ A commandline tool for creating, inspecting and modifying bittorrent metafiles.
 
 [**Features**](#Status) |
 [**Documentation**](#Documentation) |
-[**Binary releases**](#Binary releases) |
+[**Binary releases**](#Binary%20releases) |
 [**Building**](#Building) |
 [**License**](#License)
 
@@ -61,7 +61,7 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
     * [Debian](#Debian)
     * [Ubuntu](#Ubuntu)
     * [OpenSUSE](#OpenSUSE)
-    * [SUSE](#SUSE Linux Enterprise Server)
+    * [SUSE Linux Enterprise Server](#SUSE%20Linux%20Enterprise%20Server%2015)
     * [Arch](#Arch)
     * [AppImage](#AppImage)
 * [Docker](#inux)
