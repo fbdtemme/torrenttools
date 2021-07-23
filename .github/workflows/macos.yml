@@ -17,7 +17,7 @@ jobs:
           brew install cmake
           brew install gcc
           brew install openssl
-          brew install tbb --cc=gcc
+          brew install --build-from-source tbb --cc=gcc-11
       - name: Configure
         run: |
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
@@ -47,7 +47,7 @@ jobs:
           brew install cmake
           brew install gcc
           brew install openssl
-          brew install tbb --cc=gcc
+          brew install --build-from-source tbb --cc=gcc-11
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
