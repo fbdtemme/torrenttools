@@ -9,6 +9,7 @@
 
 #include "app_data.hpp"
 #include "tracker_database.hpp"
+#include "config_parser.hpp"
 
 namespace torrenttools {
 
@@ -224,6 +225,10 @@ tracker_database* load_tracker_database()
 tracker_database* load_tracker_database(const fs::path& custom_path)
 {
     fs::path database_location;
+
+     if (tracker_db_ptr) {
+         return tracker_db_ptr.get();
+     }
 
     if (!fs::exists(custom_path)) {
         throw std::runtime_error(

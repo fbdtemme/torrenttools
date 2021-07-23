@@ -4,9 +4,7 @@ if (TARGET fmt::fmt)
 endif()
 
 
-# Add a future release of fmt for when missing args.h header is released.
-# This disables to system installation packages
-find_package(fmt 7.1.4 QUIET)
+find_package(fmt 8.0.0 QUIET)
 if (fmt_FOUND)
     log_module_found(fmt)
     return()

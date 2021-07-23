@@ -1,5 +1,13 @@
-set(CPACK_SOURCE_GENERATOR                   TGZ RPM)
-set(CPACK_GENERATOR                          WIX)
+set(CPACK_SOURCE_GENERATOR                       TGZ RPM)
+
+if (APPLE)
+    set(CPACK_GENERATOR                          productbuild)
+elseif (WIN32 OR MINGW)
+    set(CPACK_GENERATOR                          WIX)
+else()
+    set(CPACK_GENERATOR                          "")
+endif()
+
 set(CPACK_PACKAGE_DESCRIPTION_FILE           "${CMAKE_CURRENT_LIST_DIR}/package_summary.txt")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY        "${CMAKE_PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
@@ -52,7 +60,6 @@ set(PACKAGE_LICENSE_YEAR        2021)
 set(PACKAGE_LICENSE_FILE        "${CMAKE_CURRENT_LIST_DIR}/../LICENSE")
 set(PACKAGE_HOMEPAGE_URL        "${CMAKE_PROJECT_HOMEPAGE_URL}")
 set(PACKAGE_VERSION_MAJOR       "${CMAKE_PROJECT_VERSION_MAJOR}")
-
 set(PACKAGE_VERSION_MINOR       "${CMAKE_PROJECT_VERSION_MINOR}")
 set(PACKAGE_VERSION_PATCH       "${CMAKE_PROJECT_VERSION_PATCH}")
 set(PACKAGE_VERSION             "${CMAKE_PROJECT_VERSION}")
@@ -67,9 +74,7 @@ file(READ ${CMAKE_SOURCE_DIR}/LICENSE PACKAGE_LICENSE_STATEMENT)
 string(REGEX REPLACE "[ \t]*\n" "\n" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 string(REGEX REPLACE "\n+$" "" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 
-include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/windows-wix.cmake)
-
+set(CPACK_PROJECT_CONFIG_FILE cpack_dispatch.cmake)
 include(CPack)
 
 cpack_add_component(torrenttools

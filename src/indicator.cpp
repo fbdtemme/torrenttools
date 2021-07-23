@@ -2,6 +2,7 @@
 #include <ranges>
 
 #include <fmt/format.h>
+
 #include <cliprogressbar/progress_indicator.hpp>
 #include <cliprogressbar/widgets/label.hpp>
 #include <cliprogressbar/widgets/bar.hpp>
@@ -213,7 +214,8 @@ void print_simple_indicator_v1(std::ostream& os, const dottorrent::file_storage&
     auto filename = entry.path().filename().string();
     double progress;
 
-    fmt::print(os, "({}/{}) {} ...\n", file_idx+1, s.file_count(), filename);
+    auto out = std::ostreambuf_iterator(os);
+    fmt::format_to(out, "({}/{}) {} ...\n", file_idx+1, s.file_count(), filename);
 }
 
 
@@ -231,6 +233,7 @@ void print_simple_indicator_v2(std::ostream& os, const dottorrent::file_storage&
     // file index
     auto filename = entry.path().filename().string();
 
-    fmt::print(os, "({}/{}) {} ...\n", regular_file_idx+1, regular_file_count, filename);
+    auto out = std::ostreambuf_iterator(os);
+    fmt::format_to(out, "({}/{}) {} ...\n", regular_file_idx+1, regular_file_count, filename);
 }
 

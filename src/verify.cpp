@@ -24,7 +24,7 @@ void configure_verify_app(CLI::App* app, verify_app_options& options)
         return true;
     };
     CLI::callback_t files_transformer = [&](const CLI::results_t& v) -> bool {
-        options.files_root_directory = target_transformer(v);
+        options.files_root_directory = path_transformer(v);
         return true;
     };
 
@@ -83,7 +83,7 @@ void run_verify_app(const main_app_options& main_options, const verify_app_optio
 
     auto verifier = dottorrent::storage_verifier(file_storage, verifier_options);
 
-    fmt::print(std::cout, "Verifying files...\n");
+    std::cout << "Verifying files...\n";
 
     if (simple_progress) {
         run_with_simple_progress(std::cout, verifier, m);
@@ -102,8 +102,8 @@ void run_verify_app(const main_app_options& main_options, const verify_app_optio
             m, verifier, "  ",
             tree_options);
 
-    fmt::print(std::cout, "\nFiles:\n");
-    fmt::print(std::cout, verify_file_tree);
+    std::cout << "\nFiles:\n";
+    std::cout << verify_file_tree;
 }
 
 

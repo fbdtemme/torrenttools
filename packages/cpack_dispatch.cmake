@@ -1,0 +1,10 @@
+
+if (CPACK_GENERATOR MATCHES "RPM")
+    include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
+endif()
+if (CPACK_GENERATOR MATCHES "WIX")
+    include(${CMAKE_CURRENT_LIST_DIR}/windows-wix.cmake)
+endif()
+if (CPACK_GENERATOR MATCHES "productbuild")
+    include(${CMAKE_CURRENT_LIST_DIR}/macos-productbuild.cmake)
+endif()

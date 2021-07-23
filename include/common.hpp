@@ -6,10 +6,14 @@
 
 #include <dottorrent/metafile.hpp>
 #include "tracker_database.hpp"
-#include "config.hpp"
 
 namespace fs = std::filesystem;
 namespace tt = torrenttools;
+
+namespace torrenttools {
+class config;
+class tracker_database;
+}
 
 struct main_app_options
 {

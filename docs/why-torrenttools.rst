@@ -1,11 +1,12 @@
 Features
 ========
 
-* **Feature-rich**:
-    Torrenttools has multiple subcommands to satisfy all kinds of BitTorrent metafile task.
+* **Multiple subcommands**:
+    Torrenttools has multiple subcommands to satisfy all kinds of BitTorrent metafile task. Not only creating
+    torrent files, but also editing and inspecting metafiles is supported.
 
 * **v2 support**:
-    Torrenttools is ready for the new v2 protocol with support for creating hybrid and v2-only metafiles.
+    Torrenttools is ready for the new v2 protocol with support for hybrid and v2-only metafiles.
 
 * **Multi-threaded hashing**:
     Generating hashes of data is fully asynchronous to fully leverage fast storage.
@@ -37,3 +38,16 @@ Features
     Named trackers allow uploaders to quickly generate metafiles without having to lookup announce urls for different trackers.
 
 
+Supported BEPS
+----------------
+
+Bittorrent Enhancement proposals that do not have any impact on the metafiles are not shown.
+
+.. csv-table:: BEP support
+    :file: bep-support.csv
+    :widths: 30, 30, 70
+    :header-rows: 1
+
+Notes:
+
+* BEP-30 is deprecated with the introduction of BEP-53

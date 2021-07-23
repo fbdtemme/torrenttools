@@ -8,6 +8,9 @@
 #include <date/date.h>
 
 #include "dottorrent/serialization/path.hpp"
+#include "dottorrent/metafile.hpp"
+#include "dottorrent/info_hash.hpp"
+
 
 #include <CLI/CLI.hpp>
 #include <CLI/Error.hpp>
@@ -16,13 +19,18 @@
 #include <fmt/chrono.h>
 
 #include "argument_parsers.hpp"
+#include "exceptions.hpp"
 
 namespace rng = std::ranges;
 namespace dt = dottorrent;
-
+namespace fs = std::filesystem;
+namespace tt = torrenttools;
 
 using namespace dottorrent::literals;
-static std::string err_msg = "Invalid value {} for option {}: {}.";
+using namespace std::string_view_literals;
+using namespace std::string_literals;
+
+constexpr std::string_view err_msg = "Invalid value {} for option {}: {}.";
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -116,6 +124,33 @@ std::vector<std::vector<std::string>> announce_transformer(const std::vector<std
     return res;
 }
 
+/// Parse a YAML Node containing a list of announce urls or a list of tiers with announce urls.
+std::vector<std::vector<std::string>> announce_transformer(const YAML::Node& args)
+{
+    std::vector<std::vector<std::string>> res {};
+
+    if (!args.IsSequence()) {
+        throw tt::profile_error("type of value for key announce must be a list");
+    }
+
+    try {
+        for (const auto& v: args) {
+            if (v.IsScalar()) {
+                res.emplace_back().push_back(v.as<std::string>());
+            }
+            else {
+                auto& tier = res.emplace_back();
+                for (const auto& a : v) {
+                    tier.push_back(a.as<std::string>());
+                }
+            }
+        }
+    } catch (const YAML::InvalidNode& err) {
+        throw tt::profile_error(fmt::format("bad value for key \"announce\": {}", err.what()));
+    }
+    return res;
+}
+
 
 /// Parse a string with dht nodes to dht_node instances.
 std::vector<dottorrent::dht_node> dht_node_transformer(const std::vector<std::string>& s)
@@ -167,7 +202,7 @@ dottorrent::protocol protocol_transformer(const std::vector<std::string>& v, boo
     throw std::invalid_argument(fmt::format("Invalid bittorrent protocol: {}", s));
 }
 
-std::filesystem::path target_transformer(const std::vector<std::string>& v, bool check_exists, bool keep_trailing)
+std::filesystem::path path_transformer(const std::vector<std::string>& v, bool check_exists, bool keep_trailing)
 {
     if (v.size() != 1) {
         throw std::invalid_argument("Multiple targets given.");
@@ -195,6 +230,7 @@ std::filesystem::path target_transformer(const std::vector<std::string>& v, bool
         return canonical_f;
     }
 }
+
 
 std::filesystem::path config_path_transformer(const std::vector<std::string>& v, bool check_exists)
 {
@@ -429,16 +465,18 @@ torrenttools::list_edit_mode parse_list_edit_mode(std::string_view options, cons
     if (v.size() != 1)
         throw std::invalid_argument("multiple options given.");
 
-    auto value = v.at(0);
-    rng::transform(value, std::back_inserter(value), [](const char c) { return std::tolower(c); });
+    std::string value = v.at(0);
+    std::string cleaned_value {};
+    trim(value);
+    rng::transform(value, std::back_inserter(cleaned_value), [](const char c) { return std::tolower(c); });
 
-    if (value == "a" | value == "append") {
+    if (cleaned_value == "a" | cleaned_value == "append") {
         return list_edit_mode::append;
     }
-    else if (value == "p" | value == "prepend") {
+    else if (cleaned_value == "p" | cleaned_value == "prepend") {
         return list_edit_mode::prepend;
     }
-    else if (value == "r" | value == "replace") {
+    else if (cleaned_value == "r" | cleaned_value == "replace") {
         return list_edit_mode::replace;
     }
     else {
@@ -457,4 +495,74 @@ bool parse_explicit_flag(std::string_view option, const std::vector<std::string>
         // set implicit private for flag like behavior.
         return true;
     }
+}
+
+std::vector<dt::info_hash>
+similar_transformer(std::string_view option, const std::vector<std::string>& v)
+{
+    std::vector<dt::info_hash> out {};
+
+    for (const auto& s:  v) {
+        // extract infohash if a metafile is passed:
+        if (fs::exists(s)) {
+            auto m = dt::load_metafile(fs::path(s));
+
+            switch (m.storage().protocol()) {
+            case dt::protocol::v1: {
+                out.emplace_back(dt::info_hash_v1(m));
+                break;
+            }
+            case dt::protocol::hybrid: {
+                out.emplace_back(dt::info_hash_v1(m));
+                out.emplace_back(dt::info_hash_v2(m));
+                break;
+            }
+            case dt::protocol::v2: {
+                out.emplace_back(dt::info_hash_v2(m));
+                break;
+            }
+            default:
+                throw std::invalid_argument("invalid protocol version");
+            }
+        }
+        // otherwise threat as a hexadecimal infohash string
+        else {
+            // check if it is a valid v1 hexadecimal infohash
+            auto size = s.size();
+            if (size == dt::sha1_hash::size_hex) {
+                auto h = dt::make_hash_from_hex<dt::sha1_hash>(s);
+                out.emplace_back(h);
+            }
+            else if (size == dt::sha256_hash::size_hex) {
+                auto h = dt::make_hash_from_hex<dt::sha256_hash>(s);
+                out.emplace_back(h);
+            }
+            else {
+                throw std::invalid_argument("Invalid hexadecimal formatted infohash: invalid size for v1 or v2 metafile");
+            }
+        }
+    }
+
+    return out;
+}
+
+std::vector<std::string>
+seed_transformer(std::string_view option, const std::vector<std::string>& v, bool allow_ftp)
+{
+    for (const auto& s:  v) {
+        auto dist = s.find("://");
+        auto protocol = std::string_view(s.begin(), s.begin()+dist);
+
+        if (protocol == "http" || protocol == "https" || protocol == "udp" || protocol == "utp") {
+            continue;
+        }
+        if (allow_ftp) {
+            if (protocol == "ftp" || protocol == "ftps") {
+                continue;
+            }
+        }
+        throw std::invalid_argument(fmt::format("unsupported protocol: {}", protocol));
+    }
+
+    return v;
 }
