@@ -1,10 +1,10 @@
-name: Package (tarball)
+name: Package
 
 on: workflow_dispatch
 
 jobs:
   package-tarball:
-    name: "Create tarball"
+    name: "Tarball"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,9 +30,59 @@ jobs:
           CMAKE_PROJECT_VERSION=$(grep -oP "(?<=CMAKE_PROJECT_VERSION:STATIC=).*" CMakeCache.txt)
           echo "::set-output name=cmake_project_version::${CMAKE_PROJECT_VERSION}"
 
-      - name: Save tarball as artifacts
+      - name: Upload tarball as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
+          name: torrenttools-${{ jobs.steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           retention-days: 1
+
+  package-windows:
+    name: "Windows installer"
+    runs-on: windows-latest
+    needs: [ package-tarball ]
+    defaults:
+      run:
+        shell: msys2 {0}
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          make
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-yasm
+          mingw-w64-x86_64-openssl
+          mingw-w64-x86_64-intel-tbb
+
+    - name: Download tarball artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: torrenttools-${{ jobs.package-tarball.steps.cmake_version.outputs.cmake_project_version }}.tar.gz
+
+    - name: Unpack sources tarball
+      run: tar -xzf torrenttools*.tar.gz
+
+    - name: Configure
+      run: |
+        cmake -G "MSYS Makefiles" -B cmake-build-release -S . \
+               -DDOTTORRENT_CRYPTO_LIB=openssl \
+               -DDOTTORRENT_MB_CRYPTO_LIB=isal \
+               -DCMAKE_BUILD_TYPE=Release \
+               -DTORRENTTOOLS_BUILD_TESTS=ON \
+               -DTORRENTTOOLS_BUILD_DOCS=OFF
+
+    - name: Build
+      run: cmake --build cmake-build-release --target torrenttools
+
+    - name: Package
+      run: |
+        cd cmake-build-release
+        cpack -G WIX
+
+    - name: Upload installer as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: torrenttools-${{ jobs.steps.cmake_version.outputs.cmake_project_version }}-x86_64.msi
+        path: cmake-build-release/torrenttools-${{ jobs.steps.cmake_version.outputs.cmake_project_version }}-x86_64.msi
+        retention-days: 1
