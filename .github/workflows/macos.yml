@@ -17,14 +17,14 @@ jobs:
           brew install cmake
           brew install gcc
           brew install openssl
-          brew install --build-from-source tbb --cc=gcc
       - name: Configure
         run: |
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
               -DCMAKE_CXX_COMPILER=g++ \
               -DCMAKE_C_COMPILER=gcc \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DTORRENTTOOLS_BUILD_TESTS=ON
+              -DTORRENTTOOLS_BUILD_TESTS=ON \
+              -DTORRENTTOOLS_TBB=OFF
       - name: Build
         run: cmake --build cmake-build-debug
       - name: Save build artifacts
@@ -47,7 +47,6 @@ jobs:
           brew install cmake
           brew install gcc
           brew install openssl
-          brew install --build-from-source tbb --cc=gcc
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
