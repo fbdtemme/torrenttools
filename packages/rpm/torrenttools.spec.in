@@ -20,6 +20,7 @@ BuildRequires:   autoconf
 BuildRequires:   automake
 BuildRequires:   libtool
 BuildRequires:   nasm
+BuildRequires:   tbb-devel
 
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
@@ -28,6 +29,7 @@ BuildRequires:   nasm
 %{?el8:BuildRequires:      gcc-toolset-10}
 
 Requires:            openssl >= 1.0.0
+Requires:            tbb
 
 %description
 @PACKAGE_DESCRIPTION@
