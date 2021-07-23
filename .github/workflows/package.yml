@@ -108,8 +108,8 @@ jobs:
       - name: Upload installer as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-x86_64.msi
-          path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-x86_64.msi
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-windows-x86_64.msi
+          path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.msi
           retention-days: 1
 
   package-macos:
