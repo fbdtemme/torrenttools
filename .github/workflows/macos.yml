@@ -1,4 +1,4 @@
-name: Linux
+name: macOS
 
 on:
   push:
@@ -13,16 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
-        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libtbb-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+        run: |
+          brew install cmake
+          brew install gcc
+          brew install openssl
+          brew install tbb --cc=gcc
       - name: Configure
         run: |
-          cmake -S . -B cmake-build-debug -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON
+          cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
+              -DCMAKE_CXX_COMPILER=g++ \
+              -DCMAKE_C_COMPILER=gcc \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DTORRENTTOOLS_BUILD_TESTS=ON
       - name: Build
         run: cmake --build cmake-build-debug
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: torrenttools-binaries
+          name: torrenttools-binaries-macos
           path: |
             cmake-build-debug
             !cmake-build-debug/_deps
@@ -35,11 +43,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install runtime dependencies
-        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 libssl-dev libtbb-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+        run: |
+          brew install cmake
+          brew install gcc
+          brew install openssl
+          brew install tbb --cc=gcc
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
-          name: torrenttools-binaries
+          name: torrenttools-binaries-macos
           path: cmake-build-debug
       - name: Display structure of downloaded files
         run: ls -R
