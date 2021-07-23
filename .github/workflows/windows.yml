@@ -28,11 +28,50 @@ jobs:
         run: |
           mkdir build;
           cmake --help
-          cmake -G "MSYS Makefiles" -B build -S . \
+          cmake -G "MSYS Makefiles" -B cmake-build-debug -S . \
                  -DDOTTORRENT_CRYPTO_LIB=openssl \
                  -DDOTTORRENT_MB_CRYPTO_LIB=isal \
                  -DCMAKE_BUILD_TYPE=Debug \
-                 -DTORRENTTOOLS_BUILD_TESTS=OFF \
+                 -DTORRENTTOOLS_BUILD_TESTS=ON \
                  -DTORRENTTOOLS_BUILD_DOCS=OFF
       - name: Build
-        run: cmake --build build --target torrenttools
+        run: cmake --build cmake-build-debug
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: torrenttools-binaries-windows
+          path: |
+            cmake-build-debug
+            !cmake-build-debug/_deps
+          retention-days: 1
+
+  test:
+    name: Test
+    needs: Build
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            make
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-yasm
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-intel-tbb
+      - uses: actions/checkout@v2
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: torrenttools-binaries-windows
+          path: cmake-build-debug
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Test
+        run: |
+          chmod +x cmake-build-debug/tests/torrenttools-tests
+          cd cmake-build-debug && ctest
