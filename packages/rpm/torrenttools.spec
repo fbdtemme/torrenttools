@@ -20,6 +20,7 @@ BuildRequires:   autoconf
 BuildRequires:   automake
 BuildRequires:   libtool
 BuildRequires:   nasm
+BuildRequires:   tbb-devel
 
 %{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
 %{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
@@ -28,6 +29,7 @@ BuildRequires:   nasm
 %{?el8:BuildRequires:      gcc-toolset-10}
 
 Requires:            openssl >= 1.0.0
+Requires:            tbb
 
 %description
 A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
@@ -70,6 +72,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Fri jul 23 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.5.0-1
+- Update to 0.5.0
+
 * Thu Apr 15 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.4.1-1
 - Update to 0.4.1
 
