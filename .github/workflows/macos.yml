@@ -22,6 +22,7 @@ jobs:
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
               -DCMAKE_CXX_COMPILER=g++-11 \
               -DCMAKE_C_COMPILER=gcc-11 \
+              -DOPENSSL_ROOT=/home/linuxbrew/.linuxbrew/Cellar/openssl@1.1/1.1.1k \
               -DCMAKE_BUILD_TYPE=Debug \
               -DTORRENTTOOLS_BUILD_TESTS=ON \
               -DTORRENTTOOLS_TBB=OFF
