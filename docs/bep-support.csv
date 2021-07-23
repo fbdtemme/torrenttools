@@ -1,0 +1,17 @@
+BEP, Status, Title
+`03 <http://bittorrent.org/beps/bep_0003.html>`_,✅,The BitTorrent Protocol Specification
+`05 <http://bittorrent.org/beps/bep_0005.html>`_,✅,DHT Protocol
+`09 <http://bittorrent.org/beps/bep_0009.html>`_,✅,Extension for Peers to Send Metadata Files
+`12 <http://bittorrent.org/beps/bep_0012.html>`_,✅,Multitracker Metadata Extension
+`17 <http://bittorrent.org/beps/bep_0017.html>`_,✅,HTTP Seeding
+`19 <http://bittorrent.org/beps/bep_0019.html>`_,✅,WebSeed - HTTP/FTP Seeding (GetRight style)
+`27 <http://bittorrent.org/beps/bep_0027.html>`_,✅,Private Torrents
+`30 <http://bittorrent.org/beps/bep_0030.html>`_,❌,Merkle hash torrent extension
+`35 <http://bittorrent.org/beps/bep_0035.html>`_,❌,Torrent Signing
+`38 <http://bittorrent.org/beps/bep_0038.html>`_,✅,Finding Local Data Via Torrent File Hints
+`39 <http://bittorrent.org/beps/bep_0039.html>`_,❌,Updating Torrents Via Feed URL
+`46 <http://bittorrent.org/beps/bep_0046.html>`_,❌,Updating Torrents Via DHT Mutable Items
+`47 <http://bittorrent.org/beps/bep_0047.html>`_,✅,Padding files and extended file attributes
+`49 <http://bittorrent.org/beps/bep_0049.html>`_,❌,Distributed Torrent Feeds
+`52 <http://bittorrent.org/beps/bep_0052.html>`_,✅,The BitTorrent Protocol Specification v2
+`53 <http://bittorrent.org/beps/bep_0053.html>`_,❌,Magnet URI extension - Select specific file indices for download

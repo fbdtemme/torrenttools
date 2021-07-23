@@ -10,4 +10,4 @@ list(APPEND CPACK_WIX_EXTRA_SOURCES     "${CMAKE_CURRENT_LIST_DIR}/wix/create-lo
 list(APPEND CPACK_WIX_PATCH_FILE
         "${CMAKE_CURRENT_LIST_DIR}/wix/update_path.xml"
         "${CMAKE_CURRENT_LIST_DIR}/wix/broadcast_env_change.xml"
-        ${CMAKE_CURRENT_LIST_DIR}/wix/copy-config.xml)
+        "${CMAKE_CURRENT_LIST_DIR}/wix/copy-config.xml")

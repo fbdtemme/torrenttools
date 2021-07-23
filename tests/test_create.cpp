@@ -9,6 +9,7 @@
 #include "create.hpp"
 #include "tracker_database.hpp"
 #include "test_resources.hpp"
+#include "config_parser.hpp"
 
 namespace dt = dottorrent;
 namespace tt = torrenttools;
@@ -97,7 +98,7 @@ TEST_CASE("test create app argument parsing")
             PARSE_ARGS(cmd);
 
             CHECK(create_options.dht_nodes.size() == 1);
-            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
+            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{"192.169.0.100", 6464});
         }
 
         SECTION("multiple dht node") {
@@ -105,8 +106,8 @@ TEST_CASE("test create app argument parsing")
             PARSE_ARGS(cmd);
 
             CHECK(create_options.dht_nodes.size() == 2);
-            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{.url="192.169.0.100", .port=6464});
-            CHECK(create_options.dht_nodes.at(1) == dt::dht_node{.url="8.8.8.8", .port=80});
+            CHECK(create_options.dht_nodes.at(0) == dt::dht_node{"192.169.0.100", 6464});
+            CHECK(create_options.dht_nodes.at(1) == dt::dht_node{"8.8.8.8", 80});
         }
 
         SECTION("bad dht node") {
@@ -120,7 +121,7 @@ TEST_CASE("test create app argument parsing")
     SECTION("test web seeds")
     {
         std::string seed1 = "https://web-seed-url.com/files1";
-        std::string seed2 = "https://web-seed-url.com/files2";
+        std::string seed2 = "ftp://web-seed-url.com/files2";
 
 
         SECTION("single web-seed ") {
@@ -131,13 +132,35 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.web_seeds.at(0) == seed1);
         }
 
-        SECTION("multiple dht node") {
+        SECTION("multiple web seeds") {
             auto cmd = fmt::format("create {} --web-seed {} {}", file, seed1, seed2);
             PARSE_ARGS(cmd);
 
             CHECK(create_options.web_seeds.size() == 2);
             CHECK(create_options.web_seeds.at(0) == seed1);
             CHECK(create_options.web_seeds.at(1) == seed2);
+        }
+    }
+    SECTION("test http seeds")
+    {
+        std::string seed1 = "https://http-seed-url.com/files1";
+        std::string seed2 = "https://htp-seed-url.com/files2";
+
+        SECTION("single web-seed ") {
+            auto cmd = fmt::format("create {} --http-seed {}", file, seed1);
+            PARSE_ARGS(cmd);
+
+            CHECK(create_options.http_seeds.size() == 1);
+            CHECK(create_options.http_seeds.at(0) == seed1);
+        }
+
+        SECTION("multiple web seeds") {
+            auto cmd = fmt::format("create {} --http-seed {} {}", file, seed1, seed2);
+            PARSE_ARGS(cmd);
+
+            CHECK(create_options.http_seeds.size() == 2);
+            CHECK(create_options.http_seeds.at(0) == seed1);
+            CHECK(create_options.http_seeds.at(1) == seed2);
         }
     }
     SECTION("test comment")
@@ -479,7 +502,7 @@ TEST_CASE("test create app argument parsing")
         SECTION("Existing directory -> append trailing slash") {
             temporary_directory tmp_dir {};
 
-            auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path());
+            auto cmd = fmt::format("create {} --output {}", file,  tmp_dir.path().string());
             PARSE_ARGS(cmd);
             CHECK(create_options.destination == tmp_dir.path() / "");
         }
@@ -511,6 +534,110 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.protocol_version == dt::protocol::v2);
         }
     }
+    SECTION("similar") {
+        SECTION("single infohash") {
+            auto sha1_hex = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents[0]
+                  == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex));
+        }
+        SECTION("multiple infohashes") {
+            auto sha1_hex1 = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto sha1_hex2 = "5829e7a3b4810e5ee9283137e7ad62d0e88dfd3f";
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, sha1_hex2);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0]
+                    == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex1));
+            CHECK(create_options.similar_torrents[1]
+                    == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex2));
+        }
+        SECTION("single torrent") {
+            auto tf =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto m = dt::load_metafile(tf);
+            auto cmd = fmt::format("create {} --similar {}", file, tf.string());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents[0] == dt::info_hash_v1(m));
+        }
+        SECTION("multiple torrents") {
+            auto tf1 =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto tf2 =  fs::path(TEST_DIR) / "resources" / "CAMELYON17.torrent";
+
+            auto m1 = dt::load_metafile(tf1);
+            auto m2 = dt::load_metafile(tf2);
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, tf1.string(), tf2.string());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0] == dt::info_hash_v1(m1));
+            CHECK(create_options.similar_torrents[1] == dt::info_hash_v1(m2));
+        }
+
+        SECTION("invalid infohash length") {
+            auto sha1_hex = "03a23323650e652fab9120db0214e89b4febf66b39a546781b8";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
+        }
+
+        SECTION("invalid hexadecimal string") {
+            auto sha1_hex = "03a2332djovpwomdq";
+            auto cmd = fmt::format("create {} --similar {}", file, sha1_hex);
+            CHECK_THROWS(PARSE_ARGS_THROWING(cmd));
+        }
+
+        SECTION("mixed infohash and file") {
+            auto sha1_hex1 = "03a23323650e652f4e89b4febf66b39a546781b8";
+            auto tf1 =  fs::path(TEST_DIR) / "resources" / "Fedora-Workstation-Live-x86_64-30.torrent";
+            auto m1 = dt::load_metafile(tf1);
+
+            auto cmd = fmt::format("create {} --similar {} {}", file, sha1_hex1, tf1.string());
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents[0] == dt::make_hash_from_hex<dt::sha1_hash>(sha1_hex1));
+            CHECK(create_options.similar_torrents[1] == dt::info_hash_v1(m1));
+        }
+
+        SECTION("hybrid torrent") {
+            auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-hybrid-test.torrent";
+            auto m1 = dt::load_metafile(tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1.string());
+            auto v1_hash = dt::info_hash::from_hex(dt::protocol::v1, "631a31dd0a46257d5078c0dee4e66e26f73e42ac");
+            auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb");
+
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 2);
+            CHECK(create_options.similar_torrents.at(0) == v1_hash);
+            CHECK(create_options.similar_torrents.at(1) == v2_hash);
+        }
+
+        SECTION("v2 torrent") {
+            auto tf1 = fs::path(TEST_DIR) / "resources" / "bittorrent-v2-test.torrent";
+            auto m1 = dt::load_metafile(tf1);
+            auto cmd = fmt::format("create {} --similar {}", file, tf1.string());
+            auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "caf1e1c30e81cb361b9ee167c4aa64228a7fa4fa9f6105232b28ad099f3a302e");
+
+            PARSE_ARGS(cmd);
+            CHECK(create_options.similar_torrents.size() == 1);
+            CHECK(create_options.similar_torrents.at(0) == v2_hash);
+        }
+    }
+
+    SECTION("collections") {
+        SECTION("single collection") {
+            auto cmd = fmt::format("create {} --collection {}", file, "test1");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.collections == std::vector<std::string>{"test1"});
+        }
+        SECTION("multiple collections") {
+            auto cmd = fmt::format("create {} --collection {} {}", file, "test1", "test2");
+            PARSE_ARGS(cmd);
+            CHECK(create_options.collections == std::vector<std::string>{"test1", "test2"});
+        }
+    }
 }
 
 
@@ -523,7 +650,11 @@ TEST_CASE("test create app: target")
         fs::path target = camelyon_torrent;
         fs::path output = fs::path(tmp_dir) / "test-file-target.torrent";
 
-        create_app_options options { .target = target, .destination = output, };
+        create_app_options options {
+            .target = target,
+            .destination = output,
+            .protocol_version = dt::protocol::v1
+        };
         run_create_app(main_options, options);
         auto m = dt::load_metafile(output);
         const auto& storage = m.storage();
@@ -553,7 +684,8 @@ TEST_CASE("test create app: announce-url")
 
     create_app_options options {
         .target = target,
-        .destination = tmp_dir.path()
+        .destination = tmp_dir.path(),
+        .protocol_version = dt::protocol::v1,
     };
 
     SECTION("tracker abbreviation") {
@@ -583,12 +715,14 @@ TEST_CASE("test create app: announce-group")
 
     create_app_options options {
             .target = target,
-            .destination = tmp_dir.path()
+            .destination = tmp_dir.path(),
+            .protocol_version = dt::protocol::v1,
     };
 
     SECTION("announce urls") {
         fs::path expected_destination = tmp_dir.path() / fmt::format("{}.torrent", target.filename().string());
 
+        options.protocol_version = dt::protocol::v1;
         options.announce_group_list = {{"public-trackers"}};
         run_create_app(main_options, options);
 
@@ -627,9 +761,10 @@ TEST_CASE("test create app: source tag")
     fs::path output = fs::path(tmp_dir) / "test-create-source.torrent";
 
     create_app_options create_options {
-        .target = fs::path(TEST_DIR) / "resources",
-        .destination = output,
-        .source = "test"
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+            .protocol_version = dt::protocol::v1,
+            .source = "test",
     };
     run_create_app(main_options, create_options);
     auto m = dt::load_metafile(output);
@@ -647,7 +782,8 @@ TEST_CASE("test create app: web-seeds")
     create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
-            .web_seeds = {"https://test1.com", "https://test2.com"}
+            .protocol_version = dt::protocol::v1,
+            .web_seeds = {"https://test1.com", "https://test2.com"},
     };
     run_create_app(main_options, create_options);
     auto m = dt::load_metafile(output);
@@ -656,6 +792,28 @@ TEST_CASE("test create app: web-seeds")
     CHECK(m.web_seeds().at(0) == "https://test1.com");
     CHECK(m.web_seeds().at(1) == "https://test2.com");
 }
+
+TEST_CASE("test create app: http-seeds")
+{
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-create-http-seeds.torrent";
+
+    create_app_options create_options {
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+            .protocol_version = dt::protocol::v1,
+            .http_seeds = {"https://test1.com", "https://test2.com"},
+    };
+    run_create_app(main_options, create_options);
+    auto m = dt::load_metafile(output);
+
+    CHECK(m.http_seeds().size() == 2);
+    CHECK(m.http_seeds().at(0) == "https://test1.com");
+    CHECK(m.http_seeds().at(1) == "https://test2.com");
+}
+
 
 TEST_CASE("test create app: dht-nodes")
 {
@@ -667,7 +825,8 @@ TEST_CASE("test create app: dht-nodes")
     create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
-            .dht_nodes = {{"127.0.0.1", 6969}, {"https://my-dht-node.de", 8888}}
+            .protocol_version = dt::protocol::v1,
+            .dht_nodes = {{"127.0.0.1", 6969}, {"https://my-dht-node.de", 8888}},
     };
     run_create_app(main_options, create_options);
     auto m = dt::load_metafile(output);
@@ -688,6 +847,7 @@ TEST_CASE("test create app: private flag")
     create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
+            .protocol_version = dt::protocol::v1,
     };
 
     SECTION("true") {
@@ -718,6 +878,8 @@ TEST_CASE("test create app: creation-date")
     create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
+            .protocol_version = dt::protocol::v1,
+            .set_creation_date = true,
     };
 
     SECTION("--no-creation-date") {
@@ -744,9 +906,10 @@ TEST_CASE("test create app: created-by")
 
 
     fs::path output = fs::path(tmp_dir) / "test-create-created-by.torrent";
-    create_app_options create_options {
-            .target = fs::path(TEST_DIR) / "resources",
+    create_app_options create_options{
+            .target = fs::path(TEST_DIR)/"resources",
             .destination = output,
+            .protocol_version = dt::protocol::v1,
     };
 
     SECTION("--no-created-by") {
@@ -775,6 +938,7 @@ TEST_CASE("test create app: comment")
     create_app_options create_options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
+            .protocol_version = dt::protocol::v1,
     };
 
     SECTION("no comment") {
@@ -804,6 +968,7 @@ TEST_CASE("test create app: io-block-size")
     create_app_options options {
             .target = fs::path(TEST_DIR) / "resources",
             .destination = output,
+            .protocol_version = dt::protocol::v1,
     };
 
     SECTION("io-block-size smaller then piece-size") {
@@ -845,5 +1010,84 @@ TEST_CASE("test create app: protocol")
         run_create_app(main_options, options);
         auto m = dt::load_metafile(*options.destination);
         CHECK(m.storage().protocol() == dt::protocol::hybrid);
+    }
+}
+
+
+TEST_CASE("test create app: similar torrents")
+{
+    using namespace dottorrent::literals;
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-create-similar-torrents.torrent";
+
+    create_app_options options {
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = output,
+            .protocol_version = dt::protocol::v1,
+    };
+
+    auto v1_hash = dt::info_hash::from_hex(dt::protocol::v1, "631a31dd0a46257d5078c0dee4e66e26f73e42ac");
+    auto v2_hash = dt::info_hash::from_hex(dt::protocol::v2, "d8dd32ac93357c368556af3ac1d95c9d76bd0dff6fa9833ecdac3d53134efabb");
+
+    SECTION("v1") {
+        options.destination = fs::path(tmp_dir) / "test-similar-v1.torrent";
+        options.protocol_version = dt::protocol::v1;
+        options.similar_torrents.emplace_back(v1_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v1_hash));
+    }
+
+    SECTION("v2") {
+        options.destination = fs::path(tmp_dir) / "test-similar-v2.torrent";
+        options.protocol_version = dt::protocol::v2;
+        options.similar_torrents.emplace_back(v2_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v2_hash));
+    }
+
+    SECTION("hybrid") {
+        options.destination = fs::path(tmp_dir) / "test-protocol-hybrid.torrent";
+        options.protocol_version = dt::protocol::hybrid;
+        options.similar_torrents.emplace_back(v1_hash);
+        options.similar_torrents.emplace_back(v2_hash);
+
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.similar_torrents().contains(v1_hash));
+        CHECK(m.similar_torrents().contains(v2_hash));
+    }
+}
+
+TEST_CASE("test create app: collection")
+{
+    using namespace dottorrent::literals;
+    temporary_directory tmp_dir{};
+    main_app_options main_options{};
+
+    create_app_options options{
+            .target = fs::path(TEST_DIR) / "resources",
+            .destination = fs::path(tmp_dir) / "test-create-collection.torrent",
+            .protocol_version = dt::protocol::v1,
+    };
+
+    SECTION("single collection") {
+        options.collections = {"test1"};
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.collections().contains("test1"));
+    }
+
+    SECTION("multiple collections") {
+        options.collections = {"test1", "test2"};
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(*options.destination);
+        CHECK(m.collections().contains("test1"));
+        CHECK(m.collections().contains("test2"));
     }
 }

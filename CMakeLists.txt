@@ -4,14 +4,22 @@ cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0077 NEW)
 
+if (UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
+
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.4.1
+        VERSION 0.5.0
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+if (APPLE)
+    set(CMAKE_INSTALL_NAME_DIR "@executable_path/../lib")
+endif()
 
 if (TORRENTTOOLS_PACKAGES_ONLY)
     include(packages/packages.cmake)
@@ -42,14 +50,19 @@ option(TORRENTTOOLS_BUILD_DOCS
 option(TORRENTTOOLS_INSTALL
         "Generate an install target" ON)
 
+option(TORRENTTOOLS_TBB "Accelerate using Intel TBB library." ON)
+
 #add_subdirectory(../cliprogress cliprogress)
 #add_subdirectory(../dottorrent dottorrent)
 #add_subdirectory(../termcontrol termcontrol)
 #add_subdirectory(../bencode bencode)
 
 include(external/external.cmake)
+if (TORRENTTOOLS_TBB)
+    find_package(TBB REQUIRED)
+endif()
 
-add_executable(torrenttools
+add_executable(torrenttools 
         src/app_data.cpp
         src/argument_parsers.cpp
         src/common.cpp
@@ -69,12 +82,12 @@ add_executable(torrenttools
         src/tracker_database.cpp
         src/tree_view.cpp
         src/verify.cpp
-)
+        include/profile_config_formatter.hpp src/profile.cpp include/exceptions.hpp)
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(torrenttools PUBLIC cxx_std_20)
 
-target_link_libraries(torrenttools PUBLIC
+target_link_libraries(torrenttools PRIVATE
         dottorrent::dottorrent
         termcontrol::termcontrol
         cliprogress::cliprogress
@@ -85,7 +98,12 @@ target_link_libraries(torrenttools PUBLIC
         re2::re2
         yaml-cpp
         nlohmann_json::nlohmann_json
-        )
+    )
+
+if (TORRENTTOOLS_TBB)
+    target_link_libraries(torrenttools PRIVATE TBB::tbb)
+    target_compile_definitions(torrenttools PRIVATE TORRENTTOOLS_USE_TBB)
+endif()
 
 # Set the linker to lld to get decent link times on MinGW
 if (MINGW)
@@ -119,7 +137,21 @@ endif ()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
+
 if (TORRENTTOOLS_INSTALL)
+    if (LINUX)
+        # install trackers to system config dir since it is global data.
+        install(FILES resources/trackers.json
+                resources/config.yml
+                COMPONENT torrenttools
+                DESTINATION ${torrenttools_install_sysconf_dir})
+
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+    endif()
+
     if (MINGW OR WIN32)
         # Set the install prefix to Program Files instead of Program Files (x86)
         message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
@@ -128,20 +160,18 @@ if (TORRENTTOOLS_INSTALL)
             SET(CMAKE_INSTALL_PREFIX  "C:/Program Files/${PROJECT_NAME}" CACHE PATH
                 "Install path prefix, prepended onto install directories."  FORCE)
         endif()
-    endif()
 
-    # install trackers to system config dir since it is global data.
-    install(FILES resources/trackers.json
-                  resources/config.yml
-            COMPONENT torrenttools
-            DESTINATION ${torrenttools_install_sysconf_dir})
+        # install trackers to system config dir since it is global data.
+        install(FILES resources/trackers.json
+                resources/config.yml
+                COMPONENT torrenttools
+                DESTINATION ${torrenttools_install_sysconf_dir})
 
-    # install executable
-    install(TARGETS torrenttools
-            COMPONENT torrenttools
-            RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
 
-    if (MINGW)
         # Install mingw shared libraries to the project dir
         # Filter out core windows libraries with regex
         install(CODE [[
@@ -158,6 +188,7 @@ if (TORRENTTOOLS_INSTALL)
                      DESTINATION "${CMAKE_INSTALL_PREFIX}"
                      FOLLOW_SYMLINK_CHAIN)
             endforeach()
+
             list(LENGTH _u_deps _u_length)
             if("${_u_length}" GREATER 0)
                 message(STATUS "${_u_deps}")
@@ -165,6 +196,46 @@ if (TORRENTTOOLS_INSTALL)
             endif()
         ]]
         COMPONENT torrenttools)
+    endif()
+
+    if (APPLE)
+        # Set the install prefix to /usr/local/bin/torrenttools
+        message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
+        if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+            message(DEBUG "Changing default install prefix")
+            set(CMAKE_INSTALL_PREFIX  "/Library/${PROJECT_NAME}" CACHE PATH
+                "Install path prefix, prepended onto install directories."  FORCE)
+        endif()
+
+        # install executable
+        install(TARGETS torrenttools
+                COMPONENT torrenttools
+                DESTINATION "bin")
+                
+        install(CODE [[
+            file(GET_RUNTIME_DEPENDENCIES
+                EXECUTABLES $<TARGET_FILE:torrenttools>
+                DIRECTORIES "/usr/bin/local/Cellar" "/usr/bin/local"
+                RESOLVED_DEPENDENCIES_VAR _r_deps
+                UNRESOLVED_DEPENDENCIES_VAR _u_deps
+            )
+
+            foreach(_file ${_r_deps})
+                file(INSTALL ${_file}
+                    DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+                    FOLLOW_SYMLINK_CHAIN)
+                get_filename_component(_file_name "${_file}" NAME) 
+                execute_process(COMMAND install_name_tool -change "${_file}" "@executable_path/../lib/${_file_name}" "${CMAKE_INSTALL_PREFIX}/bin/torrenttools" )
+            endforeach()
+
+            list(LENGTH _u_deps _u_length)
+            if("${_u_length}" GREATER 0)
+                message(STATUS "${_u_deps}")
+                message(WARNING "Unresolved dependencies detected!")
+            endif()
+        ]]
+        COMPONENT torrenttools)
+
     endif()
 endif()
 

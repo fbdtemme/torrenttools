@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.5.0] - UNRELEASED
+### Changed
+* Add support for create and edit profiles.
+* Add missing show subcommands and info entries for dht-nodes and web-seeds.
+* Add support for BEP 38: Finding Local Data Via Torrent File Hints (#9).
+* Add support for BEP-17: http-seeding (#8).
+* Improve formatting of info command output.
+* Fix invalid v1 infohash reporting for hybrid torrents.
+* Fix rare race condition in progress bar causing deadlocks.
+* Report progress when scanning filesystem and preparing metafile.
+* Optionally accelerate sorting when linked to Intel TBB.
+* Skip file tree for metafiles with more than 1000 files.
+* Fix v2 and hybrid issues with empty files.
+
 ## [v0.4.1] - 2021-04-15
 ### Changed
 * Fix undefined behaviour in verify command when output is piped.

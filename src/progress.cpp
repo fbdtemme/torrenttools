@@ -269,6 +269,7 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_verifier& ve
 void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
 {
     auto& storage = m.storage();
+    auto out = std::ostreambuf_iterator(os);
 
     std::string average_hash_rate_str {};
     using fsecs = std::chrono::duration<double>;
@@ -280,8 +281,8 @@ void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m
         average_hash_rate_str = "∞ B/s";
     }
 
-    fmt::print(os, "Completed in:        {}\n", tt::format_duration(duration));
-    fmt::print(os, "Average hash rate:   {}\n", average_hash_rate_str);
+    fmt::format_to(out, "Completed in:        {}\n", tt::format_duration(duration));
+    fmt::format_to(out, "Average hash rate:   {}\n", average_hash_rate_str);
     // Torrent file is hashed so we can return to infohash
     std::string info_hash_string {};
     if (auto protocol = m.storage().protocol(); protocol != dt::protocol::none) {
@@ -302,5 +303,5 @@ void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m
             info_hash_string = fmt::format("Infohash:            {}\n", infohash_v1);
         }
     }
-    fmt::print(os, "{}", info_hash_string);
+    fmt::format_to(out, "{}", info_hash_string);
 }

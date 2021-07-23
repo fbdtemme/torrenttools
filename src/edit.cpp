@@ -8,6 +8,8 @@
 #include "cli_helpers.hpp"
 #include "common.hpp"
 #include "edit.hpp"
+#include "config_parser.hpp"
+#include "exceptions.hpp"
 
 namespace dt = dottorrent;
 namespace fs = std::filesystem;
@@ -17,7 +19,7 @@ namespace rng = std::ranges;
 
 void configure_edit_app(CLI::App* app, edit_app_options& options)
 {
-    CLI::callback_t  metafile_parser = [&](const CLI::results_t& v) -> bool {
+    CLI::callback_t metafile_parser = [&](const CLI::results_t& v) -> bool {
         options.metafile = metafile_target_transformer(v);
         return true;
     };
@@ -50,6 +52,11 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
 
     CLI::callback_t private_flag_parser = [&](const CLI::results_t& v) -> bool {
         options.is_private = parse_explicit_flag("--private", v);
+        return true;
+    };
+
+    CLI::callback_t similar_parser = [&](const CLI::results_t& v) -> bool {
+        options.similar_torrents = similar_transformer("--similar", v);
         return true;
     };
 
@@ -90,9 +97,14 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
        ->expected(0, max_size);
 
     app->add_option("-w, --web-seed", options.web_seeds,
-               "Add one or multiple HTTP/FTP urls as seeds.")
+               "Add one or multiple HTTP/FTP urls as seeds (GetRight-style).")
        ->type_name("<url>...")
        ->expected(0, max_size);
+
+    app->add_option("--http-seed", options.http_seeds,
+                    "Add one or multiple HTTP urls as seeds (Hoffman-style).")
+            ->type_name("<url>...")
+            ->expected(0, max_size);
 
     app->add_option("-d, --dht-node", dht_node_parser,
                "Add one or multiple DHT nodes.")
@@ -152,7 +164,113 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
     app->add_flag_callback("--stdout", [&]() { options.write_to_stdout = true; },
             "Write the edited metafile to the standard output");
 
+    app->add_option("--collection", options.collections,
+                    "Add a collection name to this metafile.\n"
+                    "Other metafiles in the same collection are expected\n"
+                    "to share files with this one.")
+            ->type_name("<name>...")
+            ->expected(0, max_size);
+
+    app->add_option("--similar", similar_parser,
+                    "Add a similar torrent by infohash or metafile.\n"
+                    "The similar torrent is expected to share some files with this one")
+            ->type_name("<infohash|metafile>...")
+            ->expected(0, max_size);
+
     no_created_by_option->excludes(created_by_option);
+
+    app->add_option("--profile,-P", options.profile,
+                    "Read options form a config profile.")
+            ->type_name("<profile-name>")
+            ->expected(1);
+}
+
+void postprocess_edit_app(const CLI::App* app, const main_app_options& main_options, edit_app_options& options)
+{
+    auto [config_ptr, tracker_db_ptr] = load_config_and_tracker_db(main_options);
+
+    if (config_ptr == nullptr || tracker_db_ptr == nullptr) {
+        throw tt::profile_error("configuration is required because profile was passed, but no configuration was found");
+    }
+
+    if (options.profile.has_value()) {
+        merge_edit_profile(*config_ptr, *options.profile, app, options);
+    }
+}
+
+void merge_edit_profile(const tt::config& cfg, std::string_view profile_name, const CLI::App* app, edit_app_options& options)
+{
+    tt::profile profile;
+
+    try {
+        profile = cfg.get_profile(profile_name);
+    }
+    catch (const std::out_of_range& err) {
+        throw std::invalid_argument("profile name does not exist");
+    }
+
+    if (profile.command != "edit") {
+        throw std::invalid_argument("profile is not for edit command");
+    }
+
+    const auto& profile_options = std::get<edit_app_options>(profile.options);
+
+    // Replace all options that are not set from the commandline with the profile defaults.
+    if (app->get_option("--announce")->empty()) {
+        options.announce_list = profile_options.announce_list;
+    }
+    if (app->get_option("--announce-group")->empty()) {
+        options.announce_group_list = profile_options.announce_group_list;
+    }
+    if (app->get_option("--collection")->empty()) {
+        options.collections = profile_options.collections;
+    }
+    if (app->get_option("--comment")->empty()) {
+        options.comment = profile_options.comment;
+    }
+    if (app->get_option("--created-by")->empty()) {
+        options.created_by = profile_options.created_by;
+    }
+    if (app->get_option("--creation-date")->empty()) {
+        options.creation_date = profile_options.creation_date;
+    }
+    if (app->get_option("--output")->empty()) {
+        options.destination = profile_options.destination;
+        options.write_to_stdout = profile_options.write_to_stdout;
+    }
+    if (app->get_option("--dht-node")->empty()) {
+        options.dht_nodes = profile_options.dht_nodes;
+    }
+    if (app->get_option("--http-seed")->empty()) {
+        options.http_seeds = profile_options.http_seeds;
+    }
+    if (app->get_option("--list-mode")->empty()) {
+        options.list_mode = profile_options.list_mode;
+    }
+    if (app->get_option("--name")->empty()) {
+        options.name = profile_options.name;
+    }
+    if (app->get_option("--output")->empty()) {
+        options.destination = profile_options.destination;
+    }
+    if (app->get_option("--private")->empty()) {
+        options.is_private = profile_options.is_private;
+    }
+    if (app->get_option("--no-created-by")->empty()) {
+        options.set_created_by = profile_options.set_created_by;
+    }
+    if (app->get_option("--no-creation-date")->empty()) {
+        options.set_creation_date = profile_options.set_creation_date;
+    }
+    if (app->get_option("--similar")->empty()) {
+        options.similar_torrents = profile_options.similar_torrents;
+    }
+    if (app->get_option("--source")->empty()) {
+        options.source = profile_options.source;
+    }
+    if (app->get_option("--web-seed")->empty()) {
+        options.web_seeds = profile_options.web_seeds;
+    }
 }
 
 
@@ -162,7 +280,9 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
 
     std::ostream& os = options.write_to_stdout ? std::cerr : std::cout;
 
+    update_announce_group(m, main_options, options);
     update_announces(m, main_options, options);
+    update_http_seeds(m, options);
     update_web_seeds(m, options);
     update_dht_nodes(m, options);
 
@@ -197,14 +317,18 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
         m.set_name(*options.name);
     }
 
+    update_similar_torrents(m, options);
+    update_collections(m, options);
+
     fs::path destination_file = get_destination_path(m, options.destination);
+    auto out = std::ostreambuf_iterator(os);
 
     if (!options.write_to_stdout) {
         dt::save_metafile(destination_file, m, m.storage().protocol());
-        fmt::print(os, "Metafile written to:  {}\n", destination_file.string());
+        fmt::format_to(out, "Metafile written to:  {}\n", destination_file.string());
     } else {
         dt::write_metafile_to(std::cout, m, m.storage().protocol());
-        fmt::print(os, "Metafile written to standard output.");
+        fmt::format_to(out, "Metafile written to standard output.");
     }
 }
 
@@ -312,13 +436,44 @@ void update_web_seeds(dt::metafile& m, const edit_app_options& options)
     }
 }
 
+
+void update_http_seeds(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.http_seeds.has_value()) {
+        return;
+    }
+    auto http_seeds = *options.http_seeds;
+    const auto add_http_seeds = [] (dt::metafile& m, const std::vector<std::string>& seeds) {
+        for (const auto& url : seeds) { m.add_http_seed(url); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_http_seeds();
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    case tt::list_edit_mode::append: {
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    case tt::list_edit_mode::prepend: {
+        auto existing = m.http_seeds();
+        rng::copy(existing, std::back_inserter(http_seeds));
+        m.clear_http_seeds();
+        add_http_seeds(m, http_seeds);
+        return;
+    }
+    }
+}
+
 void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
 {
     if (!options.dht_nodes.has_value()) {
         return;
     }
     auto dht_nodes = *options.dht_nodes;
-    const auto add_dht_nodes = [] (dt::metafile& m, const std::vector<dt::dht_node> nodes) {
+    const auto add_dht_nodes = [] (dt::metafile& m, const std::vector<dt::dht_node>& nodes) {
         for (const auto& n : nodes) { m.add_dht_node(n); }
     };
 
@@ -341,3 +496,59 @@ void update_dht_nodes(dt::metafile& m, const edit_app_options& options)
     }
     }
 }
+
+void update_similar_torrents(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.similar_torrents.has_value()) {
+        return;
+    }
+    auto similar_torrents = *options.similar_torrents;
+    const auto add_similar_torrent = [] (dt::metafile& m, const std::vector<dt::info_hash>& infohashes) {
+        for (const auto& ih : infohashes) { m.add_similar_torrent(ih); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_similar_torrents();
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    case tt::list_edit_mode::append: {
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    case tt::list_edit_mode::prepend: {
+        auto existing = m.similar_torrents();
+        rng::copy(existing, std::back_inserter(similar_torrents));
+        m.clear_similar_torrents();
+        add_similar_torrent(m, similar_torrents);
+        return;
+    }
+    }
+}
+
+void update_collections(dt::metafile& m, const edit_app_options& options)
+{
+    if (!options.collections.has_value()) {
+        return;
+    }
+    auto collections = *options.collections;
+    const auto add_collections = [] (dt::metafile& m, const std::vector<std::string>& collections) {
+        for (const auto& c : collections) { m.add_collection(c); }
+    };
+
+    switch(options.list_mode) {
+    case tt::list_edit_mode::replace : {
+        m.clear_collections();
+        add_collections(m, collections);
+        return;
+    }
+    case tt::list_edit_mode::append: [[fallthrough]];
+    case tt::list_edit_mode::prepend: {
+        add_collections(m, collections);
+        return;
+    }
+    }
+}
+
+

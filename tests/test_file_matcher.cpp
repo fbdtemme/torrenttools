@@ -24,24 +24,36 @@ TEST_CASE("test file_matcher")
     torrenttools::file_matcher matcher{};
 
     SECTION("test block extension") {
+        matcher.set_search_root(fs::path(TEST_DIR));
         matcher.block_extension("txt");
-        auto files = matcher.run(fs::path(TEST_DIR));
+
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
 
         CHECK(contains(files, main_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
     }
 
     SECTION("test allow extension") {
+        matcher.set_search_root(fs::path(TEST_DIR));
         matcher.allow_extension("cpp");
-        auto files = matcher.run(fs::path(TEST_DIR));
+
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
 
         CHECK(contains(files, main_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
     }
 
     SECTION("test block extension") {
+        matcher.set_search_root(fs::path(TEST_DIR));
         matcher.block_extension("txt");
-        auto files = matcher.run(fs::path(TEST_DIR));
+
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
 
         CHECK(contains(files, main_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
@@ -50,8 +62,10 @@ TEST_CASE("test file_matcher")
     SECTION("test allow pattern") {
         SECTION("valid pattern") {
             matcher.include_pattern(".*test_.*.cpp");
-
-            auto files = matcher.run(fs::path(TEST_DIR));
+            matcher.set_search_root(fs::path(TEST_DIR));
+            matcher.start();
+            matcher.wait();
+            auto files = matcher.results();
 
             CHECK_FALSE(contains(files, main_cpp));
             CHECK_FALSE(contains(files, cmakelists_txt));
@@ -66,8 +80,10 @@ TEST_CASE("test file_matcher")
     SECTION("test block pattern") {
         SECTION("valid pattern") {
             matcher.exclude_pattern(".*test_.*.cpp");
-
-            auto files = matcher.run(fs::path(TEST_DIR));
+        matcher.set_search_root(fs::path(TEST_DIR));
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
 
             CHECK(contains(files, main_cpp));
             CHECK(contains(files, cmakelists_txt));
@@ -83,8 +99,10 @@ TEST_CASE("test file_matcher")
     {
         matcher.include_pattern(".*test_.*");
         matcher.exclude_pattern(".*matcher.*");
-
-        auto files = matcher.run(fs::path(TEST_DIR));
+        matcher.set_search_root(fs::path(TEST_DIR));
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
         CHECK(contains(files, test_info_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
         CHECK_FALSE(contains(files, test_file_matcher_cpp));
@@ -93,8 +111,10 @@ TEST_CASE("test file_matcher")
     SECTION("test exclude directory")
     {
         matcher.exclude_directory("resources");
-
-        auto files = matcher.run(fs::path(TEST_DIR));
+        matcher.set_search_root(fs::path(TEST_DIR));
+        matcher.start();
+        matcher.wait();
+        auto files = matcher.results();
         CHECK(contains(files, test_info_cpp));
         CHECK(contains(files, test_file_matcher_cpp));
         CHECK_FALSE(contains(files, fedora_torrent));

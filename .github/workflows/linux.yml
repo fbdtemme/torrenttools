@@ -13,26 +13,37 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
-        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libtbb2 libtbb-dev libssl-dev
+        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
       - name: Configure
-        run: mkdir build && cd build &&
-          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=OFF .. .
+        run: |
+          cmake -S . -B cmake-build-debug -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON
       - name: Build
-        run: cmake --build build --target torrenttools
+        run: cmake --build cmake-build-debug
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: torrenttools-binaries
+          path: |
+            cmake-build-debug
+            !cmake-build-debug/_deps
+          retention-days: 1
 
   test:
     name: Test
+    needs: Build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install build dependencies
-        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev
-      - name: Configure
-        run: mkdir build && cd build &&
-          cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON .. .
-      - name: Build
-        run: cmake --build build --target torrenttools-tests
+      - name: Install runtime dependencies
+        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 libssl-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: torrenttools-binaries
+          path: cmake-build-debug
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Test
         run: |
-          cd build
-          ctest
+          chmod +x cmake-build-debug/tests/torrenttools-tests
+          cd cmake-build-debug && ctest

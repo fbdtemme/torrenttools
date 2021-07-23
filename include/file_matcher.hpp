@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <unordered_set>
 #include <set>
+#include <atomic>
+#include <thread>
 
 #include <gsl-lite/gsl-lite.hpp>
 #include <fmt/format.h>
@@ -119,31 +121,73 @@ public:
         is_compiled_ = true;
     }
 
-    auto run(const fs::path& root) -> std::vector<fs::path>
+    void set_search_root(const fs::path& root)
     {
         Ensures(fs::exists(root));
-
-        std::vector<fs::path> result {};
-        run(root, std::back_inserter(result));
-        return result;
+        search_root_ = root;
     }
 
-    template <typename OutputIterator>
-    std::size_t run(const fs::path& root, OutputIterator out)
+    std::size_t files_processed() const noexcept
     {
-        Ensures(fs::exists(root));
+        return files_scanned_.load(std::memory_order_relaxed);
+    }
+
+    std::size_t files_included() const noexcept
+    {
+        return files_included_.load(std::memory_order_relaxed);
+    }
+
+    void start()
+    {
+        is_running_ = true;
+        fs_thread_ = std::jthread(std::bind_front(&file_matcher::run, this));
+    }
+
+    bool is_running() const noexcept
+    {
+        return is_running_.load(std::memory_order_relaxed);
+    }
+
+    [[nodiscard]] std::vector<fs::path> results()
+    {
+        return std::move(results_);
+    }
+
+    void wait()
+    {
+        if (fs_thread_.joinable()) {
+            fs_thread_.join();
+        }
+    }
+
+    void stop()
+    {
+        fs_thread_.request_stop();
+        fs_thread_.join();
+    }
+
+    void run(std::stop_token stop_token)
+    {
+        is_running_ = true;
+        std::vector<fs::path> results {};
+        auto out = std::back_inserter(results);
 
         if (!is_compiled_)
             compile();
 
-        std::size_t count = 0;
-        for (auto it = fs::recursive_directory_iterator(root); it != fs::end(it); ++it) {
+        for (auto it = fs::recursive_directory_iterator(search_root_); it != fs::end(it); ++it) {
+            if (stop_token.stop_possible() && stop_token.stop_requested()) {
+                is_running_.store(false, std::memory_order_relaxed);
+                return;
+            }
+
             if (it->is_directory()) {
-                if (directory_exclude_list_.contains(it->path().lexically_relative(root))) {
+                if (directory_exclude_list_.contains(it->path().lexically_relative(search_root_))) {
                     it.disable_recursion_pending();
                 }
             }
             else if (it->is_regular_file()) {
+                files_scanned_.fetch_add(1, std::memory_order_relaxed);
                 auto s = it->path().string();
                 if (file_include_list_empty_) {
                     if (!include_hidden_files_ && is_hidden_file(*it)) {
@@ -151,17 +195,19 @@ public:
                     }
                     if (file_exclude_list_empty_ || !file_exclude_list_.Match(s, nullptr)) {
                         *out++ = it->path();
-                        ++count;
+                        files_included_.fetch_add(1, std::memory_order_relaxed);
                     }
                 } else if (file_include_list_.Match(s, nullptr)) {
                     if (file_exclude_list_empty_ || !file_exclude_list_.Match(s, nullptr)) {
                         *out++ = it->path();
-                        ++count;
+                        files_included_.fetch_add(1, std::memory_order_relaxed);
                     }
                 }
             }
         }
-        return count;
+
+        results_ = std::move(results);
+        is_running_.store(false, std::memory_order_relaxed);
     };
 
 private:
@@ -185,6 +231,14 @@ private:
     bool file_include_list_empty_ = true;
     bool file_exclude_list_empty_ = true;
     bool is_compiled_ = false;
+
+    fs::path search_root_;
+    std::vector<fs::path> results_;
+
+    std::jthread fs_thread_;
+    std::atomic_bool is_running_ = false;
+    std::atomic_size_t files_scanned_ = 0;
+    std::atomic_size_t files_included_ = 0;
 };
 
 

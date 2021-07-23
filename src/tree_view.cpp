@@ -122,10 +122,10 @@ bool tree_printer::print_entry(
             auto style = ls_colors_.directory_style();
             formatted_name = tc::format(style, "{}", path_string);
         } else {
-            formatted_name = fmt::format("{}", path_string);
+            formatted_name = path_string;
         }
     }
-    auto line = fmt::format(line_template, formatted_name);
+    auto line = fmt::format(fmt::runtime(line_template), formatted_name);
 
     output_.emplace_back(std::move(line), entry_ptr);
     return is_directory;
@@ -140,7 +140,7 @@ std::string format_file_tree(const dottorrent::metafile& m, std::string_view pre
     if (storage.file_mode() == dottorrent::file_mode::multi) {
         auto printer = tree_printer(m, prefix, options);
         printer.walk();
-        fmt::format_to(out, printer.result());
+        rng::copy(printer.result(), out);
     }
     else  {
         // Print the name of the torrent as root directory
@@ -222,7 +222,7 @@ std::string format_verify_file_tree(
 std::string format_file_stats(const dottorrent::metafile& m, std::string_view prefix, bool include_pad_files)
 {
     const auto& storage = m.storage();
-    fmt::memory_buffer out {};
+    std::string s {};
 
     constexpr auto size_template =
             "{prefix} {total_file_size} in {directory_count} directories, {file_count} files\n";
@@ -235,7 +235,7 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
         total_file_count = storage.file_count();
     }
     else {
-       std::size_t file_size_counter = 0;
+        std::size_t file_size_counter = 0;
         for (const auto& entry: storage) {
             if (!entry.is_padding_file()) {
                 file_size_counter += entry.file_size();
@@ -245,13 +245,13 @@ std::string format_file_stats(const dottorrent::metafile& m, std::string_view pr
         total_file_size = tt::format_size(file_size_counter);
     }
 
-    fmt::format_to(out, size_template,
+    fmt::format_to(std::back_inserter(s), size_template,
             fmt::arg("prefix", prefix),
             fmt::arg("total_file_size", total_file_size),
             fmt::arg("directory_count", directory_count(storage, "", include_pad_files)),
             fmt::arg("file_count", total_file_count));
 
-    return fmt::to_string(out);
+    return s;
 }
 
 
@@ -261,22 +261,22 @@ std::string format_announce_tree(const dottorrent::announce_url_list& e, std::st
     if (line_format.empty())
         line_format = "{}";
 
-    const auto node = fmt::format(line_format, "{}├── {}\n"sv);
-    const auto end_node = fmt::format(line_format, "{}└── {}\n"sv);
-    const auto tier_format = fmt::format(line_format, "tier {}\n"sv);
+    const auto node = fmt::format(fmt::runtime(line_format), "{}├── {}\n"sv);
+    const auto end_node = fmt::format(fmt::runtime(line_format), "{}└── {}\n"sv);
+    const auto tier_format = fmt::format(fmt::runtime(line_format), "tier {}\n"sv);
 
     std::string out {};
     auto inserter = std::back_inserter(out);
 
     for (std::size_t tier = 0; tier < e.tier_count(); tier++) {
-        fmt::format_to(inserter, tier_format, tier+1);
+        fmt::format_to(inserter, fmt::runtime(tier_format), tier+1);
 
         auto it = e.get_tier_begin(tier);
         while (it != (e.get_tier_end(tier)-1)) {
-            fmt::format_to(inserter, node , "  ", it->url);
+            fmt::format_to(inserter, fmt::runtime(node), "  ", it->url);
             ++it;
         }
-        fmt::format_to(inserter, end_node, "  ", it->url);
+        fmt::format_to(inserter, fmt::runtime(end_node), "  ", it->url);
     }
     return out;
 }
