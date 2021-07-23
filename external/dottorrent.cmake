@@ -21,7 +21,7 @@ else()
     FetchContent_Declare(
             dottorrent
             GIT_REPOSITORY   https://github.com/fbdtemme/dottorrent.git
-            GIT_TAG          main
+            GIT_TAG          v0.5.0
     )
     FetchContent_MakeAvailable(dottorrent)
 endif()
