@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-20.04
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
@@ -22,7 +22,7 @@ jobs:
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
               -DCMAKE_CXX_COMPILER=g++-11 \
               -DCMAKE_C_COMPILER=gcc-11 \
-              -DOPENSSL_ROOT_DIR=/home/linuxbrew/.linuxbrew/Cellar/openssl@1.1/1.1.1k \
+              -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1k \
               -DCMAKE_BUILD_TYPE=Debug \
               -DTORRENTTOOLS_BUILD_TESTS=ON \
               -DTORRENTTOOLS_TBB=OFF
@@ -40,7 +40,7 @@ jobs:
   test:
     name: Test
     needs: Build
-    runs-on: ubuntu-20.04
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install runtime dependencies
