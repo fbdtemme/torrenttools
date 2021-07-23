@@ -78,4 +78,89 @@ the group to a BitTorrent metafile.
 Named trackers can be used inside the definition of the tracker group.
 A list with 20 public trackers named "public-trackers" is included in the default configuration file.
 
+Profiles
+========
 
+Profiles are a way to store a set of commandline options in the configuration file
+and apply them using a single commandline argument.
+
+Profiles are defined under the profiles key.
+
+Following options can be used for create profiles:
+
+.. hlist::
+   :columns: 3
+
+   * announce
+   * announce-group
+   * checksum
+   * collection
+   * comment
+   * created-by
+   * creation-date
+   * dht-node
+   * exclude
+   * http-seed
+   * include
+   * include-hidden
+   * io-block-size
+   * name
+   * output
+   * piece-size
+   * private
+   * protocol
+   * set-created-by
+   * set-creation-date
+   * similar
+   * source
+   * threads
+   * web-sees
+
+Following options can be used for edit profiles:
+
+.. hlist::
+    :columns: 3
+
+    * announce
+    * announce-group
+    * collection
+    * comment
+    * created-by
+    * creation-date
+    * dht-node
+    * http-seed
+    * list-mode
+    * name
+    * output
+    * private
+    * set-created-by
+    * set-creation-date
+    * similar
+    * source
+    * web-seed
+
+
+For the behaviour of each flag we refer to the documentation on the commandline arguments for the respective subcommand.
+
+
+.. code-block:: yaml
+    :caption: Schema for a profile.
+
+    profiles:
+        <profile_name>:
+            command: [create|edit]
+            options:
+                <option> : <value>
+                ...
+
+
+.. code-block:: yaml
+    :caption: Example of a profile for the create command.
+
+    profiles:
+      public:
+        command: "create"
+        options:
+          announce-group: [ public-trackers ]
+          private: false
+          protocol: 1

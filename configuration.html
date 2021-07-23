@@ -2,13 +2,14 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Other metafile utilities" href="comparison.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Other metafile utilities" href="comparison.html" /><link rel="prev" title="Features" href="why-torrenttools.html" />
 
-    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>Configuration - torrenttools - 0.4.1</title>
-      <link rel="stylesheet" href="_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
-    <link rel="stylesheet" href="_static/pygments.css">
-    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
+    <meta name="generator" content="sphinx-4.1.1, furo 2021.07.05.beta38"/>
+        <title>Configuration - torrenttools - 0.5.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css" />
     
 
 
@@ -37,7 +38,7 @@
   --color-code-foreground: #d0d0d0;
   
   }
-</style><link rel="stylesheet" href="_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+</style><link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css"></head>
   <body dir="">
     
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -86,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">torrenttools - 0.4.1</div></a>
+      <a href="index.html"><div class="brand">torrenttools - 0.5.0</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -97,10 +98,13 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/torrenttools.svg" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">torrenttools - 0.4.1</span>
+  <span class="sidebar-brand-text">torrenttools - 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -112,7 +116,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparison.html">Other metafile utilities</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Commands</span></p>
+<p class="caption" role="heading"><span class="caption-text">Commands</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="commands/create.html">Create</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/edit.html">Edit</a></li>
@@ -122,7 +126,7 @@
 <li class="toctree-l1"><a class="reference internal" href="commands/pad.html">Pad</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/magnet.html">Magnet</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Knowledge base</span></p>
+<p class="caption" role="heading"><span class="caption-text">Knowledge base</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="topics/bencode.html">Bencode format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topics/bittorrent-metafile-v1.html">BitTorrent metafile v1</a></li>
@@ -141,12 +145,12 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="configuration">
+        <section id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="named-trackers">
+<section id="named-trackers">
 <h2>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h2>
 <p>“Named trackers” are trackers which are declared in the trackers.json configuration file.</p>
-<div class="section" id="announce-url-substitution">
+<section id="announce-url-substitution">
 <h3>Announce url substitution<a class="headerlink" href="#announce-url-substitution" title="Permalink to this headline">¶</a></h3>
 <p>When a tracker is defined in the trackers.json file you can specify the full name or abbreviation to
 the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> option in the create or edit command.
@@ -173,29 +177,29 @@ The announce-url parameter will be replaced by the value defined in the config.y
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="private-flag-selection">
+</section>
+<section id="private-flag-selection">
 <h3>Private flag selection<a class="headerlink" href="#private-flag-selection" title="Permalink to this headline">¶</a></h3>
 <p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter,
 the private flag will be set according to the value specified in the tracker database.
 The user can always override this value by explicitly passing a different value to the <code class="docutils literal notranslate"><span class="pre">-p|-private</span></code> option.</p>
-</div>
-<div class="section" id="source-field">
+</section>
+<section id="source-field">
 <h3>Source field<a class="headerlink" href="#source-field" title="Permalink to this headline">¶</a></h3>
 <p>When passing the full name or abbreviation to the <code class="docutils literal notranslate"><span class="pre">-a|--announce</span></code> parameter,
 the source field will be set to the full name of the tracker if the tracker is marked as a private tracker.
 The source tag can be overridden on the commandline or removed by passing the <code class="docutils literal notranslate"><span class="pre">-s|--source|-s</span></code>
 option with an empty string.</p>
-</div>
-<div class="section" id="bittorrent-metafile-default-filename">
+</section>
+<section id="bittorrent-metafile-default-filename">
 <h3>BitTorrent metafile default filename<a class="headerlink" href="#bittorrent-metafile-default-filename" title="Permalink to this headline">¶</a></h3>
 <p>Named trackers will prefix the abbreviation between square brackets to the
 default filename of the generated BitTorrent metafile.
 For a tracker named PrivateTracker and abbreviation PT the default filename for a target directory “content”
 would be: <code class="docutils literal notranslate"><span class="pre">[PT]example.torrent</span></code>.</p>
-</div>
-</div>
-<div class="section" id="tracker-groups">
+</section>
+</section>
+<section id="tracker-groups">
 <h2>Tracker groups<a class="headerlink" href="#tracker-groups" title="Permalink to this headline">¶</a></h2>
 <p>A tracker group is an alias that refers to a group of trackers.
 Instead of having to pass each tracker on the commandline, the name of the alias can be used to add all trackers in
@@ -212,8 +216,95 @@ the group to a BitTorrent metafile.</p>
 </div>
 <p>Named trackers can be used inside the definition of the tracker group.
 A list with 20 public trackers named “public-trackers” is included in the default configuration file.</p>
+</section>
+<section id="profiles">
+<h2>Profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h2>
+<p>Profiles are a way to store a set of commandline options in the configuration file
+and apply them using a single commandline argument.</p>
+<p>Profiles are defined under the profiles key.</p>
+<p>Following options can be used for create profiles:</p>
+<div class="table-wrapper"><table class="hlist"><tr><td><ul class="simple">
+<li><p>announce</p></li>
+<li><p>announce-group</p></li>
+<li><p>checksum</p></li>
+<li><p>collection</p></li>
+<li><p>comment</p></li>
+<li><p>created-by</p></li>
+<li><p>creation-date</p></li>
+<li><p>dht-node</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>exclude</p></li>
+<li><p>http-seed</p></li>
+<li><p>include</p></li>
+<li><p>include-hidden</p></li>
+<li><p>io-block-size</p></li>
+<li><p>name</p></li>
+<li><p>output</p></li>
+<li><p>piece-size</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>private</p></li>
+<li><p>protocol</p></li>
+<li><p>set-created-by</p></li>
+<li><p>set-creation-date</p></li>
+<li><p>similar</p></li>
+<li><p>source</p></li>
+<li><p>threads</p></li>
+<li><p>web-sees</p></li>
+</ul>
+</td></tr></table></div>
+<p>Following options can be used for edit profiles:</p>
+<div class="table-wrapper"><table class="hlist"><tr><td><ul class="simple">
+<li><p>announce</p></li>
+<li><p>announce-group</p></li>
+<li><p>collection</p></li>
+<li><p>comment</p></li>
+<li><p>created-by</p></li>
+<li><p>creation-date</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>dht-node</p></li>
+<li><p>http-seed</p></li>
+<li><p>list-mode</p></li>
+<li><p>name</p></li>
+<li><p>output</p></li>
+<li><p>private</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>set-created-by</p></li>
+<li><p>set-creation-date</p></li>
+<li><p>similar</p></li>
+<li><p>source</p></li>
+<li><p>web-seed</p></li>
+</ul>
+</td></tr></table></div>
+<p>For the behaviour of each flag we refer to the documentation on the commandline arguments for the respective subcommand.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Schema for a profile.</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">profiles</span><span class="p">:</span>
+    <span class="nt">&lt;profile_name&gt;</span><span class="p">:</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">create|edit</span><span class="p p-Indicator">]</span>
+        <span class="nt">options</span><span class="p">:</span>
+            <span class="nt">&lt;option&gt; </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;value&gt;</span>
+            <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
 </div>
 </div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Example of a profile for the create command.</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">profiles</span><span class="p">:</span>
+  <span class="nt">public</span><span class="p">:</span>
+    <span class="nt">command</span><span class="p">:</span> <span class="s">"create"</span>
+    <span class="nt">options</span><span class="p">:</span>
+      <span class="nt">announce-group</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">public-trackers</span> <span class="p p-Indicator">]</span>
+      <span class="nt">private</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
 
       </article>
       <footer>
@@ -278,6 +369,7 @@ A list with 20 public trackers named “public-trackers” is included in the de
 </ul>
 </li>
 <li><a class="reference internal" href="#tracker-groups">Tracker groups</a></li>
+<li><a class="reference internal" href="#profiles">Profiles</a></li>
 </ul>
 </li>
 </ul>
@@ -289,10 +381,10 @@ A list with 20 public trackers named “public-trackers” is included in the de
       
     </aside>
   </main>
-</div>
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+    <script src="_static/scripts/main.js"></script>
+    </body>
 </html>
