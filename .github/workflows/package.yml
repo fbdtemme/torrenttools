@@ -34,6 +34,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
-          path: |
-            cmake-build-release/torrenttools*.tar.gz
+          path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           retention-days: 1
