@@ -24,7 +24,7 @@ nest https://github.com/fmtlib/fmt.git master fmt
 nest https://github.com/gsl-lite/gsl-lite.git master gsl-lite
 nest https://github.com/martinmoene/expected-lite.git master expected-lite
 nest https://github.com/catchorg/Catch2.git v2.x Catch2
-nest https://github.com/google/re2.git master re2
+nest https://github.com/google/re2.git main re2
 nest https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git master nlohmann_json
 nest https://github.com/jbeder/yaml-cpp.git master yaml-cpp
 nest https://github.com/fbdtemme/termcontrol.git main termcontrol
