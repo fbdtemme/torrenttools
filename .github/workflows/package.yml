@@ -82,7 +82,8 @@ jobs:
           name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
 
       - name: Unpack sources tarball
-        run: tar -xzf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
+        shell: powershell
+        run: tar -xf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
 
       - name: Configure
         run: |
