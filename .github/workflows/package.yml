@@ -27,9 +27,8 @@ jobs:
 
       - name: Determine Version
         id: cmake_version
-        working-directory: cmake-build-release
         run: |
-          CMAKE_PROJECT_VERSION=$(grep -oP "(?<=CMAKE_PROJECT_VERSION:STATIC=).*" CMakeCache.txt)
+          CMAKE_PROJECT_VERSION=$(grep -oP "(?<=CMAKE_PROJECT_VERSION:STATIC=).*" cmake-build-release/CMakeCache.txt)
           echo "::set-output name=cmake_project_version::${CMAKE_PROJECT_VERSION}"
           echo "${CMAKE_PROJECT_VERSION}" > version.txt
 
@@ -43,7 +42,7 @@ jobs:
       - name: Upload tarball as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: torrenttools.tar.gz
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           retention-days: 1
 
@@ -80,10 +79,10 @@ jobs:
       - name: Download tarball artifact
         uses: actions/download-artifact@v2
         with:
-          name: torrenttools.tar.gz
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
 
       - name: Unpack sources tarball
-        run: tar -xzf torrenttools.tar.gz
+        run: tar -xzf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
 
       - name: Configure
         run: |
