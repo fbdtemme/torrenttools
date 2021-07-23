@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install build dependencies
-        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libtbb-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
       - name: Configure
         run: |
           cmake -S . -B cmake-build-debug -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug -DTORRENTTOOLS_BUILD_TESTS=ON
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install runtime dependencies
-        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 libssl-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 libssl-dev libtbb-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:

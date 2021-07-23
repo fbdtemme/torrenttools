@@ -21,6 +21,8 @@ jobs:
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-yasm
+            mingw-w64-openssl
+            mingw-w64-x86_64-intel-tbb
       - uses: actions/checkout@v2
       - name: Configure
         run: |
