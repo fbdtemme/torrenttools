@@ -23,20 +23,17 @@ jobs:
         run: |
           cpack --config CPackSourceConfig.cmake -G TGZ
 
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: '5.x'
-
       - name: Determine Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
+        id: cmake_version
+        working-directory: cmake-build-release
+        run: |
+          CMAKE_PROJECT_VERSION=$(grep -oP "(?<=CMAKE_PROJECT_VERSION:STATIC=).*" CMakeCache.txt)
+          echo "::set-output name=cmake_project_version::${CMAKE_PROJECT_VERSION}"
 
       - name: Save tarball as artifacts
         uses: actions/upload-artifact@v2
         with:
-          working-directory: cmake-build-release
-          name: torrenttools-${{ steps.gitversion.outputs.semVer }}.tar.gz
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
           path: |
-            cmake-build-debug/torrenttools*.tar.gz
+            cmake-build-release/torrenttools*.tar.gz
           retention-days: 1
