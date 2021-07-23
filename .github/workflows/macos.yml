@@ -20,8 +20,8 @@ jobs:
       - name: Configure
         run: |
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
-              -DCMAKE_CXX_COMPILER=g++ \
-              -DCMAKE_C_COMPILER=gcc \
+              -DCMAKE_CXX_COMPILER=g++-11 \
+              -DCMAKE_C_COMPILER=gcc-11 \
               -DCMAKE_BUILD_TYPE=Debug \
               -DTORRENTTOOLS_BUILD_TESTS=ON \
               -DTORRENTTOOLS_TBB=OFF
