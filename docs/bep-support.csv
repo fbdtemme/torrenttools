@@ -3,7 +3,7 @@ BEP, Status, Title
 `05 <http://bittorrent.org/beps/bep_0005.html>`_,✅,DHT Protocol
 `09 <http://bittorrent.org/beps/bep_0009.html>`_,✅,Extension for Peers to Send Metadata Files
 `12 <http://bittorrent.org/beps/bep_0012.html>`_,✅,Multitracker Metadata Extension
-`17 <http://bittorrent.org/beps/bep_0017.html>`_,❌,HTTP Seeding
+`17 <http://bittorrent.org/beps/bep_0017.html>`_,✅,HTTP Seeding
 `19 <http://bittorrent.org/beps/bep_0019.html>`_,✅,WebSeed - HTTP/FTP Seeding (GetRight style)
 `27 <http://bittorrent.org/beps/bep_0027.html>`_,✅,Private Torrents
 `30 <http://bittorrent.org/beps/bep_0030.html>`_,❌,Merkle hash torrent extension
