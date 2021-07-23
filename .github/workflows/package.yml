@@ -1,0 +1,42 @@
+name: Package (tarball)
+
+on: workflow_dispatch
+
+jobs:
+  package-tarball:
+    name: "Create tarball"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install build dependencies
+        run: sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libtbb-dev libre2-dev libyaml-cpp-dev nlohmann-json3-dev
+
+      - name: Fetch external projects
+        run: scripts/fetch_dependencies.sh
+
+      - name: Configure
+        run: |
+          cmake -S . -B cmake-build-release -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release -DTORRENTTOOLS_BUILD_TESTS=ON
+
+      - name: Build tarball
+        working-directory: cmake-build-release
+        run: |
+          cpack --config CPackSourceConfig.cmake -G TGZ
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+
+      - name: Save tarball as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          working-directory: cmake-build-release
+          name: torrenttools-${{ steps.gitversion.outputs.semVer }}.tar.gz
+          path: |
+            cmake-build-debug/torrenttools*.tar.gz
+          retention-days: 1
