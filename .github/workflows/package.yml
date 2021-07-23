@@ -82,8 +82,9 @@ jobs:
           name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
 
       - name: Unpack sources tarball
-        shell: powershell
-        run: tar -xf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
+        run: |
+          tar -zxf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz \
+              --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/external/CLI11/tests
 
       - name: Configure
         run: |
