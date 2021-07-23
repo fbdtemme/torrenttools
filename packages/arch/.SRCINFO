@@ -13,6 +13,7 @@ pkgbase = torrenttools
 	makedepends = autoconf
 	makedepends = automake
 	makedepends = m4
+	makedepends = tbb
 	depends = openssl
 	provides = torrenttools
 	source = torrenttools::git+https://github.com/fbdtemme/torrenttools.git
