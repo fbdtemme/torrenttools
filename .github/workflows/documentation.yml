@@ -23,6 +23,7 @@ jobs:
               -DTORRENTTOOLS_BUILD_TESTS=OFF \
               -DTORRENTTOOLS_INSTALL=OFF \
               -DTORRENTTOOLS_BUILD_DOCS=ON \
+              -DTORRENTTOOLS_TBB=OFF
       - name: build
         run: cmake --build build --target Sphinx
       - name: Deploy to GitHub Pages

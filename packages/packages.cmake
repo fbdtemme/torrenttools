@@ -1,5 +1,3 @@
-set(CPACK_SOURCE_GENERATOR                       TGZ RPM)
-
 if (APPLE)
     set(CPACK_GENERATOR                          productbuild)
 elseif (WIN32 OR MINGW)
@@ -75,6 +73,10 @@ string(REGEX REPLACE "[ \t]*\n" "\n" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENS
 string(REGEX REPLACE "\n+$" "" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STATEMENT}")
 
 set(CPACK_PROJECT_CONFIG_FILE cpack_dispatch.cmake)
+
+# Generate RPM .spec
+include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
+
 include(CPack)
 
 cpack_add_component(torrenttools
