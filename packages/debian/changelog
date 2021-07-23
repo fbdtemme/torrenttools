@@ -1,0 +1,11 @@
+torrenttools (0.5.0-1) unstable; urgency=medium
+
+  * Update to 0.5.0
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Fri, 23 Jul 2021 08:45:00 +0100
+
+torrenttools (0.4.1-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Fri, 23 Apr 2021 12:32:00 +0100
