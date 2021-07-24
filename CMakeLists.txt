@@ -175,10 +175,15 @@ if (TORRENTTOOLS_INSTALL)
 
         # Install mingw shared libraries to the project dir
         # Filter out core windows libraries with regex
+
         install(CODE [[
+            set(LIBRARY_PATH $ENV{PATH})
+            string(REPLACE "\\" "/" LIBRARY_PATH "${LIBRARY_PATH}")
+            message(STATUS "Searching for libraries in: ${LIBRARY_PATH}")
+
             file(GET_RUNTIME_DEPENDENCIES
                 EXECUTABLES $<TARGET_FILE:torrenttools>
-                DIRECTORIES "C:/mingw64/bin" "C:/msys64/mingw64/bin"
+                DIRECTORIES ${LIBRARY_PATH}
                 RESOLVED_DEPENDENCIES_VAR _r_deps
                 UNRESOLVED_DEPENDENCIES_VAR _u_deps
                 PRE_EXCLUDE_REGEXES ".*-ms-win-.*" ".*ext-ms-.*"
