@@ -105,7 +105,7 @@ jobs:
       - name: Package
         run: |
           cd cmake-build-release
-          cpack -G WIX
+          cpack --verbose -G WIX
 
       - name: Upload installer as artifact
         uses: actions/upload-artifact@v2
@@ -173,7 +173,7 @@ jobs:
       - name: Package
         run: |
           cd cmake-build-release
-          cpack -G productbuild
+          cpack --verbose -G productbuild
 
       - name: Upload installer as artifact
         uses: actions/upload-artifact@v2
