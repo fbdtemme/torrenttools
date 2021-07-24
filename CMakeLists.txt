@@ -101,6 +101,7 @@ target_link_libraries(torrenttools PRIVATE
     )
 
 if (TORRENTTOOLS_TBB)
+    message(STATUS "Using Intel TBB library.")
     target_link_libraries(torrenttools PRIVATE TBB::tbb)
     target_compile_definitions(torrenttools PRIVATE TORRENTTOOLS_USE_TBB)
 endif()
