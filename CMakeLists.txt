@@ -194,6 +194,10 @@ if (TORRENTTOOLS_INSTALL)
             if("${_u_length}" GREATER 0)
                 message(STATUS "${_u_deps}")
                 message(WARNING "Unresolved dependencies detected!")
+
+                foreach(_u_dep ${_u_deps}) 
+                    message(WARNING "Dependency unresolved: ${_u_dep}")
+                endforeach()
             endif()
         ]]
         COMPONENT torrenttools)
@@ -233,6 +237,10 @@ if (TORRENTTOOLS_INSTALL)
             if("${_u_length}" GREATER 0)
                 message(STATUS "${_u_deps}")
                 message(WARNING "Unresolved dependencies detected!")
+
+                foreach(_u_dep ${_u_deps}) 
+                    message(WARNING "Dependency unresolved: ${_u_dep}")
+                endforeach()
             endif()
         ]]
         COMPONENT torrenttools)
