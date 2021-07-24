@@ -156,13 +156,7 @@ elseif (WIN32)
 elseif (APPLE)
     set(torrenttools_sysconf_dir         "etc")
     set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}/${torrenttools_sysconf_dir}")
-<<<<<<< HEAD
 endif ()
-=======
-endif()
-
-
->>>>>>> d6a13d5295f369f1a7abb1b5e00f5dcb7c41ea46
 
 
 
