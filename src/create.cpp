@@ -370,7 +370,7 @@ void postprocess_create_app(const CLI::App* app, const main_app_options& main_op
     auto [config_ptr, tracker_db_ptr] = load_config_and_tracker_db(main_options);
 
     if (config_ptr == nullptr || tracker_db_ptr == nullptr) {
-       throw tt::profile_error("configuration is required because profile was passed, but no configuration was found");
+       throw tt::profile_error("no configuration was found");
     }
 
     if (options.profile.has_value()) {
