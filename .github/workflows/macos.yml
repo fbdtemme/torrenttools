@@ -17,6 +17,10 @@ jobs:
           brew install cmake
           brew install gcc
           brew install openssl
+          brew install autoconf
+          brew install automake
+          brew install libtool
+          brew install nasm
       - name: Configure
         run: |
           cmake -G "Unix Makefiles" -S . -B cmake-build-debug \
@@ -25,9 +29,13 @@ jobs:
               -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1k \
               -DCMAKE_BUILD_TYPE=Debug \
               -DTORRENTTOOLS_BUILD_TESTS=ON \
-              -DTORRENTTOOLS_TBB=OFF
+              -DTORRENTTOOLS_TBB=OFF \
+              -DDOTTORRENT_MB_CRYPTO_LIB=isal \
+              -DDOTTORRENT_CRYPTO_LIB=openssl
+
       - name: Build
         run: cmake --build cmake-build-debug
+
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
         with:
