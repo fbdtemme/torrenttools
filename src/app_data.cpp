@@ -4,12 +4,16 @@ fs::path get_user_data_dir()
 {
     fs::path home_dir;
 
-#if defined(__linux__) | defined(__APPLE__)
+#if defined(__linux__)
     char* r = std::getenv("HOME");
     if (r) {
         home_dir = fs::path(r)/".config/torrenttools";
     }
-
+#elif defined(__APPLE__)
+    char* r = std::getenv("HOME");
+    if (r) {
+        home_dir = fs::path(r) /"Library/Application Support/torrenttools";
+    }
 #elif defined(_WIN32)
     char* r = std::getenv("APPDATA");
     if (r) {
