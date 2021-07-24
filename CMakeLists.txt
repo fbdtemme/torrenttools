@@ -124,17 +124,41 @@ if(TORRENTTOOLS_BUILD_DOCS)
 endif()
 
 
-if (UNIX)
-    set(torrenttools_sysconf_dir        "${SYSCONF_INSTALL_DIR}/torrenttools")
-    set(torrenttools_install_sysconf_dir ${torrenttools_sysconf_dir})
-    set(torrenttools_install_bin_dir     ${CMAKE_INSTALL_BINDIR})
+
+# Set the install prefix to /usr/local/bin/torrenttools
+message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
+
+if (MINGW OR WIN32)
+    # Set the install prefix to Program Files instead of Program Files (x86)
+    message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        message(DEBUG "Changing default install prefix")
+        SET(CMAKE_INSTALL_PREFIX  "C:/Program Files/${PROJECT_NAME}" CACHE PATH
+                "Install path prefix, prepended onto install directories."  FORCE)
+    endif()
+elseif (APPLE)
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        message(DEBUG "Changing default install prefix")
+        set(CMAKE_INSTALL_PREFIX  "/Library/${PROJECT_NAME}" CACHE PATH
+                "Install path prefix, prepended onto install directories."  FORCE)
+    endif()
+endif()
+
+
+if (LINUX)
+    set(torrenttools_sysconf_dir         "${SYSCONF_INSTALL_DIR}/torrenttools")
+    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}/${torrenttools_sysconf_dir}")
 elseif (WIN32)
     # Dump everything in the install prefix on windows
     # We need full paths
     set(torrenttools_sysconf_dir         ".")
-    set(torrenttools_install_sysconf_dir ".")
-    set(torrenttools_install_bin_dir     ".")
-endif ()
+    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}")
+elseif (APPLE)
+    set(torrenttools_sysconf_dir         "etc")
+    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}/${torrenttools_sysconf_dir}")
+endif()
+
+
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
 
@@ -145,12 +169,12 @@ if (TORRENTTOOLS_INSTALL)
         install(FILES resources/trackers.json
                 resources/config.yml
                 COMPONENT torrenttools
-                DESTINATION ${torrenttools_install_sysconf_dir})
+                DESTINATION ${torrenttools_sysconf_dir})
 
         # install executable
         install(TARGETS torrenttools
                 COMPONENT torrenttools
-                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 
     if (MINGW OR WIN32)
@@ -162,16 +186,16 @@ if (TORRENTTOOLS_INSTALL)
                 "Install path prefix, prepended onto install directories."  FORCE)
         endif()
 
-        # install trackers to system config dir since it is global data.
+        # install resources in the install prefix
         install(FILES resources/trackers.json
                 resources/config.yml
                 COMPONENT torrenttools
-                DESTINATION ${torrenttools_install_sysconf_dir})
+                DESTINATION ".")
 
         # install executable
         install(TARGETS torrenttools
                 COMPONENT torrenttools
-                RUNTIME DESTINATION ${torrenttools_install_bin_dir})
+                RUNTIME DESTINATION ".")
 
         # Install mingw shared libraries to the project dir
         # Filter out core windows libraries with regex
@@ -221,7 +245,13 @@ if (TORRENTTOOLS_INSTALL)
         install(TARGETS torrenttools
                 COMPONENT torrenttools
                 DESTINATION "bin")
-                
+
+        # install configuration
+        install(FILES resources/trackers.json
+                resources/config.yml
+                COMPONENT torrenttools
+                DESTINATION "etc")
+
         install(CODE [[
             file(GET_RUNTIME_DEPENDENCIES
                 EXECUTABLES $<TARGET_FILE:torrenttools>
