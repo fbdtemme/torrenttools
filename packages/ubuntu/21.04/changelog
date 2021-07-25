@@ -1,10 +1,10 @@
-torrenttools (0.5.0-1) unstable; urgency=medium
+torrenttools (0.5.0-1~ubuntu21.04) focal; urgency=medium
 
   * Update to 0.5.0
 
  -- Florian De Temmerman <floriandetemmerman@gmail.com>  Fri, 25 Jul 2021 17:00:00 +0100
 
-torrenttools (0.4.1-1) unstable; urgency=medium
+torrenttools (0.4.1-1~ubuntu21.04) focal; urgency=medium
 
   * Initial release
 
