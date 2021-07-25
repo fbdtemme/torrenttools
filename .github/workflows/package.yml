@@ -232,3 +232,10 @@ jobs:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|appimage-demo-qt5|latest|*x86_64.AppImage.zsync
           SRCDIR: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}
           BINDIR: cmake-build-release
+
+      - name: Upload AppImage as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-x86_64.AppImage
+          path: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-x86_64.AppImage
+          retention-days: 1
