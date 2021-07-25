@@ -224,14 +224,21 @@ jobs:
       - name: Build
         run: cmake --build cmake-build-release --target torrenttools
 
+      - name: Prepare AppDir
+        run: |
+          SRCDIR="torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}"
+          cmake --install cmake-build-release --prefix "AppDir/usr" --component torrenttools
+          mkdir -p AppDir/usr/share/icons/256x256/apps
+          cp $SRCDIR/resources/icons/256x256/torrenttools.png AppDir/usr/share/icons/256x256/apps/
+          mkdir -p AppDir/usr/share/applications/
+          cp $SRCDIR/packages/appimage/torrenttools.desktop AppDir/usr/share/applications/torrenttools.desktop
+
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage@master
         with:
           recipe: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/packages/appimage/torrenttools-appimage-recipe.yml
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|appimage-demo-qt5|latest|*x86_64.AppImage.zsync
-          SRCDIR: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}
-          BINDIR: cmake-build-release
 
       - name: Upload AppImage as artifact
         uses: actions/upload-artifact@v2
