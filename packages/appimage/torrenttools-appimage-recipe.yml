@@ -1,29 +1,34 @@
 version: 1
 
+script:
+  - rm -rf AppDir | true
+  - mkdir -p $APPDIR/usr/share/icons/256x256/apps
+  - cp $SRCDIR/resources/icons/256x256/torrenttools.png $APPDIR/usr/share/icons/256x256/apps/
+  - mkdir -p $APPDIR/usr/share/applications/
+  - cp $SRCDIR/packages/appimage/torrenttools.desktop $APPDIR/usr/share/applications/torrenttools.desktop
+  - cmake --install $BINDIR --prefix="$APPDIR/usr" --component torrenttools
+
 AppDir:
   path: ./AppDir
   app_info:
     id: torrenttools
     name: torrenttools
     icon: torrenttools
-    version: 0.4.1
+    version: 0.5.0
     exec: usr/bin/torrenttools
-    exec_args: $@ls
 
   apt:
     arch: amd64
     sources:
-      - sourceline: 'deb [arch=amd64] http://be.archive.ubuntu.com/ubuntu/ focal main restricted'
+      - sourceline: 'deb [arch=amd64] http://be.archive.ubuntu.com/ubuntu/ focal main universe'
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-      - sourceline: 'deb [arch=amd64] http://ppa.launchpad.net/fbdtemme/torrenttools/ubuntu focal main'
-        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x06BAA574925CA497'
 
     include:
-      - torrenttools
       - gcc-10-base
       - libstdc++6
       - librsvg2-common
       - openssl
+      - libtbb-dev
 
   files:
     exclude:
