@@ -224,9 +224,9 @@ jobs:
         run: cmake --build cmake-build-release --target torrenttools
 
       - name: Build AppImage
-      - uses: AppImageCrafters/build-appimage@master
+        uses: AppImageCrafters/build-appimage@master
         with:
-          recipe: "torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/packages/appimage/torrenttools-appimage-recipe.yml
+          recipe: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/packages/appimage/torrenttools-appimage-recipe.yml
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|appimage-demo-qt5|latest|*x86_64.AppImage.zsync
           SRCDIR: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}
