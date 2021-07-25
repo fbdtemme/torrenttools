@@ -82,7 +82,8 @@ add_executable(torrenttools
         src/tracker_database.cpp
         src/tree_view.cpp
         src/verify.cpp
-        include/profile_config_formatter.hpp src/profile.cpp include/exceptions.hpp)
+        src/profile.cpp
+)
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(torrenttools PUBLIC cxx_std_20)
