@@ -2,12 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.0] - UNRELEASED
-### Changed
+## [v0.5.0] - 2021-07-25
+### Added
+* Add support for windows and macOS.
 * Add support for create and edit profiles.
 * Add missing show subcommands and info entries for dht-nodes and web-seeds.
 * Add support for BEP 38: Finding Local Data Via Torrent File Hints (#9).
 * Add support for BEP-17: http-seeding (#8).
+* Add support for printing per-file checksums in sha1sum format (#7)
+* Add progress reporting while scanning for files. (#10)
+
+### Changed
 * Improve formatting of info command output.
 * Fix invalid v1 infohash reporting for hybrid torrents.
 * Fix rare race condition in progress bar causing deadlocks.
