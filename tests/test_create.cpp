@@ -499,7 +499,8 @@ TEST_CASE("test create app argument parsing")
             auto old_fs_equal = *create_options.destination==output;
             CHECK((new_fs_equal || old_fs_equal));
 #else
-            CHECK(*create_options.destination == output);
+
+            CHECK(create_options.destination->string() ==  fs::absolute(output).string());
 #endif
         }
         SECTION("Directory with trailing slash") {
@@ -512,7 +513,7 @@ TEST_CASE("test create app argument parsing")
             auto old_fs_equal = *create_options.destination==output;
             CHECK((new_fs_equal || old_fs_equal));
 #else
-            CHECK(*create_options.destination == output);
+            CHECK(create_options.destination->string() == fs::absolute(output).string());
 #endif
         }
         SECTION("Existing directory -> append trailing slash") {
