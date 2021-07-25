@@ -440,6 +440,27 @@ tbl-tint.mpg
 
     SECTION("files and padding files only") {
         options.show_padding_files = true;
+#if defined(_WIN32)
+        std::string expected = (
+R"(Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
+.pad\280339
+Spaceballs-StateOfTheArt.avi
+.pad\464896
+cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4
+.pad\129434
+eld-dust.mkv
+.pad\227380
+fairlight_cncd-agenda_circling_forth-1080p30lq.mp4
+.pad\507162
+meet the deadline - Still _ Evoke 2014.mp4
+.pad\510995
+readme.txt
+.pad\524227
+tbl-goa.avi
+.pad\442368
+tbl-tint.mpg
+)");
+#else
         std::string expected = (
 R"(Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
 .pad/280339
@@ -459,13 +480,26 @@ tbl-goa.avi
 .pad/442368
 tbl-tint.mpg
 )");
-
+#endif
         run_show_files_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }
 
     SECTION("with prefix") {
         options.files_prefix = "/path/to/torrent/data";
+#if defined(_WIN32)
+        std::string expected = (
+R"(\path\to\torrent\data\Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
+\path\to\torrent\data\Spaceballs-StateOfTheArt.avi
+\path\to\torrent\data\cncd_fairlight-ceasefire_(all_falls_down)-1080p.mp4
+\path\to\torrent\data\eld-dust.mkv
+\path\to\torrent\data\fairlight_cncd-agenda_circling_forth-1080p30lq.mp4
+\path\to\torrent\data\meet the deadline - Still _ Evoke 2014.mp4
+\path\to\torrent\data\readme.txt
+\path\to\torrent\data\tbl-goa.avi
+\path\to\torrent\data\tbl-tint.mpg
+)");
+#else
         std::string expected = (
 R"(/path/to/torrent/data/Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
 /path/to/torrent/data/Spaceballs-StateOfTheArt.avi
@@ -477,6 +511,7 @@ R"(/path/to/torrent/data/Darkroom (Stellar, 1994, Amiga ECS) HQ.mp4
 /path/to/torrent/data/tbl-goa.avi
 /path/to/torrent/data/tbl-tint.mpg
 )");
+#endif
         run_show_files_subapp(main_options, options);
         CHECK(buffer.str() == expected);
     }

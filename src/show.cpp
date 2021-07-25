@@ -516,7 +516,7 @@ void run_show_files_subapp(const main_app_options& main_options, const show_app_
             continue;
 
         if (!options.files_prefix.empty()) {
-            std::cout << (options.files_prefix / f.path()).string() << '\n';
+            std::cout << (options.files_prefix.lexically_normal() / f.path()).string() << '\n';
         } else {
             std::cout << f.path().string() << '\n';
         }
