@@ -208,8 +208,9 @@ jobs:
           tar -zxf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz \
                 --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/external/CLI11/tests
       - name: Install build dependencies
-        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libtbb-dev
-
+        run:  |
+            sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake \
+            libssl-dev libtbb-dev nasm libtool automake autoconf
       - name: Configure
         run: |
           cmake -S torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }} \
