@@ -83,7 +83,8 @@ jobs:
       - name: Unpack sources tarball
         run: |
           tar -zxf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz \
-              --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/external/CLI11/tests
+              --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/external/CLI11/tests \
+              --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/packages/ubuntu
 
       - name: Configure
         run: |
