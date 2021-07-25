@@ -6,7 +6,7 @@ script:
   - cp $SRCDIR/resources/icons/256x256/torrenttools.png $APPDIR/usr/share/icons/256x256/apps/
   - mkdir -p $APPDIR/usr/share/applications/
   - cp $SRCDIR/packages/appimage/torrenttools.desktop $APPDIR/usr/share/applications/torrenttools.desktop
-  - cmake --install $BINDIR --prefix="$APPDIR/usr" --component torrenttools
+  - cmake --install $BINDIR --prefix "$APPDIR/usr" --component torrenttools
 
 AppDir:
   path: ./AppDir
