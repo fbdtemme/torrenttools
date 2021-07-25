@@ -181,3 +181,53 @@ jobs:
           name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}-macos-x86_64.pkg
           path: cmake-build-release/torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.pkg
           retention-days: 1
+
+  package-linux:
+    name: "Linux AppImage"
+    runs-on: ubuntu-20.04
+    needs: [ package-tarball ]
+    steps:
+      - name: Download version file
+        uses: actions/download-artifact@v2
+        with:
+          name: version.txt
+
+      - name: Retrieve version
+        id: cmake_version
+        run: |
+          CMAKE_PROJECT_VERSION="$(cat version.txt)"
+          echo "::set-output name=cmake_project_version::${CMAKE_PROJECT_VERSION}"
+
+      - name: Download tarball artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz
+
+      - name: Unpack sources tarball
+        run: |
+          tar -zxf torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}.tar.gz \
+                --exclude torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/external/CLI11/tests
+      - name: Install build dependencies
+        run:  sudo apt-get install -y libstdc++-10-dev g++-10 gcc-10 cmake libssl-dev libtbb-dev
+
+      - name: Configure
+        run: |
+          cmake -S torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }} \
+                -B cmake-build-release \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_CXX_COMPILER=g++-10 \
+                -DTORRENTTOOLS_BUILD_TESTS=OFF \
+                -DDOTTORRENT_MB_CRYPTO_LIB=isal \
+                -DDOTTORRENT_CRYPTO_LIB=openssl
+
+      - name: Build
+        run: cmake --build cmake-build-release --target torrenttools
+
+      - name: Build AppImage
+      - uses: AppImageCrafters/build-appimage@master
+        with:
+          recipe: "torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}/packages/appimage/torrenttools-appimage-recipe.yml
+        env:
+          UPDATE_INFO: gh-releases-zsync|AppImageCrafters|appimage-demo-qt5|latest|*x86_64.AppImage.zsync
+          SRCDIR: torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}
+          BINDIR: cmake-build-release
