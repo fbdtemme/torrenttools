@@ -13,7 +13,7 @@ Build-Depends: debhelper (>=12~),
  automake,
  libtool,
  nasm,
- tbb-dev
+ libtbb-dev
 Homepage: https://www.github.com/fbdtemme/torrenttools
 
 Package: torrenttools
