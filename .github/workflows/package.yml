@@ -220,7 +220,8 @@ jobs:
                 -DCMAKE_CXX_COMPILER=g++-10 \
                 -DTORRENTTOOLS_BUILD_TESTS=OFF \
                 -DDOTTORRENT_MB_CRYPTO_LIB=isal \
-                -DDOTTORRENT_CRYPTO_LIB=openssl
+                -DDOTTORRENT_CRYPTO_LIB=openssl \
+                -DSYSCONF_INSTALL_DIR=/etc
 
       - name: Build
         run: cmake --build cmake-build-release --target torrenttools
@@ -228,7 +229,7 @@ jobs:
       - name: Prepare AppDir
         run: |
           SRCDIR="torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }}"
-          DESTDIR=AppDir cmake --install cmake-build-release --component torrenttools
+          DESTDIR=AppDir cmake --install cmake-build-release --prefix=/usr --component torrenttools
           mkdir -p AppDir/usr/share/icons/256x256/apps
           cp $SRCDIR/resources/icons/256x256/torrenttools.png AppDir/usr/share/icons/256x256/apps/
           mkdir -p AppDir/usr/share/applications/
