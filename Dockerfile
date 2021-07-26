@@ -1,27 +1,28 @@
-FROM ubuntu:latest AS build-stage
+FROM alpine:latest AS build-stage
 
-# install build dependencies
-RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
-   git \
-   make \
-   cmake \
-   libstdc++-10-dev \
-   g++-10 \
-   autoconf \
-   automake \
-   libtool \
-   nasm \
-   libssl-dev \
-   libssl1.1
-
+RUN apk add --update-cache \
+    git \
+    make \
+    cmake \
+    autoconf \
+    automake \
+    libtool \
+    g++ \
+    nasm \
+    openssl-dev \
+    libtbb-dev
 
 # Copy source files
-COPY . /torrenttools
-WORKDIR /torrenttools
+#COPY . /torrenttools
+#WORKDIR /torrenttools
+ENV VERSION="0.5.0"
+RUN wget "https://github.com/fbdtemme/torrenttools/releases/download/v$VERSION/torrenttools-$VERSION.tar.gz"
+RUN tar -xzf "torrenttools-$VERSION.tar.gz"
+RUN mv torrenttools-$VERSION torrenttools
 
 # Generate build files
-RUN cmake -S . -B cmake-build-relwithdebinfo \
-          -DCMAKE_CXX_COMPILER=g++-10 \
+RUN cmake -S torrenttools -B cmake-build-relwithdebinfo \
+          -DCMAKE_CXX_COMPILER=g++ \
           -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DTORRENTTOOLS_BUILD_TESTS=OFF \
           -DTORRENTTOOLS_BUILD_DOCS=OFF \
@@ -31,10 +32,10 @@ RUN cmake -S . -B cmake-build-relwithdebinfo \
 RUN cd cmake-build-relwithdebinfo && make -j$(nproc) torrenttools
 
 
-FROM ubuntu:latest AS runtime
+FROM alpine:latest AS runtime
 
-RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y libssl1.1
-COPY --from=build-stage /torrenttools/cmake-build-relwithdebinfo/torrenttools /usr/bin/
+RUN apk add --update-cache openssl libtbb
+COPY --from=build-stage cmake-build-relwithdebinfo/torrenttools /usr/bin/
 RUN chmod +x "/usr/bin/torrenttools"
 
 ENTRYPOINT ["/usr/bin/torrenttools"]
