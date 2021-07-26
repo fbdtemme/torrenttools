@@ -7,5 +7,5 @@
 #define PROJECT_VERSION_STRING "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
 
 #define CREATED_BY_STRING PROJECT_NAME "/" PROJECT_VERSION
-#define GLOBAL_DATA_DIR      R"(@torrenttools_install_sysconf_dir@)"
+#define GLOBAL_DATA_DIR      R"(@torrenttools_sysconf_dir@)"
 #define BUILD_DATA_DIR       R"(@CMAKE_CURRENT_SOURCE_DIR@/resources)"

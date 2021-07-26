@@ -11,7 +11,7 @@ endif()
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.5.0
+        VERSION 0.5.1
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
@@ -148,15 +148,12 @@ endif()
 
 if (LINUX)
     set(torrenttools_sysconf_dir         "${SYSCONF_INSTALL_DIR}/torrenttools")
-    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}/${torrenttools_sysconf_dir}")
 elseif (WIN32)
     # Dump everything in the install prefix on windows
     # We need full paths
     set(torrenttools_sysconf_dir         ".")
-    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}")
 elseif (APPLE)
     set(torrenttools_sysconf_dir         "etc")
-    set(torrenttools_install_sysconf_dir "${CMAKE_INSTALL_PREFIX}/${torrenttools_sysconf_dir}")
 endif ()
 
 
