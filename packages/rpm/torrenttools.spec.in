@@ -1,15 +1,11 @@
-%global forgeurl @PACKAGE_HOMEPAGE_URL@
 %global tag      @PACKAGE_VERSION@
-Version:         %{tag}
-
-# Verbose processing. Remove -i -v before commit
-%forgemeta
 
 Name:            @PACKAGE_NAME@
-URL:             %{forgeurl}
-Source:          %{forgesource}
-License:         @PACKAGE_LICENSE@
-Release:         1%{?dist}
+Version:         %{tag}
+URL:             @PACKAGE_HOMEPAGE_URL@
+Source:          @PACKAGE_HOMEPAGE_URL@/releases/download/v%{tag}/torrenttools-%{tag}.tar.gz
+License:         MIT
+Release:         2%{?dist}
 Summary:         @PACKAGE_DESCRIPTION_SUMMARY@
 
 BuildRequires:   openssl-devel
@@ -22,21 +18,21 @@ BuildRequires:   libtool
 BuildRequires:   nasm
 BuildRequires:   tbb-devel
 
-%{?fedora:BuildRequires:   gcc-c++ >= 10.0.0}
-%{?fedora:BuildRequires:   libstdc++-devel >= 10.0.0}
-%{?fedora:Requires:        libstdc++ >= 10.0.0}
-
-%{?el8:BuildRequires:      gcc-toolset-10}
+%{?fedora:BuildRequires:      gcc-c++ >= 10.2.1}
+%{?fedora:BuildRequires:      libstdc++-devel >= 10.2.1}
+%{?fedora:Requires:           libstdc++ >= 10.2.1}
+%{?el8:BuildRequires:         gcc-toolset-10}
+%{?is_opensuse:BuildRequires: gcc10-c++}
+%{?is_opensuse:Requires:      libstdc++6 >= 10.2.1}
 
 Requires:            openssl >= 1.0.0
 Requires:            tbb
 
 %description
-@PACKAGE_DESCRIPTION@
+A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 %prep
-# Verbose processing. Remove -v before commit
-%forgesetup
+%setup
 
 %build
 
@@ -47,21 +43,32 @@ source /opt/rh/gcc-toolset-10/enable
 %if 0%{?el8}
 %cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_MB_CRYPTO_LIB=isal . .
 %else
+%if 0%{?is_opensuse}
+%cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_MB_CRYPTO_LIB=isal -DCMAKE_CXX_COMPILER=g++-10
+%else
 %cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDOTTORRENT_MB_CRYPTO_LIB=isal
 %endif
-
-%if 0%{?el8}
-%__cmake --build . --target torrenttools
-%else
-%cmake_build --target torrenttools
 %endif
+
+
+%if 0%{?fedora} >= 33
+%cmake_build --target torrenttools
+%else
+%__cmake --build . --target torrenttools
+%endif
+
 
 %install
 
-%if 0%{?el8}
-DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
-%else
+
+%if 0%{?fedora} >= 33
 %cmake_install --component torrenttools
+%else
+%if 0%{?is_opensuse}
+DESTDIR="%{buildroot}" %__cmake --install "build" --component torrenttools
+%else
+DESTDIR="%{buildroot}" %__cmake --install . --component torrenttools
+%endif
 %endif
 
 %files
@@ -72,6 +79,9 @@ DESTDIR="%{buildroot}" %__cmake  --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Fri Jul 23 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.5.0-2
+- Fix build on openSUSE
+
 * Fri Jul 23 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.5.0-1
 - Update to 0.5.0
 
