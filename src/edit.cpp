@@ -189,11 +189,11 @@ void postprocess_edit_app(const CLI::App* app, const main_app_options& main_opti
 {
     auto [config_ptr, tracker_db_ptr] = load_config_and_tracker_db(main_options);
 
-    if (config_ptr == nullptr || tracker_db_ptr == nullptr) {
+    if (config_ptr == nullptr && options.profile.has_value()) {
         throw tt::profile_error("configuration is required because profile was passed, but no configuration was found");
     }
 
-    if (options.profile.has_value()) {
+    if (options.profile.has_value() && config_ptr != nullptr) {
         merge_edit_profile(*config_ptr, *options.profile, app, options);
     }
 }

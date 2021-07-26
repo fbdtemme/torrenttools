@@ -369,11 +369,11 @@ void postprocess_create_app(const CLI::App* app, const main_app_options& main_op
 {
     auto [config_ptr, tracker_db_ptr] = load_config_and_tracker_db(main_options);
 
-    if (config_ptr == nullptr || tracker_db_ptr == nullptr) {
-       throw tt::profile_error("no configuration was found");
+    if (config_ptr == nullptr && options.profile.has_value()) {
+        throw tt::profile_error("no configuration was found, but --profile requested.");
     }
 
-    if (options.profile.has_value()) {
+    if (options.profile.has_value() && config_ptr != nullptr) {
         merge_create_profile(*config_ptr, *options.profile, app, options);
     }
 }
