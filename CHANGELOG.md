@@ -2,9 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.0] - 2021-07-26
+## [v0.5.1] - 2021-07-26
 ### Changed
-* Fix misconfiguration of global configuration directory on linux. 
+* Fix misconfiguration of global config directory on linux.
 
 ## [v0.5.0] - 2021-07-25
 ### Added
