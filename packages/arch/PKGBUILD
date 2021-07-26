@@ -17,7 +17,7 @@ backup=()
 options=()
 install=
 changelog=
-source=("$pkgname-$pkgver::https://github.com/fbdtemme/torrenttools/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz")
+source=("https://github.com/fbdtemme/torrenttools/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz")
 noextract=()
 md5sums=('SKIP')
 
