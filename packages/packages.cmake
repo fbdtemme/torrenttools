@@ -74,9 +74,6 @@ string(REGEX REPLACE "\n+$" "" PACKAGE_LICENSE_STATEMENT "${PACKAGE_LICENSE_STAT
 
 set(CPACK_PROJECT_CONFIG_FILE ${CMAKE_CURRENT_LIST_DIR}/cpack_dispatch.cmake)
 
-# Generate RPM .spec
-include(${CMAKE_CURRENT_LIST_DIR}/rpm/rpm.cmake)
-
 include(CPack)
 
 cpack_add_component(torrenttools
