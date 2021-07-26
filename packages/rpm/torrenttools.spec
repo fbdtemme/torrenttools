@@ -1,11 +1,11 @@
-%global tag      0.5.0
+%global tag      0.5.1
 
 Name:            torrenttools
 Version:         %{tag}
 URL:             https://www.github.com/fbdtemme/torrenttools
 Source:          https://www.github.com/fbdtemme/torrenttools/releases/download/v%{tag}/torrenttools-%{tag}.tar.gz
 License:         MIT
-Release:         2%{?dist}
+Release:         1%{?dist}
 Summary:         A commandline tool for creating, inspecting and modifying BitTorrent metafiles.
 
 BuildRequires:   openssl-devel
@@ -79,6 +79,9 @@ DESTDIR="%{buildroot}" %__cmake --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Mon Jul 26 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.5.1-1
+- Update to 0.5.1
+
 * Fri Jul 23 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.5.0-2
 - Fix build on openSUSE
 
