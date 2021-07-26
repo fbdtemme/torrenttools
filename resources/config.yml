@@ -2,6 +2,7 @@
 # It should be copied to the suitable directory for your OS and modified there.
 # Linux : $HOME/.config/torrenttools/config.yml
 # Windows : %AppData%/torrenttools/config.yml
+# macOS: $HOME/Library/Application Support/torrenttools
 
 tracker-parameters:
   AlphaRatio:
