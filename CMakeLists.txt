@@ -256,6 +256,7 @@ if (TORRENTTOOLS_INSTALL)
                 DIRECTORIES "/usr/bin/local/Cellar" "/usr/bin/local"
                 RESOLVED_DEPENDENCIES_VAR _r_deps
                 UNRESOLVED_DEPENDENCIES_VAR _u_deps
+                PRE_EXCLUDE_REGEXES ".*libSystem.B.*"
             )
 
             foreach(_file ${_r_deps})
