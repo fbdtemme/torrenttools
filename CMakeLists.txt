@@ -145,17 +145,19 @@ elseif (APPLE)
     endif()
 endif()
 
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
+# torrenttools_sysconf_dir: Full path used to lookup system scope configuration files.
 if (LINUX)
     set(torrenttools_sysconf_dir         "${SYSCONF_INSTALL_DIR}/torrenttools")
 elseif (WIN32)
     # Dump everything in the install prefix on windows
-    # We need full paths
-    set(torrenttools_sysconf_dir         ".")
+    set(torrenttools_sysconf_dir         "${CMAKE_INSTALL_PREFIX}")
 elseif (APPLE)
-    set(torrenttools_sysconf_dir         "etc")
+    set(torrenttools_sysconf_dir         "${CMAKE_INSTALL_PREFIX}/etc")
 endif ()
 
+message(STATUS "Install sysconf dir: ${torrenttools_sysconf_dir}")
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp)
@@ -176,15 +178,7 @@ if (TORRENTTOOLS_INSTALL)
     endif()
 
     if (MINGW OR WIN32)
-        # Set the install prefix to Program Files instead of Program Files (x86)
-        message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
-        if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-            message(DEBUG "Changing default install prefix")
-            SET(CMAKE_INSTALL_PREFIX  "C:/Program Files/${PROJECT_NAME}" CACHE PATH
-                "Install path prefix, prepended onto install directories."  FORCE)
-        endif()
-
-        # install resources in the install prefix
+          # install resources in the install prefix
         install(FILES resources/trackers.json
                 resources/config.yml
                 COMPONENT torrenttools
@@ -231,14 +225,6 @@ if (TORRENTTOOLS_INSTALL)
     endif()
 
     if (APPLE)
-        # Set the install prefix to /usr/local/bin/torrenttools
-        message(DEBUG ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
-        if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-            message(DEBUG "Changing default install prefix")
-            set(CMAKE_INSTALL_PREFIX  "/Library/${PROJECT_NAME}" CACHE PATH
-                "Install path prefix, prepended onto install directories."  FORCE)
-        endif()
-
         # install executable
         install(TARGETS torrenttools
                 COMPONENT torrenttools
