@@ -3,6 +3,19 @@ name: Package
 on:
   workflow_dispatch:
     branches: [ main, develop ]
+    inputs:
+      linux:
+        description: 'Create a linux AppImage'
+        required: true
+        default: 'on'
+      windows:
+        description: 'Create a windows installer'
+        required: true
+        default: 'on'
+      macos:
+        description: 'Create a macOS installer'
+        required: true
+        default: 'on'
 
 jobs:
   package-tarball:
@@ -48,6 +61,7 @@ jobs:
 
   package-windows:
     name: "Windows installer"
+    if: ${{ github.event.inputs.windows == 'on' }}
     runs-on: windows-latest
     needs: [ package-tarball ]
     defaults:
@@ -117,6 +131,7 @@ jobs:
 
   package-macos:
     name: "macOS installer"
+    if: ${{ github.event.inputs.macos == 'on' }}
     runs-on: macos-latest
     needs: [ package-tarball ]
     steps:
@@ -185,6 +200,7 @@ jobs:
 
   package-linux:
     name: "Linux AppImage"
+    if: ${{ github.event.inputs.linux == 'on' }}
     runs-on: ubuntu-20.04
     needs: [ package-tarball ]
     steps:
