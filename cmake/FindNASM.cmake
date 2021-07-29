@@ -39,10 +39,9 @@ if (NOT NASM_EXECUTABLE OR NASM_EXECUTABLE STREQUAL NASM_EXECUTABLE-NOTFOUND)
         # Find NASM.
         find_program(NASM_EXECUTABLE NAMES nasm yasm
                 DOC	"Path to NASM/YASM executable"
-                PATHS	"${LocalAppData}/NASM_EXECUTABLE"
-                "${ProgramFiles}/NASM_EXECUTABLE"
-                "${ProgramFilesX86}/NASM_EXECUTABLE"
-                )
+                PATHS "${LocalAppData}/NASM" "${ProgramFiles}/NASM" "${ProgramFilesX86}/NASM"
+        )
+
     endif()
 endif()
 
