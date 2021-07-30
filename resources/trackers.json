@@ -7,9 +7,9 @@
   },
   {
     "name": "BeyondHD"
-	  "abbreviation": "BHD",
-	  "announce_url": "https://tracker.beyond-hd.me:2053/announce/{pid}",
-	  "private": true
+    "abbreviation": "BHD",
+    "announce_url": "https://tracker.beyond-hd.me:2053/announce/{pid}",
+    "private": true
   },
   {
     "name": "BroadcastTheNet",
@@ -19,9 +19,9 @@
   },
   {
     "name": "Blutopia",
-	  "abbreviation": "BLU",
-	  "announce_url": "https://blutopia.xyz/announce/{pid}",
-	  "private": true
+    "abbreviation": "BLU",
+    "announce_url": "https://blutopia.xyz/announce/{pid}",
+    "private": true
   },
   {
     "name": "DigitalHive",
@@ -60,10 +60,10 @@
     "private": true
   },
   {
-  	"name": "Orpheus",
-	  "abbreviation": "OPS",
-	  "announce_url": "https://home.opsfet.ch/{pid}/announce",
-	  "private": true
+    "name": "Orpheus",
+    "abbreviation": "OPS",
+    "announce_url": "https://home.opsfet.ch/{pid}/announce",
+    "private": true
   },
   {
     "name": "PassThePopcorn",
@@ -79,9 +79,9 @@
   },
   {
     "name": "Redacted",
-	  "abbreviation": "RED",
-	  "announce_url": "https://flacsfor.me/{pid}/announce",
-	  "private": true
+    "abbreviation": "RED",
+    "announce_url": "https://flacsfor.me/{pid}/announce",
+    "private": true
   },
   {
     "name": "TorrentLeech",
