@@ -6,7 +6,7 @@
     "private": true
   },
   {
-    "name": "BeyondHD"
+    "name": "BeyondHD",
     "abbreviation": "BHD",
     "announce_url": "https://tracker.beyond-hd.me:2053/announce/{pid}",
     "private": true
