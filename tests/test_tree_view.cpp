@@ -63,11 +63,3 @@ TEST_CASE("test tree_index") {
         }
     }
 }
-//
-//TEST_CASE("test tree pretty printer") {
-//    std::ifstream ifs(tree_index, std::ios::binary);
-//    auto m = dt::read_metafile(ifs);
-//
-//    auto oi = std::ostreambuf_iterator(std::cout);
-//    format_file_tree(oi, m);
-//}

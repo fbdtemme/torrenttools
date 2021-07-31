@@ -28,6 +28,7 @@ target_sources(torrenttools-tests PRIVATE
         test_tree_view.cpp
         test_utils.cpp
         test_profile.cpp
+        test_ls_colors.cpp
         ${torrenttools_SOURCES}
 )
 
