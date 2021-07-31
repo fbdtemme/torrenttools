@@ -32,14 +32,6 @@ include(GNUInstallDirs)
 # Path including images, config files etc
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
-## Load the sysconf install dir as set by the RPM .spec file
-if(NOT DEFINED SYSCONF_INSTALL_DIR)
-    set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_SYSCONFDIR})
-    message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
-else()
-    message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
-endif()
-
 include(CMakeDependentOption)
 option(TORRENTTOOLS_BUILD_TESTS
        "Build tests" OFF)
@@ -83,6 +75,7 @@ add_executable(torrenttools
         src/tree_view.cpp
         src/verify.cpp
         src/profile.cpp
+        src/ls_colors.cpp
 )
 
 target_include_directories(torrenttools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -146,6 +139,14 @@ elseif (APPLE)
 endif()
 
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+## Load the sysconf install dir as set by the RPM and DEB
+if(NOT DEFINED SYSCONF_INSTALL_DIR)
+    set(SYSCONF_INSTALL_DIR ${CMAKE_INSTALL_FULL_SYSCONFDIR})
+    message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
+else()
+    message(DEBUG "Setting SYSCONF_INSTALL_DIR: ${SYSCONF_INSTALL_DIR}")
+endif()
 
 # torrenttools_sysconf_dir: Full path used to lookup system scope configuration files.
 if (LINUX)
