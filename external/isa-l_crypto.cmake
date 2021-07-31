@@ -93,7 +93,7 @@ elseif (MINGW)
                 SOURCE_DIR          ${isal_source_dir}
                 BUILD_IN_SOURCE     ON
                 CONFIGURE_COMMAND   ""
-                BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} -f ${isal_source_dir}/Makefile.unx arch=mingw host_cpu=${host_cpu} have_as_w_avx512= CC=gcc AS=NASM AR=ar STRIP=strip LDFLAGS= CFLAGS_mingw=-m64
+                BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} -f ${isal_source_dir}/Makefile.unx arch=mingw host_cpu=${host_cpu} have_as_w_avx512= CC=gcc AS=yasm AR=ar STRIP=strip LDFLAGS= CFLAGS_mingw=-m64
                 INSTALL_COMMAND     mkdir -p  ${isal_crypto_install_libdir}
                 COMMAND             cp bin/isa-l_crypto.a ${isal_crypto_install_libdir}/libisal_crypto.a
                 TEST_COMMAND        ""
