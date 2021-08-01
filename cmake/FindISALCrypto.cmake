@@ -53,14 +53,14 @@ elseif(ISALCrypto_INCLUDE_DIR AND EXISTS "${ISALCrypto_INCLUDE_DIR}/isa-l_crypto
     file(STRINGS "${ISALCrypto_INCLUDE_DIR}/isa-l_crypto.h" isal_crypto_version_str
             REGEX "^#define[\t ]+(ISALCrypto_VERSION_[A-Z]+)[\t ]+[0-9]+")
 
-    string(REGEX REPLACE ".*#define[\t ]+ISALCrypto_VERSION_MAJOR[\t ]+([0-9]+).*"
+    string(REGEX REPLACE ".*#define[\t ]+ISAL_CRYPTO_VERSION_MAJOR[\t ]+([0-9]+).*"
             "\\1" _isal_crypto_version_major "${isal_crypto_version_str}")
-    string(REGEX REPLACE ".*#define[\t ]+ISALCrypto_VERSION_MINOR[\t ]+([0-9]+).*"
+    string(REGEX REPLACE ".*#define[\t ]+ISAL_CRYPTO_VERSION_MINOR[\t ]+([0-9]+).*"
             "\\1" _isal_crypto_version_minor "${isal_crypto_version_str}")
-    string(REGEX REPLACE ".*#define[\t ]+ISALCrypto_VERSION_PATCH[\t ]+([0-9]+).*"
+    string(REGEX REPLACE ".*#define[\t ]+ISAL_CRYPTO_VERSION_PATCH[\t ]+([0-9]+).*"
             "\\1" _isal_crypto_version_patch "${isal_crypto_version_str}")
     set(ISALCrypto_VERSION "${_isal_crypto_version_major}.${_isal_crypto_version_minor}.${_isal_crypto_version_patch}"
-            CACHE INTERNAL "The version of Botan which was detected")
+            CACHE INTERNAL "The version of ISAL_CRYPTO which was detected")
 endif()
 
 include(FindPackageHandleStandardArgs)
