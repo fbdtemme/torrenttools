@@ -35,7 +35,6 @@ int main(int argc, char** argv) {
     CLI::App app(main_description, PROJECT_NAME);
     app.formatter(std::make_shared<help_formatter>());
     app.get_formatter()->column_width(35);
-    app.require_subcommand(1);
     app.fallthrough(true);
 
     configure_main_app(&app, main_options);

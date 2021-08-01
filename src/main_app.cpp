@@ -4,6 +4,8 @@
 #include "argument_parsers.hpp"
 #include "help_formatter.hpp"
 
+#include <dottorrent/hasher/backend_info.hpp>
+
 #ifdef _WIN32
 #define UNICODE
 #define _UNICODE
@@ -39,7 +41,13 @@ void list_available_checksums()
 
 void print_version()
 {
-    std::cout << PROJECT_VERSION << std::endl;
+    fmt::print("{} v{}\n", PROJECT_NAME, PROJECT_VERSION);
+    fmt::print("\nCryptographic backends:\n");
+
+    for (auto [lib_name, lib_version] : dt::cryptographic_backends() ) {
+        fmt::print("  {:<15} : {}\n", lib_name, lib_version);
+    }
+    std::cout << std::endl;
 }
 
 void configure_main_app(CLI::App* app, main_app_options& options)
