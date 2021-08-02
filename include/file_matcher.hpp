@@ -220,6 +220,7 @@ private:
     {
         auto options = re2::RE2::Options{};
         options.set_log_errors(false);
+        options.set_max_mem(64 << 20);
         return options;
     }
 
