@@ -6,9 +6,14 @@ fs::path get_user_data_dir()
 
 #if defined(__linux__)
     char* r = std::getenv("HOME");
-    if (r) {
+    char* xdg_config_home = std::getenv("XDG_CONFIG_HOME");
+
+    if (xdg_config_home) {
+        home_dir = fs::path(xdg_config_home)/"torrenttools";
+    } else if (r) {
         home_dir = fs::path(r)/".config/torrenttools";
     }
+
 #elif defined(__APPLE__)
     char* r = std::getenv("HOME");
     if (r) {

@@ -218,6 +218,13 @@ tracker_database* load_tracker_database()
         return nullptr;
     }
 
+    // Copy from global data dir to user specific location
+    if (database_location.parent_path() == GLOBAL_DATA_DIR) {
+        auto user_data_dir = get_user_data_dir();
+        fs::create_directories(user_data_dir);
+        fs::copy_file(fs::path(GLOBAL_DATA_DIR) / tracker_db_name, user_data_dir / tracker_db_name);
+    }
+
     tracker_db_ptr = std::make_unique<tracker_database>(database_location);
     return tracker_db_ptr.get();
 }
