@@ -43,7 +43,7 @@ using namespace std::string_literals;
 using namespace std::chrono_literals;
 
 constexpr std::string_view program_name = PROJECT_NAME;
-constexpr std::string_view program_version_string = PROJECT_VERSION;
+constexpr std::string_view program_version_string = PROJECT_VERSION_STRING;
 
 // TODO: Write torrent to cout.
 // TODO: Add dry run options which will show all data but quits before hashing.

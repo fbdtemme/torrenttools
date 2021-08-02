@@ -37,7 +37,7 @@ using namespace std::chrono_literals;
 using namespace bencode::literals;
 
 constexpr std::string_view program_name = PROJECT_NAME;
-constexpr std::string_view program_version_string = PROJECT_VERSION;
+constexpr std::string_view program_version_string = PROJECT_VERSION_STRING;
 
 
 void run_info_app(const main_app_options& main_options, const info_app_options& options)
