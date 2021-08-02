@@ -2,18 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.6.0] - UNRELEASED
+## [v0.6.0] - 2021-08-02
 ### Added
 * Enable new metafiles for cross-seeding by default.
 
 ### Changed
-* Read user-config location from XDG_CONFIG_HOME.
+* Read user-config location from XDG_CONFIG_HOME on linux.
 * Fix macOS installer bundling system library leading to linking errors.
 * Add support for more trackers in the default trackers.json file (thanks @Audionut)
 * Fix freeze when LS_COLORS contains 8-bit or 24-bit colors.
 * Increase re2 compiler memory to support long regexes.
-
-Thanks to: @newadventure079, @vuduyhoang, @mbalax11, @Audionut
 
 ## [v0.5.1] - 2021-07-26
 ### Changed
