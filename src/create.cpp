@@ -203,6 +203,11 @@ void configure_create_app(CLI::App* app, create_app_options& options)
        ->type_name("<source>")
        ->expected(1);
 
+    options.enable_cross_seeding = true;
+    auto* no_enable_cross_seeding = app->add_flag_callback("--no-cross-seed",
+            [&]() { options.enable_cross_seeding = false; },
+            "Do not include a hash of the announce urls to facilitate cross-seeding.");
+
     app->add_option("--collection", options.collections,
             "Add a collection name to this metafile.\n"
             "Other metafiles in the same collection are expected\n"
@@ -430,6 +435,12 @@ void run_create_app(const main_app_options& main_options, create_app_options& op
     if (options.source) {
         m.set_source(*options.source);
     }
+
+    if (options.enable_cross_seeding) {
+        m.enable_cross_seeding();
+        m.other_info_fields().clear();
+    }
+
     // override the tracker default if explicitly set
     if (options.is_private.has_value()) {
         m.set_private(*options.is_private);
@@ -608,6 +619,9 @@ void merge_create_profile(const tt::config& cfg, std::string_view profile_name,
     }
     if (app->get_option("--no-creation-date")->empty()) {
         options.set_creation_date = profile_options.set_creation_date;
+    }
+    if (app->get_option("--no-cross-seed")->empty()) {
+        options.enable_cross_seeding = profile_options.enable_cross_seeding;
     }
     if (app->get_option("--similar")->empty()) {
         options.similar_torrents = profile_options.similar_torrents;

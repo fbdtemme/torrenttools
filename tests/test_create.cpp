@@ -667,6 +667,18 @@ TEST_CASE("test create app argument parsing")
             CHECK(create_options.collections==std::vector<std::string>{"test1", "test2"});
         }
     }
+    SECTION("no-cross-seed") {
+        SECTION("no flag given collection") {
+            auto cmd = fmt::format("create {}", file);
+            PARSE_ARGS(cmd);
+            CHECK(create_options.enable_cross_seeding);
+        }
+        SECTION("no flag given collection") {
+            auto cmd = fmt::format("create {} --no-cross-seed", file);
+            PARSE_ARGS(cmd);
+            CHECK_FALSE(create_options.enable_cross_seeding);
+        }
+    }
 }
 
 TEST_CASE("test create app: target")
@@ -1112,5 +1124,39 @@ TEST_CASE("test create app: collection")
         auto m = dt::load_metafile(*options.destination);
         CHECK(m.collections().contains("test1"));
         CHECK(m.collections().contains("test2"));
+    }
+}
+
+
+TEST_CASE("test create app: cross-seeding")
+{
+    temporary_directory tmp_dir{};
+    main_app_options main_options{};
+
+    SECTION("include cross-seed entry") {
+        fs::path output = fs::path(tmp_dir)/"test-cross-seeding-tags.torrent";
+
+        create_app_options create_options{
+            .target = fs::path(TEST_DIR)/"resources",
+            .destination = output,
+            .protocol_version = dt::protocol::v1,
+            .enable_cross_seeding = true
+        };
+        run_create_app(main_options, create_options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.other_info_fields().contains("cross_seed_entry"));
+    }
+    SECTION("exclude cross-seed entry") {
+        fs::path output = fs::path(tmp_dir)/"test-cross-seeding-tags.torrent";
+
+        create_app_options create_options{
+            .target = fs::path(TEST_DIR)/"resources",
+            .destination = output,
+            .protocol_version = dt::protocol::v1,
+            .enable_cross_seeding = false
+        };
+        run_create_app(main_options, create_options);
+        auto m = dt::load_metafile(output);
+        CHECK_FALSE(m.other_info_fields().contains("cross_seed_entry"));
     }
 }

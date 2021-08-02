@@ -244,12 +244,15 @@ void create_general_info(std::ostream& os,
     std::vector<std::string> dht_nodes_strings;
     rng::transform(m.dht_nodes(), std::back_inserter(dht_nodes_strings), [](auto node){ return std::string(node);});
     std::vector<std::string> collections(m.collections().begin(), m.collections().end());
+    std::vector<std::string> other_info_fields {};
+    rng::transform(m.other_info_fields(), std::back_inserter(other_info_fields), [](const auto& p) { return p.first; });
 
-    rng::copy(format_indented_list("DHT nodes:", dht_nodes_strings, options), out);
-    rng::copy(format_indented_list("Web seeds:", m.web_seeds(), options), out);
-    rng::copy(format_indented_list("HTTP seeds:", m.http_seeds(), options), out);
-    rng::copy(format_indented_list("Similar torrents:", similar_torrents_infohashes, options), out);
-    rng::copy(format_indented_list("Collections:", collections, options), out);
+    rng::copy(format_indented_list("DHT nodes:",          dht_nodes_strings, options), out);
+    rng::copy(format_indented_list("Web seeds:",          m.web_seeds(), options), out);
+    rng::copy(format_indented_list("HTTP seeds:",         m.http_seeds(), options), out);
+    rng::copy(format_indented_list("Similar torrents:",   similar_torrents_infohashes, options), out);
+    rng::copy(format_indented_list("Collections:",        collections, options), out);
+    rng::copy(format_indented_list("Other info fields:",  other_info_fields, options), out);
 
     tree_options tree_fmt_options {
         .use_color = options.use_color,

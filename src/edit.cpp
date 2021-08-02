@@ -130,6 +130,11 @@ void configure_edit_app(CLI::App* app, edit_app_options& options)
        ->type_name("<source>")
        ->expected(0, 1);
 
+    options.enable_cross_seeding = false;
+    auto* no_enable_cross_seeding = app->add_flag_callback("-x,--cross-seed",
+            [&]() { options.enable_cross_seeding = true; },
+            "Include a hash of the announce urls to facilitate cross-seeding.");
+
     app->add_option("-n, --name", options.name,
                "Replace the name of the torrent.\n"
                "This changes the filename for single file torrents\n"
@@ -262,6 +267,9 @@ void merge_edit_profile(const tt::config& cfg, std::string_view profile_name, co
     if (app->get_option("--no-creation-date")->empty()) {
         options.set_creation_date = profile_options.set_creation_date;
     }
+    if (app->get_option("--cross-seed")->empty()) {
+        options.enable_cross_seeding = profile_options.enable_cross_seeding;
+    }
     if (app->get_option("--similar")->empty()) {
         options.similar_torrents = profile_options.similar_torrents;
     }
@@ -292,6 +300,12 @@ void run_edit_app(const main_app_options& main_options, const edit_app_options& 
     if (options.source) {
         m.set_source(*options.source);
     }
+
+    if (options.enable_cross_seeding) {
+        m.enable_cross_seeding();
+        m.other_info_fields().clear();
+    }
+
     // override the tracker default if explicitly set
     if (options.is_private.has_value()) {
         m.set_private(*options.is_private);
