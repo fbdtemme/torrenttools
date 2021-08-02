@@ -15,7 +15,7 @@
 
 namespace tt = torrenttools;
 
-const std::string main_description = PROJECT_NAME " v" PROJECT_VERSION R"(
+const std::string main_description = PROJECT_NAME " v" PROJECT_VERSION_STRING R"(
 Tools for inspecting, creating and modifying bittorrent metafiles.
 )";
 

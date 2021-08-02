@@ -41,7 +41,7 @@ void list_available_checksums()
 
 void print_version()
 {
-    fmt::print("{} v{}\n", PROJECT_NAME, PROJECT_VERSION);
+    fmt::print("{} v{}\n", PROJECT_NAME, PROJECT_VERSION_STRING);
     fmt::print("\nCryptographic backends:\n");
 
     for (auto [lib_name, lib_version] : dt::cryptographic_backends() ) {
