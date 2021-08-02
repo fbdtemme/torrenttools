@@ -200,6 +200,13 @@ config* load_config()
         return nullptr;
     }
 
+    // Copy from global data dir to user specific location
+    if (config_location.parent_path() == GLOBAL_DATA_DIR) {
+        auto user_data_dir = get_user_data_dir();
+        fs::create_directories(user_data_dir);
+        fs::copy_file(fs::path(GLOBAL_DATA_DIR) / config_name, user_data_dir / config_name);
+    }
+
     config_ptr = std::make_unique<config>(config_location);
     return config_ptr.get();
 }
