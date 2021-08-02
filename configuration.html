@@ -202,6 +202,25 @@
         </div>
         <section id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<section id="configuration-files">
+<h2>Configuration files<a class="headerlink" href="#configuration-files" title="Permalink to this headline">¶</a></h2>
+<p>There are two places for configuration: one that is system-wide were the default configuration is stored,
+and one that is specific for the current user.</p>
+<p>On linux :
+* system location: /etc
+* user location: $XDG_CONFIG_HOME/torrenttools (defaults to: $HOME/.config/torrenttools)</p>
+<p>On macOS:
+* system location: /Library/torrenttools/etc/
+* user location: $HOME/Library/Application Support/torrenttools/</p>
+<p>On windows:
+* system location: inside the install prefix (defaults to: C:Program Filestorrenttools)
+* user location: %APPDATA%torrenttools (defaults to: C:Users{username}AppDataRoamingtorrenttools)==</p>
+<p>If there are files found in the user location these will be used first.
+Only if there is no user configuration, the files in the system location will be used.
+The files found in the system location will then be copied to the user location.</p>
+<p>This behavior ensures that global configuration default are updates with new packages/installers
+and that user-local configuration persists between installations.</p>
+</section>
 <section id="named-trackers">
 <h2>Named trackers<a class="headerlink" href="#named-trackers" title="Permalink to this headline">¶</a></h2>
 <p>“Named trackers” are trackers which are declared in the trackers.json configuration file.</p>
@@ -416,6 +435,7 @@ and apply them using a single commandline argument.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-files">Configuration files</a></li>
 <li><a class="reference internal" href="#named-trackers">Named trackers</a><ul>
 <li><a class="reference internal" href="#announce-url-substitution">Announce url substitution</a></li>
 <li><a class="reference internal" href="#private-flag-selection">Private flag selection</a></li>

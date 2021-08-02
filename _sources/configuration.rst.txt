@@ -1,6 +1,31 @@
 Configuration
 +++++++++++++
 
+Configuration files
+===================
+
+There are two places for configuration: one that is system-wide were the default configuration is stored,
+and one that is specific for the current user.
+
+On linux :
+* system location: /etc
+* user location: $XDG_CONFIG_HOME/torrenttools (defaults to: $HOME/.config/torrenttools)
+
+On macOS:
+* system location: /Library/torrenttools/etc/
+* user location: $HOME/Library/Application Support/torrenttools/
+
+On windows:
+* system location: inside the install prefix (defaults to: C:\Program Files\torrenttools)
+* user location: %APPDATA%\torrenttools (defaults to: C:\Users\{username}\AppData\Roaming\torrenttools)==
+
+If there are files found in the user location these will be used first.
+Only if there is no user configuration, the files in the system location will be used.
+The files found in the system location will then be copied to the user location.
+
+This behavior ensures that global configuration default are updates with new packages/installers
+and that user-local configuration persists between installations.
+
 Named trackers
 ===============
 
