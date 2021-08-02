@@ -204,6 +204,7 @@ if (TORRENTTOOLS_INSTALL)
                 RESOLVED_DEPENDENCIES_VAR _r_deps
                 UNRESOLVED_DEPENDENCIES_VAR _u_deps
                 PRE_EXCLUDE_REGEXES ".*-ms-win-.*" ".*ext-ms-.*"
+                POST_INCLUDE_REGEXES ".*libcrypto.*"
                 POST_EXCLUDE_REGEXES ".*system32.*"
             )
             foreach(_file ${_r_deps})
