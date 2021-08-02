@@ -289,6 +289,19 @@ TEST_CASE("test edit app argument parsing")
             CHECK_FALSE(edit_options.set_creation_date);
         }
     }
+
+    SECTION("cross-seed") {
+        SECTION("no flag given collection") {
+            auto cmd = fmt::format("edit {}", file);
+            PARSE_ARGS(cmd);
+            CHECK_FALSE(edit_options.enable_cross_seeding);
+        }
+        SECTION("no flag given collection") {
+            auto cmd = fmt::format("edit {} --cross-seed", file);
+            PARSE_ARGS(cmd);
+            CHECK(edit_options.enable_cross_seeding);
+        }
+    }
 }
 
 
@@ -822,5 +835,28 @@ TEST_CASE("test edit collections", "[edit]")
                 std::unordered_set<std::string>({"edit-test1"}),
                 std::inserter(joined, joined.begin()));
         CHECK(m.collections() == joined);
+    }
+}
+
+
+TEST_CASE("test edit app: cross-seeding")
+{
+    std::stringstream buffer {};
+    temporary_directory tmp_dir {};
+    main_app_options main_options{};
+
+    fs::path output = fs::path(tmp_dir) / "test-cross-seed-entry.torrent";
+
+    edit_app_options options {
+        .metafile = collection_torrent,
+        .destination = output,
+    };
+
+    SECTION("include cross-seed entry") {
+        options.enable_cross_seeding = true;
+
+        run_edit_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        CHECK(m.other_info_fields().contains("cross_seed_entry"));
     }
 }

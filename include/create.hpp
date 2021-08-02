@@ -56,6 +56,7 @@ struct create_app_options
     std::optional<std::size_t> io_block_size;
     bool simple_progress;
     std::optional<std::string> profile;
+    bool enable_cross_seeding = true;
 };
 
 void configure_create_app(CLI::App* app, create_app_options& options);

@@ -37,6 +37,7 @@ struct edit_app_options
     std::optional<std::string> name;
     bool write_to_stdout = false;
     std::optional<std::string> profile;
+    bool enable_cross_seeding = true;
 };
 
 void configure_edit_app(CLI::App* app, edit_app_options& options);
