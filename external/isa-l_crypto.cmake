@@ -19,6 +19,7 @@ find_package(NASM REQUIRED)
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto)
     log_dir_found(isa-l_crypto)
     set(isa-l_crypto_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/isa-l_crypto)
+    set(isa-l_crypto_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/isa-l_crypto-build)
 else()
     log_fetch(isa-l_crypto)
     FetchContent_Declare(
@@ -92,7 +93,10 @@ elseif (WIN32 AND NOT MINGW)
 endif()
 
 # Make sure include directory exists, it will be populated at the build stage
-file(MAKE_DIRECTORY ${isa-l_crypto_BINARY_DIR}/include)
+if (NOT EXISTS ${isa-l_crypto_BINARY_DIR}/include)
+    file(MAKE_DIRECTORY ${isa-l_crypto_BINARY_DIR}/include)
+endif()
+
 add_library(ISAL::Crypto STATIC IMPORTED GLOBAL)
 set_target_properties(ISAL::Crypto PROPERTIES
         IMPORTED_LOCATION ${isa-l_crypto_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/libisal_crypto.a

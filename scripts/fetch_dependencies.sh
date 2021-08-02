@@ -32,6 +32,6 @@ nest https://github.com/hanickadot/compile-time-regular-expressions.git master c
 nest https://github.com/fbdtemme/cliprogress.git main cliprogress
 nest https://github.com/palacaze/sigslot.git master sigslot
 nest https://github.com/fbdtemme/bencode.git master bencode
-nest https://github.com/fbdtemme/dottorrent.git v0.5.0 dottorrent
+nest https://github.com/fbdtemme/dottorrent.git main dottorrent
 nest https://github.com/HowardHinnant/date.git master date
 nest https://github.com/intel/isa-l_crypto.git master isa-l_crypto
