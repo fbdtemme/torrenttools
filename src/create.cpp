@@ -281,7 +281,8 @@ void configure_create_app(CLI::App* app, create_app_options& options)
 
     app->add_option("--io-block-size", io_block_size_parser,
                "The size of blocks read from storage.\n"
-               "Must be larger or equal to the piece size.")
+               "Must be larger or equal t"
+               "o the piece size.")
        ->type_name("<size[K|M]>")
        ->expected(1);
 
@@ -289,6 +290,11 @@ void configure_create_app(CLI::App* app, create_app_options& options)
             "Read options form a config profile.")
         ->type_name("<profile-name>")
         ->expected(1);
+
+    options.simple_progress = false;
+    app->add_flag_callback("--simple-progress",
+            [&]() { options.simple_progress = true; },
+            "Use simple progress reporting.");
 }
 
 
