@@ -1,3 +1,9 @@
+torrenttools (0.6.1-1~ubuntu21.04) hirsute; urgency=medium
+
+  * Update to 0.6.1
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Sat, 7 Aug 2021 08:10:00 +0100
+
 torrenttools (0.6.0-1~ubuntu21.04) hirsute; urgency=medium
 
   * Update to 0.6.0

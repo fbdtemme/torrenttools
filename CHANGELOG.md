@@ -2,9 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.6.1] - 2021-08-07
+### Added
+* Add missing --simple-progress option.
+
+### Changed
+* Fix issues with torrents containing one file under the root directory. (#22)
+
 ## [v0.6.0] - 2021-08-02
 ### Added
 * Enable new metafiles for cross-seeding by default.
+* Add versions of crypto backends to --version output
 
 ### Changed
 * Read user-config location from XDG_CONFIG_HOME on linux.
