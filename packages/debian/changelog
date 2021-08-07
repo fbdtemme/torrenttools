@@ -1,8 +1,14 @@
-torrenttools (0.5.1-1) unstable; urgency=medium
+torrenttools (0.6.1-1) unstable; urgency=medium
 
-  * Update to 0.5.1
+  * Update to 0.6.1
 
- -- Florian De Temmerman <floriandetemmerman@gmail.com>  Mon, 2 Aug 2021 07:10:00 +0100
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Sat, 7 Aug 2021 08:10:00 +0100
+
+torrenttools (0.6.0-1) unstable; urgency=medium
+
+  * Update to 0.6.0
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Mon, 2 Aug 2021 12:10:00 +0100
 
 torrenttools (0.5.1-1) unstable; urgency=medium
 

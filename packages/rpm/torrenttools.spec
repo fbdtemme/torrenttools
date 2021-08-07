@@ -1,4 +1,4 @@
-%global tag      0.6.0
+%global tag      0.6.1
 
 Name:            torrenttools
 Version:         %{tag}
