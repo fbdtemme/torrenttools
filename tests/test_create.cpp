@@ -711,6 +711,23 @@ TEST_CASE("test create app: target")
         const auto& storage = m.storage();
         CHECK(m.name()==target.filename());
     }
+    SECTION("target is directory with single file")
+    {
+        auto root_path = fs::path(tmp_dir) / "dir_with_single_file_torrent";
+        fs::create_directories(root_path);
+        std::ofstream ofs(root_path / "test");
+        ofs << "test_file\n";
+
+        fs::path target = root_path;
+        fs::path output = fs::path(tmp_dir)/ "test-dir-with-single-file-torrent.torrent";
+
+        create_app_options options{.target = target, .destination = output,};
+        run_create_app(main_options, options);
+        auto m = dt::load_metafile(output);
+        const auto& storage = m.storage();
+        CHECK(m.name() == "dir_with_single_file_torrent");
+        CHECK(m.storage().file_mode() == dt::file_mode::multi);
+    }
 }
 
 TEST_CASE("test create app: announce-url")

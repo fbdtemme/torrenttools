@@ -361,6 +361,9 @@ void set_files_with_progress(dottorrent::metafile& m, const create_app_options& 
         std::flush(os);
 
         storage.set_root_directory(options.target);
+        // target was a directory so if the torrent contains only a single file we will
+        // still serialize it as a multi-file torrent with the directory included.
+        storage.set_file_mode(dt::file_mode::multi);
 
         fmt::format_to(out, "Adding files to metafile...");
         std::flush(os);
@@ -371,6 +374,7 @@ void set_files_with_progress(dottorrent::metafile& m, const create_app_options& 
     }
     else {
         storage.set_root_directory(options.target.parent_path());
+        storage.set_file_mode(dt::file_mode::single);
         storage.add_file(options.target);
     }
     m.set_name(options.target.filename().string());
