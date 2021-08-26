@@ -71,6 +71,8 @@ Documentation is hosted on [Github Pages](https://fbdtemme.github.io/torrenttool
 
 An .msi installer is available as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
 
+__IMPORTANT: Please use a modern terminal that supports most ANSI escape codes, like [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701) (not cmd or PowerShell).__
+
 ### macOS
 
 A .pkg installer is available as a [release asset](https://github.com/fbdtemme/torrenttools/releases).
