@@ -1,4 +1,4 @@
-%global tag      0.6.1
+%global tag      0.6.2
 
 Name:            torrenttools
 Version:         %{tag}
@@ -79,6 +79,12 @@ DESTDIR="%{buildroot}" %__cmake --install . --component torrenttools
 %{_bindir}/torrenttools
 
 %changelog
+* Tue Aug 31 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.6.2-1
+- Update to 0.6.2
+
+* Sat Aug 7 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.6.1-1
+- Update to 0.6.1
+
 * Mon Aug 2 2021 Florian De Temmerman <floriandetemmerman@gmail.com> 0.6.0-1
 - Update to 0.6.0
 

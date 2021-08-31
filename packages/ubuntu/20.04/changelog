@@ -1,3 +1,15 @@
+torrenttools (0.6.2-1~ubuntu20.04.2) focal; urgency=medium
+
+  * Update to 0.6.2
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Tue, 31 Aug 2021 14:50:00 +0100
+
+torrenttools (0.6.1-2~ubuntu20.04.2) focal; urgency=medium
+
+  * Fix bencode dependency packaging issue
+
+ -- Florian De Temmerman <floriandetemmerman@gmail.com>  Sat, 7 Aug 2021 10:40:00 +0100
+
 torrenttools (0.6.1-1~ubuntu20.04.2) focal; urgency=medium
 
   * Update to 0.6.1
