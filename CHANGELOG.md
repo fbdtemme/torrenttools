@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.6.2] - 2021-08-31
+### Changed
+* Workaround crashes on Windows due to re2 with MinGW issues.
+
 ## [v0.6.1] - 2021-08-07
 ### Added
 * Add missing --simple-progress option.
