@@ -176,7 +176,7 @@ jobs:
               -S torrenttools-${{ steps.cmake_version.outputs.cmake_project_version }} \
               -DCMAKE_CXX_COMPILER=g++-11 \
               -DCMAKE_C_COMPILER=gcc-11 \
-              -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1k \
+              -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1l \
               -DCMAKE_BUILD_TYPE=Release \
               -DTORRENTTOOLS_BUILD_TESTS=OFF \
               -DTORRENTTOOLS_TBB=OFF \
