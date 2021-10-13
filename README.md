@@ -209,6 +209,12 @@ Ubuntu
 sudo apt install build-essential git cmake g++-10 libssl-dev 
 ```
 
+Debian
+
+```shell
+sudo apt install build-essential git cmake g++-10 libssl-dev libtbb-dev
+```
+
 Fedora/RHEL/CentOS
 
 ```shell
