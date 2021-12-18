@@ -188,7 +188,10 @@ public:
             }
             else if (it->is_regular_file()) {
                 files_scanned_.fetch_add(1, std::memory_order_relaxed);
-                auto s = it->path().string();
+
+                // match include/exclude expressions against the path relative to the search root.
+                auto s = it->path().lexically_relative(search_root_).string();
+
                 if (file_include_list_empty_) {
                     if (!include_hidden_files_ && is_hidden_file(*it)) {
                         continue;
