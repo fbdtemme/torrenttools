@@ -24,7 +24,7 @@ else()
     FetchContent_Declare(
             CLI11
             GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
-            GIT_TAG        master
+            GIT_TAG        main
     )
     FetchContent_MakeAvailable(CLI11)
 endif()
