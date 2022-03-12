@@ -47,7 +47,7 @@ public:
         }
 
         std::string error;
-        std::string pattern = ".*.{}$"_format(extension);
+        std::string pattern = fmt::format(".*.{}$", extension);
         file_include_list_.Add(pattern, &error);
         file_include_list_empty_ = false;
         Ensures(error.empty());
@@ -62,7 +62,7 @@ public:
         }
 
         std::string error;
-        std::string pattern = ".*\\.{}$"_format(extension);
+        std::string pattern = fmt::format(".*\\.{}$", extension);
         file_exclude_list_.Add(pattern, &error);
         file_exclude_list_empty_ = false;
         Ensures(error.empty());
