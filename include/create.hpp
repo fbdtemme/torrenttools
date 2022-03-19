@@ -57,6 +57,7 @@ struct create_app_options
     bool simple_progress;
     std::optional<std::string> profile;
     bool enable_cross_seeding = true;
+    bool quiet = false;
 };
 
 void configure_create_app(CLI::App* app, create_app_options& options);
@@ -70,4 +71,4 @@ void postprocess_create_app(const CLI::App* app, const main_app_options& main_op
 
 void run_create_app(const main_app_options& main_options, create_app_options& options);
 
-void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os);
+void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os, bool quiet = false);

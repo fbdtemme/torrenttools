@@ -123,7 +123,7 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
         std::flush(os);
 
         while (hasher.bytes_done() < total_file_size) {
-            auto[index, file_bytes_hashed] = hasher.current_file_progress();
+            auto [index, file_bytes_hashed] = hasher.current_file_progress();
 
             // Current file has been completed, update last entry for the previous file(s) and move to next one
             if (index != current_file_index && index < storage.file_count()) {
@@ -147,8 +147,32 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_hasher& hash
 
     auto stop_time = std::chrono::system_clock::now();
     auto total_duration = stop_time - start_time;
+
     print_completion_statistics(os, m, total_duration);
 }
+
+/// Progress using only carriage return and newline characters.
+void run_quiet(std::ostream& os, dottorrent::storage_hasher& hasher, const dottorrent::metafile& m)
+{
+    using namespace std::chrono_literals;
+
+    std::size_t current_file_index = 0;
+    auto& storage = m.storage();
+
+    auto start_time = std::chrono::system_clock::now();
+    hasher.start();
+    hasher.wait();
+
+    // Remove the Hashing files... line
+    tc::format_to(os, tc::ecma48::character_position_absolute);
+    tc::format_to(os, tc::ecma48::erase_in_line);
+    tc::format_to(os, tc::ecma48::cursor_up, 1);
+
+    auto stop_time = std::chrono::system_clock::now();
+    auto total_duration = stop_time - start_time;
+    print_completion_statistics(os, m, total_duration);
+}
+
 
 void run_with_progress(std::ostream& os, dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
 {
@@ -265,6 +289,26 @@ void run_with_simple_progress(std::ostream& os, dottorrent::storage_verifier& ve
     print_completion_statistics(os, m, total_duration);
 }
 
+/// Progress using only carriage return and newline characters.
+void run_quiet(std::ostream& os, dottorrent::storage_verifier& verifier, const dottorrent::metafile& m)
+{
+    using namespace std::chrono_literals;
+
+    auto& storage = m.storage();
+    auto start_time = std::chrono::system_clock::now();
+    verifier.start();
+    verifier.wait();
+
+    // Remove the Hashing files... line
+    tc::format_to(os, tc::ecma48::character_position_absolute);
+    tc::format_to(os, tc::ecma48::erase_in_line);
+    tc::format_to(os, tc::ecma48::cursor_up, 1);
+
+    auto stop_time = std::chrono::system_clock::now();
+    auto total_duration = stop_time - start_time;
+    print_completion_statistics(os, m, total_duration);
+}
+
 
 void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m, std::chrono::system_clock::duration duration)
 {
@@ -283,6 +327,7 @@ void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m
 
     fmt::format_to(out, "Completed in:        {}\n", tt::format_duration(duration));
     fmt::format_to(out, "Average hash rate:   {}\n", average_hash_rate_str);
+
     // Torrent file is hashed so we can return to infohash
     std::string info_hash_string {};
     if (auto protocol = m.storage().protocol(); protocol != dt::protocol::none) {
@@ -292,12 +337,12 @@ void print_completion_statistics(std::ostream& os, const dottorrent::metafile& m
             info_hash_string = fmt::format("Infohash:            v1: {}\n"
                                            "                     v2: {}\n", infohash_v1, infohash_v2);
         }
-            // v2-only
+        // v2-only
         else if ((protocol & dt::protocol::v2) == dt::protocol::v2) {
             auto infohash_v2 = dt::info_hash_v2(m).hex_string();
             info_hash_string = fmt::format("Infohash:            {}\n", infohash_v2);
         }
-            // v1-only
+        // v1-only
         else if ((protocol & dt::protocol::v1) == dt::protocol::v1) {
             auto infohash_v1 = dt::info_hash_v1(m).hex_string();
             info_hash_string = fmt::format("Infohash:            {}\n", infohash_v1);

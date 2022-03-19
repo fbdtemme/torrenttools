@@ -294,6 +294,11 @@ void configure_create_app(CLI::App* app, create_app_options& options)
     app->add_flag_callback("--simple-progress",
             [&]() { options.simple_progress = true; },
             "Use simple progress reporting.");
+
+    options.quiet = false;
+    app->add_flag_callback("--quiet",
+            [&]() { options.quiet = true; },
+            "Do not report progress to the terminal.");
 }
 
 
@@ -315,7 +320,7 @@ void configure_matcher(torrenttools::file_matcher& matcher, const create_app_opt
 
 
 /// Select files and add the to the metafile
-void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os)
+void set_files_with_progress(dottorrent::metafile& m, const create_app_options& options, std::ostream& os, bool quiet)
 {
     auto out = std::ostreambuf_iterator(os);
     dottorrent::file_storage& storage = m.storage();
@@ -328,15 +333,24 @@ void set_files_with_progress(dottorrent::metafile& m, const create_app_options& 
         matcher.set_search_root(options.target);
         matcher.start();
 
-        while (matcher.is_running()) {
+        if (quiet) {
+            fmt::format_to(out, "Scanning target directory...");
+            matcher.wait();
+            fmt::format_to(out, "\rScanning target directory... Done.\n");
+            std::flush(os);
+        } else {
+            while (matcher.is_running()) {
+                fmt::format_to(out, "\rScanning target directory: {} files processed", matcher.files_processed());
+                std::flush(os);
+                std::this_thread::sleep_for(50ms);
+            }
+            matcher.wait();
             fmt::format_to(out, "\rScanning target directory: {} files processed", matcher.files_processed());
             std::flush(os);
-            std::this_thread::sleep_for(50ms);
+            std::cout << std::endl;
         }
-        // wait for the thread to close and results to become available
-        matcher.wait();
-        std::cout << std::endl;
 
+        // wait for the thread to close and results to become available
         auto files = matcher.results();
 
         fmt::format_to(out, "Sorting file list...");
@@ -405,7 +419,7 @@ void run_create_app(const main_app_options& main_options, create_app_options& op
     // add files to the file_storage
     auto& file_storage = m.storage();
 
-    set_files_with_progress(m, options, os);
+    set_files_with_progress(m, options, os, options.quiet);
 
     if (options.piece_size) {
         file_storage.set_piece_size(*options.piece_size);
@@ -494,6 +508,7 @@ void run_create_app(const main_app_options& main_options, create_app_options& op
     formatting_options fmt_options = {};
 
     bool simple_progress = options.simple_progress;
+    bool quiet = options.quiet;
 
 #ifdef __unix__
     bool runs_in_tty = true;
@@ -527,7 +542,9 @@ void run_create_app(const main_app_options& main_options, create_app_options& op
 
     os << "Hashing files..." << std::endl;
 
-    if (simple_progress) {
+    if (options.quiet) {
+        run_quiet(os, hasher, m);
+    } else if (simple_progress) {
         run_with_simple_progress(os, hasher, m);
     } else {
         run_with_progress(os, hasher, m);
