@@ -3,15 +3,39 @@
 #include "show.hpp"
 #include "argument_parsers.hpp"
 #include "help_formatter.hpp"
+#include "main_app.hpp"
 
 #include <dottorrent/hasher/backend_info.hpp>
 
-#ifdef _WIN32
-#define UNICODE
-#define _UNICODE
-#include <windows.h>
-#include <termcontrol/detail/windows.hpp>
-#endif
+#include <fmt/format.h>
+
+console_handler::console_handler()
+    {
+        original_locale_ = std::locale("");
+        std::setlocale(LC_ALL, ".UTF-8");
+
+        #ifdef _WIN32
+        try {
+            terminal_.enable_utf8();
+            terminal_.enable_virtual_terminal_processing();
+         } catch (const termcontrol::win32_terminal_error& err) {
+            fmt::print("Warning: {}\n", err.what());
+        }
+        #endif
+   }
+
+console_handler::~console_handler() {
+    std::setlocale(LC_ALL, original_locale_.name().c_str());
+
+    #ifdef _WIN32
+    try {
+        terminal_.restore_codepoint();
+        terminal_.restore_processing_mode();
+    } catch (const termcontrol::win32_terminal_error& err) {
+        fmt::print("Warning: {}\n", err.what());
+    }
+    #endif
+}
 
 void setup_console()
 {
@@ -28,6 +52,10 @@ void setup_console()
 #endif
 }
 
+void teardown_console()
+{
+
+}
 void list_available_checksums()
 {
     auto h = dottorrent::hasher_supported_algorithms();

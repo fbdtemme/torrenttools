@@ -20,8 +20,8 @@ Tools for inspecting, creating and modifying bittorrent metafiles.
 )";
 
 int main(int argc, char** argv) {
-
-    setup_console();
+    // Do some locale and console setup, mostly for Windows
+    auto console = console_handler();
 
     main_app_options main_options {};
     info_app_options info_options {};
