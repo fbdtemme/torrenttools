@@ -206,7 +206,7 @@ OpenSSL has to be installed on the system in advance.
 Ubuntu
 
 ```shell
-sudo apt install build-essential git cmake g++-10 libssl-dev 
+sudo apt install build-essential git cmake g++-10 libssl-dev libtbb-dev
 ```
 
 Debian
