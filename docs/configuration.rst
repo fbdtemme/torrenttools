@@ -8,16 +8,19 @@ There are two places for configuration: one that is system-wide were the default
 and one that is specific for the current user.
 
 On linux :
-* system location: /etc
-* user location: $XDG_CONFIG_HOME/torrenttools (defaults to: $HOME/.config/torrenttools)
+
+* System location: ``/etc``
+* User location: ``$XDG_CONFIG_HOME/torrenttools`` (defaults to: ``$HOME/.config/torrenttools``)
 
 On macOS:
-* system location: /Library/torrenttools/etc/
-* user location: $HOME/Library/Application Support/torrenttools/
+
+* System location: ``/Library/torrenttools/etc/``
+* User location: ``$HOME/Library/Application Support/torrenttools/``
 
 On windows:
-* system location: inside the install prefix (defaults to: C:\Program Files\torrenttools)
-* user location: %APPDATA%\torrenttools (defaults to: C:\Users\{username}\AppData\Roaming\torrenttools)==
+
+* System location: inside the install prefix (defaults to: ``C:\Program Files\torrenttools``)
+* User location: ``%APPDATA%\torrenttools`` (defaults to: ``C:\Users\{username}\AppData\Roaming\torrenttools``)
 
 If there are files found in the user location these will be used first.
 Only if there is no user configuration, the files in the system location will be used.
