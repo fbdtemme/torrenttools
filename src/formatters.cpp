@@ -43,7 +43,7 @@ std::string format_tree_size(double size)
     }
 
     std::size_t precision = size > 1000 ? 0 : (size > 100 ? 0 : (size > 10 ? 1 : 2));
-    return fmt::format("{:>4.{}f} {:>2}B", size, precision, *it);
+    return fmt::format("{0:>4.{1}f} {2:>2}B", size, precision, *it);
 }
 
 

@@ -4,7 +4,7 @@ if (TARGET fmt::fmt)
 endif()
 
 
-find_package(fmt 8.0.0 QUIET)
+find_package(fmt 8.1.1 QUIET)
 if (fmt_FOUND)
     log_module_found(fmt)
     return()
@@ -22,7 +22,7 @@ else()
     FetchContent_Declare(
             fmt
             GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-            GIT_TAG        master
+            GIT_TAG        8.1.1
     )
     FetchContent_MakeAvailable(fmt)
 endif()
