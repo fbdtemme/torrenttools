@@ -7,11 +7,11 @@
 #include <string>
 #include <string_view>
 
-#include <cliprogressbar/posix_signal_notifier.hpp>
-#include <cliprogressbar/events/event.hpp>
-#include <cliprogressbar/event_queue.hpp>
-#include <cliprogressbar/widget.hpp>
-#include <cliprogressbar/layout/box_layout_manager.hpp>
+#include <cliprogress/posix_signal_notifier.hpp>
+#include <cliprogress/events/event.hpp>
+#include <cliprogress/event_queue.hpp>
+#include <cliprogress/widget.hpp>
+#include <cliprogress/layout/box_layout_manager.hpp>
 
 #include <fmt/format.h>
 #include <termcontrol/termcontrol.hpp>

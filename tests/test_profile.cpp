@@ -2,7 +2,7 @@
 #include <string>
 #include <variant>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include "profile.hpp"

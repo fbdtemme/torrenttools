@@ -1,7 +1,7 @@
 
 #include <experimental/source_location>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <fmt/format.h>
 #include <CLI/CLI.hpp>
 

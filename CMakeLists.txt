@@ -11,7 +11,7 @@ endif()
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
-        VERSION 0.6.2
+        VERSION 0.7.0
         HOMEPAGE_URL https://www.github.com/fbdtemme/torrenttools)
 
 # Make Find modules in cmake dir available
@@ -44,12 +44,16 @@ option(TORRENTTOOLS_INSTALL
 
 option(TORRENTTOOLS_TBB "Accelerate using Intel TBB library." ON)
 
-#add_subdirectory(../cliprogress cliprogress)
-#add_subdirectory(../dottorrent dottorrent)
-#add_subdirectory(../termcontrol termcontrol)
-#add_subdirectory(../bencode bencode)
+find_package(bencode CONFIG REQUIRED)
+find_package(dottorrent CONFIG REQUIRED)
+find_package(termcontrol CONFIG REQUIRED)
+find_package(cliprogress CONFIG REQUIRED)
+find_package(date CONFIG REQUIRED)
+find_package(CLI11 CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
+find_package(re2 CONFIG REQUIRED)
 
-include(external/external.cmake)
 if (TORRENTTOOLS_TBB)
     find_package(TBB REQUIRED)
 endif()

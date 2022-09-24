@@ -6,7 +6,7 @@
 #include <fstream>
 
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <dottorrent/metafile.hpp>
 #include "tree_view.hpp"

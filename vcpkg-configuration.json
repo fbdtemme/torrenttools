@@ -1,0 +1,16 @@
+{
+  "registries": [
+    {
+      "kind": "git",
+      "baseline": "dfa0516c8dc9008c78df86e115919844e0005517",
+      "repository": "https://github.com/fbdtemme/vcpkg-registry",
+      "packages": [
+        "bencode",
+        "dottorrent",
+        "isal-crypto",
+        "termcontrol",
+        "cliprogress"
+      ]
+    }
+  ]
+}

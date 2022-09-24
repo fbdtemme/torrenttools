@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "torrenttools",
+  "version": "0.7.0",
+  "builtin-baseline": "9259a0719d94c402aae2ab7975bc096afdec15df",
+  "dependencies": [
+    {
+      "name": "fmt",
+      "version>=": "8.1.1#2"
+    },
+    {
+      "name": "gsl-lite"
+    },
+    {
+      "name": "cli11"
+    },
+    {
+      "name": "date"
+    },
+    {
+      "name": "nlohmann-json"
+    },
+    {
+      "name": "yaml-cpp"
+    },
+    {
+      "name": "bencode",
+      "version>=": "1.0.0"
+    },
+    {
+      "name": "dottorrent"
+    },
+    {
+      "name": "termcontrol"
+    },
+    {
+      "name": "cliprogress"
+    },
+    {
+      "name": "palsigslot"
+    },
+    {
+      "name": "re2"
+    }
+  ],
+  "features": {
+    "tests": {
+      "description": "Build tests",
+      "dependencies": [
+        {
+          "name": "catch2",
+          "version>=": "3.0.1"
+        }
+      ]
+    },
+    "isal": {
+      "description": "Build with Intel ISA-L Crypto backend support",
+      "dependencies": [
+        {
+          "name": "dottorrent",
+          "features": ["isal"]
+        }
+      ]
+    }
+  }
+}

@@ -11,7 +11,7 @@
 #include <fmt/format.h>
 #include <fmt/color.h>
 
-#include <cliprogressbar/functional/progress_bar.hpp>
+#include <cliprogress/functional/progress_bar.hpp>
 #include <termcontrol/detail/format.hpp>
 #include <termcontrol/detail/color.hpp>
 #include <termcontrol/detail/display_width.hpp>

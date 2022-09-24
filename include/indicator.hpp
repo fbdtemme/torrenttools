@@ -5,18 +5,18 @@
 #include <string>
 #include <string_view>
 
-#include <cliprogressbar/event_queue.hpp>
-#include <cliprogressbar/events/event.hpp>
-#include <cliprogressbar/widgets/label.hpp>
-#include <cliprogressbar/widgets/bar.hpp>
-#include <cliprogressbar/progress_plugins/ewma_rate.hpp>
-#include <cliprogressbar/progress_plugins/smoothed_eta.hpp>
+#include <cliprogress/event_queue.hpp>
+#include <cliprogress/events/event.hpp>
+#include <cliprogress/widgets/label.hpp>
+#include <cliprogress/widgets/bar.hpp>
+#include <cliprogress/progress_plugins/ewma_rate.hpp>
+#include <cliprogress/progress_plugins/smoothed_eta.hpp>
 
-#include <cliprogressbar/layout/box_layout_manager.hpp>
-#include <cliprogressbar/posix_signal_notifier.hpp>
-#include <cliprogressbar/progress_indicator.hpp>
-#include <cliprogressbar/widget.hpp>
-#include <cliprogressbar/formatters.hpp>
+#include <cliprogress/layout/box_layout_manager.hpp>
+#include <cliprogress/posix_signal_notifier.hpp>
+#include <cliprogress/progress_indicator.hpp>
+#include <cliprogress/widget.hpp>
+#include <cliprogress/formatters.hpp>
 
 #include <dottorrent/file_storage.hpp>
 #include <dottorrent/file_entry.hpp>

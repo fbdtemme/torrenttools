@@ -1,0 +1,83 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug Config",
+      "description": "Default debug build using Ninja generator",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "environment": {
+        "VCPKG_ROOT": "${sourceDir}/vcpkg"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_MANIFEST_FEATURES": "tests",
+        "TORRENTTOOLS_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "debug-isal",
+      "displayName": "Debug Config (ISA-L)",
+      "description": "Default debug build using Ninja generator and ISA-L support",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-debug-isal",
+      "environment": {
+        "VCPKG_ROOT": "${sourceDir}/vcpkg"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_MANIFEST_FEATURES": "tests;isal",
+        "TORRENTTOOLS_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release Config",
+      "description": "Default debug build using Ninja generator",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-release",
+      "environment": {
+        "VCPKG_ROOT": "${sourceDir}/vcpkg"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_MANIFEST_FEATURES": "tests"
+      }
+    },
+    {
+      "name": "release-isal",
+      "displayName": "Release Config (ISA-L)",
+      "description": "Default debug build using Ninja generator",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-release-isal",
+      "environment": {
+        "VCPKG_ROOT": "${sourceDir}/vcpkg"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_MANIFEST_FEATURES": "tests;isal"
+      }
+    }
+  ]
+}

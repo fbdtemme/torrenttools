@@ -3,12 +3,12 @@
 
 #include <fmt/format.h>
 
-#include <cliprogressbar/progress_indicator.hpp>
-#include <cliprogressbar/widgets/label.hpp>
-#include <cliprogressbar/widgets/bar.hpp>
-#include <cliprogressbar/formatters.hpp>
-#include <cliprogressbar/progress_plugins/ewma_rate.hpp>
-#include <cliprogressbar/progress_plugins/smoothed_eta.hpp>
+#include <cliprogress/progress_indicator.hpp>
+#include <cliprogress/widgets/label.hpp>
+#include <cliprogress/widgets/bar.hpp>
+#include <cliprogress/formatters.hpp>
+#include <cliprogress/progress_plugins/ewma_rate.hpp>
+#include <cliprogress/progress_plugins/smoothed_eta.hpp>
 
 #include "indicator.hpp"
 
@@ -224,7 +224,10 @@ void print_simple_indicator_v2(std::ostream& os, const dottorrent::file_storage&
 
     std::size_t regular_file_count = s.regular_file_count();
     const auto is_padding_file = [](const dt::file_entry& e) { return e.is_padding_file(); };
-    std::size_t regular_file_idx = file_idx - std::count_if(s.begin(), s.begin()+file_idx, is_padding_file);
+    std::size_t regular_file_idx = (
+        file_idx -
+        std::count_if(s.begin(), std::next(s.begin(), static_cast<std::ptrdiff_t>(file_idx)), is_padding_file)
+    );
 
     const auto& entry = s.at(file_idx);
     if (entry.is_padding_file()) {

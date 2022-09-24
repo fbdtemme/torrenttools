@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <filesystem>
 
 #include "file_matcher.hpp"
@@ -11,7 +11,7 @@ bool contains(std::vector<fs::path> v, const fs::path& path)
     return it != v.end();
 }
 
-static const auto main_cpp              = fs::path(TEST_DIR) / "main.cpp";
+static const auto test_create_cpp       = fs::path(TEST_DIR) / "test_create.cpp";
 static const auto cmakelists_txt        = fs::path(TEST_DIR) / "CMakeLists.txt";
 static const auto test_file_matcher_cpp = fs::path(TEST_DIR) / "test_file_matcher.cpp";
 static const auto test_info_cpp         = fs::path(TEST_DIR) / "test_info.cpp";
@@ -31,7 +31,7 @@ TEST_CASE("test file_matcher")
         matcher.wait();
         auto files = matcher.results();
 
-        CHECK(contains(files, main_cpp));
+        CHECK(contains(files, test_create_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
     }
 
@@ -43,7 +43,7 @@ TEST_CASE("test file_matcher")
         matcher.wait();
         auto files = matcher.results();
 
-        CHECK(contains(files, main_cpp));
+        CHECK(contains(files, test_create_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
     }
 
@@ -55,7 +55,7 @@ TEST_CASE("test file_matcher")
         matcher.wait();
         auto files = matcher.results();
 
-        CHECK(contains(files, main_cpp));
+        CHECK(contains(files, test_create_cpp));
         CHECK_FALSE(contains(files, cmakelists_txt));
     }
 
@@ -67,7 +67,6 @@ TEST_CASE("test file_matcher")
             matcher.wait();
             auto files = matcher.results();
 
-            CHECK_FALSE(contains(files, main_cpp));
             CHECK_FALSE(contains(files, cmakelists_txt));
             CHECK(contains(files, test_file_matcher_cpp));
         }
@@ -80,12 +79,11 @@ TEST_CASE("test file_matcher")
     SECTION("test block pattern") {
         SECTION("valid pattern") {
             matcher.exclude_pattern(".*test_.*.cpp");
-        matcher.set_search_root(fs::path(TEST_DIR));
-        matcher.start();
-        matcher.wait();
-        auto files = matcher.results();
+            matcher.set_search_root(fs::path(TEST_DIR));
+            matcher.start();
+            matcher.wait();
+            auto files = matcher.results();
 
-            CHECK(contains(files, main_cpp));
             CHECK(contains(files, cmakelists_txt));
             CHECK_FALSE(contains(files, test_file_matcher_cpp));
         }

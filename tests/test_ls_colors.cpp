@@ -1,5 +1,5 @@
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include "ls_colors.hpp"
 
 TEST_CASE("test parse_color")

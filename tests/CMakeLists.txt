@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 
-add_executable(torrenttools-tests test_profile.cpp)
-
-message(STATUS ${CMAKE_MODULE_PATH})
+find_package(Catch2 CONFIG REQUIRED)
 include(Catch)
-
-target_include_directories(torrenttools-tests PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 get_target_property(torrenttools_SOURCES torrenttools SOURCES)
 get_target_property(torrenttools_INCLUDE_DIRECTORIES torrenttools INCLUDE_DIRECTORIES)
@@ -14,8 +10,9 @@ get_target_property(torrenttools_LINK_LIBRARIES torrenttools LINK_LIBRARIES)
 list(REMOVE_ITEM torrenttools_SOURCES src/main.cpp)
 list(TRANSFORM torrenttools_SOURCES PREPEND ${PROJECT_SOURCE_DIR}/)
 
-target_sources(torrenttools-tests PRIVATE
-        main.cpp
+add_executable(torrenttools-tests
+        ${torrenttools_SOURCES}
+        test_profile.cpp
         test_create.cpp
         test_edit.cpp
         test_verify.cpp
@@ -29,14 +26,12 @@ target_sources(torrenttools-tests PRIVATE
         test_utils.cpp
         test_profile.cpp
         test_ls_colors.cpp
-        ${torrenttools_SOURCES}
 )
 
-
-
+target_include_directories(torrenttools-tests PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(torrenttools-tests PRIVATE ${torrenttools_INCLUDE_DIRECTORIES})
 target_link_libraries(torrenttools-tests
-        Catch2::Catch2
+        Catch2::Catch2WithMain
         ${torrenttools_LINK_LIBRARIES}
 )
 
