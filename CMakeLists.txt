@@ -8,6 +8,7 @@ if (UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+
 project(torrenttools
         DESCRIPTION "A commandline tool for creating, inspecting and modifying BitTorrent metafiles."
         LANGUAGES CXX
@@ -34,15 +35,15 @@ set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
 include(CMakeDependentOption)
 option(TORRENTTOOLS_BUILD_TESTS
-       "Build tests" OFF)
+        "Build tests" OFF)
 cmake_dependent_option(TORRENTTOOLS_BUILD_TESTS_COVERAGE
-                       "Build tests with coverage." OFF "TORRENTTOOLS_BUILD_TESTS" OFF)
+        "Build tests with coverage." OFF "TORRENTTOOLS_BUILD_TESTS" OFF)
 option(TORRENTTOOLS_BUILD_DOCS
         "Generate documentation" OFF)
 option(TORRENTTOOLS_INSTALL
         "Generate an install target" ON)
-
 option(TORRENTTOOLS_TBB "Accelerate using Intel TBB library." ON)
+
 
 find_package(bencode CONFIG REQUIRED)
 find_package(dottorrent CONFIG REQUIRED)

@@ -1,5 +1,7 @@
 .github/
 .vscode/
+cue.mod
+*.cue
 cmake-build-*/
 Dockerfile
 .dockerignore

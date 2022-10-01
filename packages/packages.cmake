@@ -6,6 +6,11 @@ else()
     set(CPACK_GENERATOR                          "")
 endif()
 
+set(CPACK_SOURCE_TBZ2 "OFF")
+set(CPACK_SOURCE_TGZ "ON")
+set(CPACK_SOURCE_TXZ "OFF")
+set(CPACK_SOURCE_TZ "OFF")
+
 set(CPACK_PACKAGE_DESCRIPTION_FILE           "${CMAKE_CURRENT_LIST_DIR}/package_summary.txt")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY        "${CMAKE_PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_FILE_NAME                  "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
@@ -42,6 +47,7 @@ if (EXISTS ${gitignore})
 endif()
 
 list(APPEND ignored_files ".git.*")
+list(APPEND ignored_files "^vcpkg$")
 list(APPEND CPACK_SOURCE_IGNORE_FILES        ${ignored_files})
 ## some variables to generate packaging files, seperate from CPACK variables
 
@@ -82,4 +88,3 @@ cpack_add_component(torrenttools
         REQUIRED)
 
 cpack_add_component(undefined HIDDEN)
-

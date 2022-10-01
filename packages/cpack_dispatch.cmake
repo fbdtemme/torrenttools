@@ -4,3 +4,7 @@ endif()
 if (CPACK_GENERATOR MATCHES "productbuild")
     include(${CMAKE_CURRENT_LIST_DIR}/macos-productbuild.cmake)
 endif()
+
+if (DEFINED CPACK_SOURCE_GENERATOR)
+    set(CPACK_INSTALL_SCRIPTS "${CMAKE_CURRENT_LIST_DIR}/fetch-dependencies.cmake")
+endif()

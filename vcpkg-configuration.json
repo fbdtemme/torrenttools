@@ -2,7 +2,7 @@
   "registries": [
     {
       "kind": "git",
-      "baseline": "dfa0516c8dc9008c78df86e115919844e0005517",
+      "baseline": "b6fa14639954a5b2b4225fe8507bb14cf087205e",
       "repository": "https://github.com/fbdtemme/vcpkg-registry",
       "packages": [
         "bencode",

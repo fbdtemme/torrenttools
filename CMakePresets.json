@@ -2,82 +2,87 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "debug",
-      "displayName": "Debug Config",
-      "description": "Default debug build using Ninja generator",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "name": "common",
+      "generator": "Ninja Multi-Config",
       "environment": {
         "VCPKG_ROOT": "${sourceDir}/vcpkg"
       },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "hidden": true
+    },
+    {
+      "name": "features-tests",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
         "VCPKG_MANIFEST_FEATURES": "tests",
         "TORRENTTOOLS_BUILD_TESTS": "ON"
       }
     },
     {
-      "name": "debug-isal",
-      "displayName": "Debug Config (ISA-L)",
-      "description": "Default debug build using Ninja generator and ISA-L support",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/cmake-build-debug-isal",
-      "environment": {
-        "VCPKG_ROOT": "${sourceDir}/vcpkg"
-      },
+      "name": "features-tests-isal",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
         "VCPKG_MANIFEST_FEATURES": "tests;isal",
         "TORRENTTOOLS_BUILD_TESTS": "ON"
       }
     },
     {
-      "name": "release",
-      "displayName": "Release Config",
-      "description": "Default debug build using Ninja generator",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/cmake-build-release",
-      "environment": {
-        "VCPKG_ROOT": "${sourceDir}/vcpkg"
-      },
+      "name": "features-isal",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
-        "VCPKG_MANIFEST_FEATURES": "tests"
+        "VCPKG_MANIFEST_FEATURES": "isal"
       }
     },
     {
-      "name": "release-isal",
-      "displayName": "Release Config (ISA-L)",
-      "description": "Default debug build using Ninja generator",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/cmake-build-release-isal",
-      "environment": {
-        "VCPKG_ROOT": "${sourceDir}/vcpkg"
-      },
+      "name": "linux",
+      "inherits": ["common", "features-tests"],
+      "binaryDir": "${sourceDir}/cmake-build-linux"
+    },
+    {
+      "name": "linux-isal",
+      "inherits": ["common", "features-tests-isal"],
+      "binaryDir": "${sourceDir}/cmake-build-linux-isal"
+    },
+    {
+      "name": "linux-from-tarball",
+      "inherits": ["common", "features-tests-isal"],
+      "binaryDir": "${sourceDir}/cmake-build-from-tarball",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "CMAKE_TOOLCHAIN_FILE": {
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
-        },
-        "VCPKG_MANIFEST_FEATURES": "tests;isal"
+        "VCPKG_INSTALL_OPTIONS": "--no-downloads",
+        "XDG_CACHE_HOME": "${sourceDir}/vcpkg/cache"
       }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux",
+      "configuration": "Debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "configurePreset": "linux",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "linux-isal-debug",
+      "configurePreset": "linux-isal",
+      "configuration": "Debug"
+    },
+    {
+      "name": "linux-isal-release",
+      "configurePreset": "linux-isal",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-isal-relwithdebinfo",
+      "configurePreset": "linux-isal",
+      "configuration": "RelWithDebInfo"
     }
   ]
 }
