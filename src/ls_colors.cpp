@@ -4,7 +4,7 @@
 
 namespace detail {
 
-constexpr tc::emphasis parse_emphasis(std::uint8_t graphics_attribute)
+tc::emphasis parse_emphasis(std::uint8_t graphics_attribute)
 {
     switch (graphics_attribute) {
     case 0  :  return tc::emphasis::reset;
@@ -25,7 +25,7 @@ constexpr tc::emphasis parse_emphasis(std::uint8_t graphics_attribute)
 
 
 
-inline std::pair<tc::text_style, std::size_t>
+std::pair<tc::text_style, std::size_t>
 parse_color(std::string_view arguments)
 {
     std::uint8_t int_value;
@@ -98,7 +98,7 @@ parse_color(std::string_view arguments)
     }
 }
 
-inline std::pair<tc::rgb_color, std::size_t>
+std::pair<tc::rgb_color, std::size_t>
 parse_rgb_color_component(std::string_view rgb_component)
 {
     std::uint8_t r, g, b;
@@ -139,7 +139,7 @@ parse_rgb_color_component(std::string_view rgb_component)
 
 
 /// Parse the LS_COLORS string into a map of text_styles.
-inline std::map<std::string, termcontrol::text_style>
+std::map<std::string, termcontrol::text_style>
 parse_ls_colors(std::string_view ls_colors)
 {
     using namespace std::string_literals;

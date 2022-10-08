@@ -25,16 +25,16 @@ namespace tc = termcontrol;
 
 namespace detail {
 
-inline std::pair<tc::rgb_color, std::size_t>
+std::pair<tc::rgb_color, std::size_t>
 parse_rgb_color_component(std::string_view rgb_component);
 
-inline std::pair<tc::text_style, std::size_t>
+std::pair<tc::text_style, std::size_t>
 parse_color(std::string_view arguments);
 
-constexpr tc::emphasis
+tc::emphasis
 parse_emphasis(std::uint8_t graphics_attribute);
 
-inline std::map<std::string, termcontrol::text_style>
+std::map<std::string, termcontrol::text_style>
 parse_ls_colors(std::string_view ls_colors);
 
 } // namespace detail
