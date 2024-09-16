@@ -23,7 +23,7 @@ else()
     FetchContent_Declare(
             bencode
             GIT_REPOSITORY https://github.com/fbdtemme/bencode.git
-            GIT_TAG        master
+            GIT_TAG        main
     )
     FetchContent_MakeAvailable(bencode)
 endif()
